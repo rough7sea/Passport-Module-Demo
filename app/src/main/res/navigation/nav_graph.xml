@@ -3,24 +3,66 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/MainFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="com.example.myapplication.fragments.list.TowerListFragment"
-        android:label="List"
-        tools:layout="@layout/fragment_tower_list">
+        android:id="@+id/MainFragment"
+        android:name="com.example.myapplication.fragments.MainFragment"
+        android:label="MainFragment"
+        tools:layout="@layout/fragment_main">
         <action
-            android:id="@+id/action_FirstFragment_to_addFragment"
-            app:destination="@id/addFragment" />
+            android:id="@+id/action_MainFragment_to_towerListFragment"
+            app:destination="@id/towerListFragment" />
+        <action
+            android:id="@+id/action_MainFragment_to_passportListFragment"
+            app:destination="@id/passportListFragment" />
     </fragment>
+
     <fragment
-        android:id="@+id/addFragment"
+        android:id="@+id/addTowerFragment"
         android:name="com.example.myapplication.fragments.add.AddTowerFragment"
-        android:label="Add"
+        android:label="addTowerFragment"
         tools:layout="@layout/fragment_add_tower" >
         <action
-            android:id="@+id/action_addFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_addTowerFragment_to_towerListFragment"
+            app:destination="@id/towerListFragment" />
+        <action
+            android:id="@+id/action_addTowerFragment_to_passportSelectionListFragment"
+            app:destination="@id/passportSelectionListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/coordinateListFragment"
+        android:name="com.example.myapplication.fragments.list.CoordinateListFragment"
+        android:label="fragment_coordinate_list"
+        tools:layout="@layout/fragment_coordinate_list" />
+    <fragment
+        android:id="@+id/towerListFragment"
+        android:name="com.example.myapplication.fragments.list.TowerListFragment"
+        android:label="fragment_tower_list"
+        tools:layout="@layout/fragment_tower_list" >
+        <action
+            android:id="@+id/action_towerListFragment_to_addTowerFragment"
+            app:destination="@id/addTowerFragment" />
+        <action
+            android:id="@+id/action_towerListFragment_to_MainFragment"
+            app:destination="@id/MainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/passportListFragment"
+        android:name="com.example.myapplication.fragments.list.PassportListFragment"
+        android:label="fragment_passport_list"
+        tools:layout="@layout/fragment_passport_list" >
+        <action
+            android:id="@+id/action_passportListFragment_to_MainFragment"
+            app:destination="@id/MainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/passportSelectionListFragment"
+        android:name="com.example.myapplication.fragments.selection.PassportSelectionListFragment"
+        android:label="fragment_passport_selection_list"
+        tools:layout="@layout/fragment_passport_selection_list" >
+        <action
+            android:id="@+id/action_passportSelectionListFragment_to_addTowerFragment"
+            app:destination="@id/addTowerFragment" />
     </fragment>
 </navigation>

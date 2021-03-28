@@ -1,98 +1,76 @@
 package com.example.myapplication.fragments.add
 
 import android.os.Bundle
-import android.text.Editable
 import android.text.TextUtils
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import com.example.myapplication.App
 import com.example.myapplication.R
-import com.example.myapplication.database.AppDatabase
-import com.example.myapplication.entity.Coordinate
-import com.example.myapplication.view.TowerViewModel
-import java.util.*
-import kotlin.random.Random
+import com.example.myapplication.database.entity.Tower
+import com.example.myapplication.fragments.view.CoordinateViewModel
+import com.example.myapplication.fragments.view.PassportViewModel
+import com.example.myapplication.fragments.view.TowerViewModel
+import kotlinx.android.synthetic.main.fragment_add_tower.view.*
 
-/**
- * A simple [Fragment] subclass.
- * Use the [AddTowerFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AddTowerFragment : Fragment() {
 
     private lateinit var towerViewModel: TowerViewModel
-
-    private lateinit var appDatabase: AppDatabase
+    private lateinit var mPassportViewModel: PassportViewModel
+    private lateinit var mCoordinateViewModel: CoordinateViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        var view =  inflater.inflate(R.layout.fragment_add_tower, container, false)
-
-        appDatabase = App.getDatabaseManager()
+        val view = inflater.inflate(R.layout.fragment_add_tower, container, false)
 
         towerViewModel = ViewModelProvider(this).get(TowerViewModel::class.java)
+        mPassportViewModel = ViewModelProvider(this).get(PassportViewModel::class.java)
+        mCoordinateViewModel = ViewModelProvider(this).get(CoordinateViewModel::class.java)
 
-        view.findViewById<Button>(R.id.addButton).setOnClickListener {
+
+        view.addButton.setOnClickListener {
             insertDataToDataBase(view)
         }
+
+        view.editPassportField.setOnClickListener {
+            val action = AddTowerFragmentDirections.actionAddTowerFragmentToPassportSelectionListFragment()
+            view.findNavController().navigate(action)
+        }
+
         return view
     }
 
     private fun insertDataToDataBase(view: View) {
-//        val passportId = view.findViewById<EditText>(R.id.editPassportId).text
-//        val editChangeDate = view.findViewById<EditText>(R.id.editChangeDate).text
 
-        val editIDTF = view.findViewById<EditText>(R.id.editIDTF).text.toString()
-
+        val editIDTF = view.editIDTF.text.toString()
 
         if (inputCheck(editIDTF)){
 
-//            var passport = Passport(0, 123, 123)
-//
-//            appDatabase.passportDao().insert(passport)
-//
-//
-//            passport = appDatabase.passportDao().getAll().get(0)
-//            val coord = appDatabase.coordinateDao().getAll().get(0)
-//
-//            val tower = Tower(0, coord.coord_id,
-//                    passport.passport_id, 123, "some info")
-//
-//            towerViewModel.addTower(tower)
+            val passport = mPassportViewModel.readAllData.value!![0]
+            val coordinate = mCoordinateViewModel.readAllData.value!![0]
 
-            val rand = Random(23)
+            val tower = Tower(0, coordinate.coord_id, passport.passport_id, idtf =  editIDTF)
 
-            val coordinate = Coordinate(
-                    latitude =  rand.nextInt(),
-                    longitude =  rand.nextInt())
-
-            appDatabase.coordinateDao().insert(coordinate)
-
+            towerViewModel.addTower(tower)
 
             Toast.makeText(requireContext(), "Successfully added!", Toast.LENGTH_LONG).show()
 
-            findNavController().navigate(R.id.action_addFragment_to_FirstFragment)
-        } else {
+            findNavController().navigate(R.id.action_addTowerFragment_to_towerListFragment)
 
+        } else {
             Toast.makeText(requireContext(), "Fill out all fields", Toast.LENGTH_LONG).show()
         }
-
     }
 
-    private fun inputCheck(editIDTF: String): Boolean{
-//        return !(TextUtils.isEmpty(editIDTF) && editChangeDate.isEmpty())
+    private fun inputCheck(editIDTF: String): Boolean {
         return !TextUtils.isEmpty(editIDTF)
     }
-
 
 }
