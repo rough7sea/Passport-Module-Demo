@@ -8,23 +8,21 @@ class CoordinateRepository(private val coordinateDAO: CoordinateDAO) {
 
     val allCoordinatesData: LiveData<List<Coordinate>> = coordinateDAO.getAll()
 
-    suspend fun addCoordinate(coordinate: Coordinate){
-        coordinateDAO.insert(coordinate)
-    }
+    fun addCoordinate(coordinate: Coordinate): Long = coordinateDAO.insert(coordinate)
 
-    suspend fun updateCoordinate(coordinate: Coordinate){
+    fun updateCoordinate(coordinate: Coordinate){
         coordinateDAO.update(coordinate)
     }
 
-    suspend fun deleteCoordinate(coordinate: Coordinate){
+    fun deleteCoordinate(coordinate: Coordinate){
         coordinateDAO.delete(coordinate)
     }
 
-    suspend fun deleteAllCoordinate(){
+    fun deleteAllCoordinate(){
         coordinateDAO.deleteAll()
     }
 
-    suspend fun getCoordinateByLongitudeAndLatitude(longitude: Int, latitude: Int) : Coordinate?{
+    fun getCoordinateByLongitudeAndLatitude(longitude: Int, latitude: Int) : Coordinate?{
         return coordinateDAO.getByLongitudeAndLatitude(longitude, latitude)
     }
 

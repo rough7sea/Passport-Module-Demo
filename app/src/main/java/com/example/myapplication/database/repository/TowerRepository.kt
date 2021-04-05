@@ -8,19 +8,25 @@ class TowerRepository(private val towerDao: TowerDAO) {
 
     val allTowersData: LiveData<List<Tower>> = towerDao.getAll()
 
-    suspend fun addTower(tower: Tower){
-        towerDao.insert(tower)
+    fun addTower(tower: Tower) : Long = towerDao.insert(tower)
+
+    fun findAllByPassportId(passport_id: Long) = towerDao.getByPassportId(passport_id)
+
+    fun findTowerById(tower_id: Long) = towerDao.getById(tower_id)
+
+    fun addAllTowers(towers: List<Tower>){
+        towerDao.insert(towers)
     }
 
-    suspend fun updateTower(tower: Tower){
+    fun updateTower(tower: Tower){
         towerDao.update(tower)
     }
 
-    suspend fun deleteTower(tower: Tower){
+    fun deleteTower(tower: Tower){
         towerDao.delete(tower)
     }
 
-    suspend fun deleteAllTower(){
+    fun deleteAllTower(){
         towerDao.deleteAll()
     }
 

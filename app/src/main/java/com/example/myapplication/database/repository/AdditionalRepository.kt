@@ -8,19 +8,19 @@ class AdditionalRepository(private val additionalDAO: AdditionalDAO) {
 
     val allAdditionalData: LiveData<List<Additional>> = additionalDAO.getAll()
 
-    suspend fun addAdditional(additional: Additional){
+    fun addAdditional(additional: Additional){
         additionalDAO.insert(additional)
     }
 
-    suspend fun updateAdditional(additional: Additional){
+    fun updateAdditional(additional: Additional){
         additionalDAO.update(additional)
     }
 
-    suspend fun deleteAdditional(additional: Additional){
+    fun deleteAdditional(additional: Additional){
         additionalDAO.delete(additional)
     }
 
-    suspend fun deleteAllAdditional(additional: Additional){
+    fun deleteAllAdditional(){
         additionalDAO.deleteAll()
     }
 

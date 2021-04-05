@@ -14,15 +14,15 @@ import kotlin.reflect.full.memberProperties
 object QueryBuilder {
 
     fun buildCoordInRadiusQuery(longitude: Int, latitude: Int, radius: Int) =
-        SimpleSQLiteQuery("SELECT * FROM ${DatabaseConst.COORDINATE_TABLE_NAME} WHERE " +
-                "sqrt(power(longitude - $longitude, 2) + power(latitude - $latitude, 2)) <= $radius;")
+            SimpleSQLiteQuery("SELECT * FROM ${DatabaseConst.COORDINATE_TABLE_NAME} WHERE " +
+                    "sqrt(power(longitude - $longitude, 2) + power(latitude - $latitude, 2)) <= $radius;")
 
 
     fun <T> buildSelectQuery(
-        clazz: Class<T>, values: List<Pair<String, String>> = arrayListOf()
+            clazz: Class<T>, values: List<Pair<String, String>> = arrayListOf()
     ): SupportSQLiteQuery {
         val query =
-            StringBuilder("SELECT * FROM ${clazz.simpleName.toLowerCase(Locale.getDefault())}")
+                StringBuilder("SELECT * FROM ${clazz.simpleName.toLowerCase(Locale.getDefault())}")
 
         if (!values.isNullOrEmpty() && values.size > clazz.declaredFields.size) {
             for (i in values.indices) {
@@ -36,14 +36,14 @@ object QueryBuilder {
     }
 
     fun <T> buildCountQuery(clazz: Class<T>) =
-        SimpleSQLiteQuery("SELECT COUNT(*) FROM ${clazz.simpleName.toLowerCase(Locale.getDefault())}")
+            SimpleSQLiteQuery("SELECT COUNT(*) FROM ${clazz.simpleName.toLowerCase(Locale.getDefault())}")
 
     fun buildLastTimestampQuery() =
-        SimpleSQLiteQuery("SELECT MAX(changeDate) FROM " +
-                "(SELECT changeDate FROM ${DatabaseConst.PASSPORT_TABLE_NAME} UNION ALL " +
-                "SELECT changeDate FROM ${DatabaseConst.TOWER_TABLE_NAME} UNION ALL " +
-                "SELECT changeDate FROM ${DatabaseConst.ADDITIONAL_TABLE_NAME} UNION ALL " +
-                "SELECT changeDate FROM ${DatabaseConst.COORDINATE_TABLE_NAME})")
+            SimpleSQLiteQuery("SELECT MAX(changeDate) FROM " +
+                    "(SELECT changeDate FROM ${DatabaseConst.PASSPORT_TABLE_NAME} UNION ALL " +
+                    "SELECT changeDate FROM ${DatabaseConst.TOWER_TABLE_NAME} UNION ALL " +
+                    "SELECT changeDate FROM ${DatabaseConst.ADDITIONAL_TABLE_NAME} UNION ALL " +
+                    "SELECT changeDate FROM ${DatabaseConst.COORDINATE_TABLE_NAME})")
 
     fun <E> buildDeleteWithParametersQuery(bindObject: E): SimpleSQLiteQuery {
         val query = StringBuilder("DELETE FROM ")
@@ -102,13 +102,22 @@ object QueryBuilder {
         val query = StringBuilder()
         with(passport){
             query.append(" siteId = $siteId AND ")
-            if (sectionName.isNotEmpty()) query.append(" sectionName = '$sectionName' AND")
-            if (sectionId.isNotEmpty()) query.append(" sectionId = '$sectionId' AND")
-            if (echName.isNotEmpty()) query.append(" echName = '$echName' AND")
-            if (echkName.isNotEmpty()) query.append(" echkName = '$echkName' AND")
-            if (locationId.isNotEmpty()) query.append(" locationId = '$locationId' AND")
+//            if (sectionName.isNotEmpty())
+            query.append(" sectionName = '$sectionName' AND")
+
+//            if (sectionId != null){
+//                if (sectionId!!.isNotEmpty())
+            query.append(" sectionId = '$sectionId' AND")
+//            }
+//            if (echName.isNotEmpty())
+            query.append(" echName = '$echName' AND")
+//            if (echkName.isNotEmpty())
+            query.append(" echkName = '$echkName' AND")
+//            if (locationId.isNotEmpty())
+            query.append(" locationId = '$locationId' AND")
             query.append(" wayAmount = $wayAmount AND")
-            if (currentWay.isNotEmpty()) query.append(" currentWay = '$currentWay' AND")
+//            if (currentWay.isNotEmpty())
+            query.append(" currentWay = '$currentWay' AND")
             query.append(" currentWayId = $currentWayId AND")
             query.append(" initialMeter = $initialMeter AND")
             query.append(" initialKm = $initialKm AND")
@@ -124,15 +133,17 @@ object QueryBuilder {
         val query = StringBuilder()
         with(tower){
             query.append(" passport_id = $passport_id AND")
-            if (idtf.isNotEmpty()) query.append(" idtf = '$idtf' AND")
-            if (assetNum.isNotEmpty()) query.append(" assetNum = '$assetNum' AND")
+//            if (idtf.isNotEmpty())
+            query.append(" idtf = '$idtf' AND")
+//            if (assetNum.isNotEmpty())
+            query.append(" assetNum = '$assetNum' AND")
             query.append(" stopSeq = $stopSeq AND")
             query.append(" km = $km AND")
             query.append(" pk = $pk AND")
             query.append(" m = $m AND")
-            if (tfType.isNotEmpty()) query.append(" tfType = '$tfType' AND")
-            if (turn.isNotEmpty()) query.append(" turn = '$turn' AND")
-            if (radius.isNotEmpty()) query.append(" radius = '$radius' AND")
+//            if (tfType.isNotEmpty()) query.append(" tfType = '$tfType' AND")
+//            if (turn.isNotEmpty()) query.append(" turn = '$turn' AND")
+//            if (radius.isNotEmpty()) query.append(" radius = '$radius' AND")
             query.append(" number = $number AND")
             query.append(" distance = $distance AND")
             query.append(" zigzag = $zigzag AND")
@@ -140,10 +151,10 @@ object QueryBuilder {
             query.append(" offset = $offset AND")
             query.append(" grounded = $grounded AND")
             query.append(" speed = $speed AND")
-            if (suspensionType.isNotEmpty()) query.append(" suspensionType = '$suspensionType' AND")
-            query.append(" catenary = $catenary AND")
-            if (wireType.isNotEmpty()) query.append(" wireType = '$wireType' AND")
-            if (countWire.isNotEmpty()) query.append(" countWire = '$countWire' AND")
+//            if (suspensionType.isNotEmpty()) query.append(" suspensionType = '$suspensionType' AND")
+//            query.append(" catenary = $catenary AND")
+//            if (wireType.isNotEmpty()) query.append(" wireType = '$wireType' AND")
+//            if (countWire.isNotEmpty()) query.append(" countWire = '$countWire' AND")
         }
         return query
     }

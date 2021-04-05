@@ -53,12 +53,12 @@ class AddTowerFragment : Fragment() {
 
         if (inputCheck(editIDTF)){
 
-            val passport = mPassportViewModel.readAllData.value!![0]
-            val coordinate = mCoordinateViewModel.readAllData.value!![0]
-
-            val tower = Tower(0, coordinate.coord_id, passport.passport_id, idtf =  editIDTF)
-
-            towerViewModel.addTower(tower)
+//            val passport = mPassportViewModel.readAllData.value!![0]
+//            val coordinate = mCoordinateViewModel.readAllData.value!![0]
+//
+//            val tower = Tower(0, coordinate.coord_id, passport.passport_id, idtf =  editIDTF, )
+//
+//            towerViewModel.addTower(tower)
 
             Toast.makeText(requireContext(), "Successfully added!", Toast.LENGTH_LONG).show()
 

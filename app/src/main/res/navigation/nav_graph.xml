@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_MainFragment_to_passportListFragment"
             app:destination="@id/passportListFragment" />
+        <action
+            android:id="@+id/action_MainFragment_to_handlerTestFragment"
+            app:destination="@id/handlerTestFragment" />
     </fragment>
 
     <fragment
@@ -64,5 +67,14 @@
         <action
             android:id="@+id/action_passportSelectionListFragment_to_addTowerFragment"
             app:destination="@id/addTowerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/handlerTestFragment"
+        android:name="com.example.myapplication.fragments.HandlerTestFragment"
+        android:label="fragment_handler_test"
+        tools:layout="@layout/fragment_handler_test" >
+        <action
+            android:id="@+id/action_handlerTestFragment_to_MainFragment"
+            app:destination="@id/MainFragment" />
     </fragment>
 </navigation>

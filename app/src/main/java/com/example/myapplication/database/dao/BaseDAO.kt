@@ -8,13 +8,13 @@ interface BaseDAO<T> {
     fun insert(objs: List<T>)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(obj: T): Long
+    fun insert(obj: T): Long // возвращает id объекта!!!!
 
     @Update
-    fun update(obj: T): Int
+    fun update(obj: T)
 
     @Delete
-    fun delete(obj: T): Int
+    fun delete(obj: T)
 
     @RawQuery
     fun getWithParameters(query: SupportSQLiteQuery): List<T>

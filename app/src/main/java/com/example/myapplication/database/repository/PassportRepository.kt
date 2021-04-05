@@ -8,18 +8,19 @@ class PassportRepository(private val passportDAO: PassportDAO) {
 
     val allPassportsData: LiveData<List<Passport>> = passportDAO.getAll()
 
-    suspend fun addPassport(passport: Passport){
-        passportDAO.insert(passport)
-    }
+    fun addPassport(passport: Passport): Long = passportDAO.insert(passport)
 
-    suspend fun updatePassport(passport: Passport){
+    fun findPassportById(passport_id: Long) =  passportDAO.getById(passport_id)
+
+
+    fun updatePassport(passport: Passport){
         passportDAO.update(passport)
     }
 
-    suspend fun deletePassport(passport: Passport){
+    fun deletePassport(passport: Passport){
         passportDAO.delete(passport)
     }
-    suspend fun deleteAllPassports(){
+    fun deleteAllPassports(){
         passportDAO.deleteAll()
     }
 

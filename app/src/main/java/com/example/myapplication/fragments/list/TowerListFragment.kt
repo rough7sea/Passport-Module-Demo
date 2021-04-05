@@ -56,6 +56,7 @@ class TowerListFragment : Fragment() {
 
     private fun deleteAllTowers() {
         val builder = AlertDialog.Builder(requireContext())
+
         builder.setPositiveButton("Yes"){  _, _ ->
             mTowerViewModel.deleteAllTowers()
             Toast.makeText(
@@ -63,9 +64,8 @@ class TowerListFragment : Fragment() {
                 "Successfully removed all towers",
                 Toast.LENGTH_SHORT).show()
         }
-        builder.setNegativeButton("No"){  _, _ ->
 
-        }
+        builder.setNegativeButton("No"){  _, _ -> }
         builder.setTitle("Delete all towers?")
         builder.setMessage("Are you sure you want to delete all towers?")
         builder.create().show()

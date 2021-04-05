@@ -1,7 +1,6 @@
 package com.example.myapplication.database.converter
 
 import androidx.room.TypeConverter
-import com.example.myapplication.database.entity.Coordinate
 import com.example.myapplication.database.entity.Passport
 import com.example.myapplication.database.entity.Tower
 import com.example.myapplication.exchange.dto.XMLPassportDto
@@ -26,23 +25,23 @@ class Converter {
 
         fun fromXMLToPassport(dto: XMLPassportDto): Passport {
             with(dto) {
-                return Passport(0, fromStringToDate(changeDate), sectionName,
+                return Passport(0, changeDate?.let { fromStringToDate(it) } ?: Date(), sectionName,
                         siteId, sectionId, echName, echkName, locationId, wayAmount,
                         currentWay, currentWayId, initialMeter, initialKm, initialPk,
                         initialM, plotLength, suspensionAmount)
             }
         }
 
-        fun fromXMLTowerDtoToTower(dto: XMLTowerDto, coord: Coordinate): Tower {
+        fun fromXMLTowerDtoToTower(dto: XMLTowerDto, coord_id: Long?): Tower {
             with(dto) {
                 return Tower(
-                        0, coord.coord_id, 0,
+                        0, 0, coord_id,
                         Date(), idtf ?: "", assetNum ?: "",
-                        stopSeq?: 0, km?: 0, pk?: 0, m?: 0,
-                        tfType ?: "", turn?: "", radius?: "", number?: "",
-                        distance?: 0, zigzag?: 0, height?: 0, offset?: 0,
-                        grounded?: 0, speed?: 0, suspensionType?: "",
-                        catenary?: 0, wireType?: "", countWire?: "", gabarit?: ""
+                        stopSeq, km, pk, m,
+                        tfType , turn, radius, number ?: "",
+                        distance, zigzag, height, offset,
+                        grounded, speed, suspensionType,
+                        catenary, wireType, countWire, gabarit
                 )
             }
         }

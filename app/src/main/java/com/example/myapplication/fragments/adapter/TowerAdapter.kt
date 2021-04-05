@@ -26,13 +26,13 @@ class TowerAdapter : RecyclerView.Adapter<MyViewHolder>()  {
         holder.itemView.id_textView.text = currentItem.tower_id.toString()
         holder.itemView.idtf_textView.text = currentItem.idtf
 
-        val coordinate = dataManager.coordinateDao().getById(currentItem.coord_id)
-
-        if (coordinate != null) {
-            holder.itemView.longitude_textView.text = coordinate.longitude.toString()
-            holder.itemView.latitude_textView.text = coordinate.latitude.toString()
+        currentItem.coord_id?.let {
+            val coordinate = dataManager.coordinateDao().getById(it)
+            if (coordinate != null) {
+                holder.itemView.longitude_textView.text = coordinate.longitude.toString()
+                holder.itemView.latitude_textView.text = coordinate.latitude.toString()
+            }
         }
-
     }
 
     fun setData(tower: List<Tower>){
