@@ -43,6 +43,10 @@ class MainFragment : Fragment() {
             findNavController().navigate(R.id.action_MainFragment_to_handlerTestFragment)
         }
 
+        view.additional_handler_test_button.setOnClickListener {
+            findNavController().navigate(R.id.action_MainFragment_to_additionalHandlerTestFragment)
+        }
+
 //        view.filePathButton.setOnClickListener {
 //            val intent = Intent()
 //                .setType("*/*")

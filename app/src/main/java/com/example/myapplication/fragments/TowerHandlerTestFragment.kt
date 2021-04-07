@@ -8,23 +8,33 @@ import androidx.fragment.app.Fragment
 import com.example.myapplication.App
 import com.example.myapplication.R
 import com.example.myapplication.database.entity.Tower
+import com.example.myapplication.external.entities.LoadResult
 import com.example.myapplication.external.handler.impl.ObjectBindingHandlerImpl
-import kotlinx.android.synthetic.main.fragment_handler_test.view.*
+import kotlinx.android.synthetic.main.fragment_tower_handler_test.view.*
 import kotlinx.android.synthetic.main.tower_layout.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class HandlerTestFragment : Fragment() {
+class TowerHandlerTestFragment : Fragment() {
 
     private val handler = ObjectBindingHandlerImpl(App.getDatabaseManager())
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_handler_test, container, false)
+        val view = inflater.inflate(R.layout.fragment_tower_handler_test, container, false)
 
         val handlerTowerLayout = view.handler_tower_layout
+
+        handler.getLiveDataResult().observe(viewLifecycleOwner, {
+            when(it){
+                is LoadResult.Loading -> view.liveDataTextResult.text = "Loading"
+                is LoadResult.Success -> view.liveDataTextResult.text = it.data.toString()
+                is LoadResult.Error -> view.liveDataTextResult.text = it.error?.message ?: it.error.toString()
+            }
+            it.data?.let { it1 -> fillTower(handlerTowerLayout, it1) }
+        })
 
         view.set_button.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
@@ -34,24 +44,15 @@ class HandlerTestFragment : Fragment() {
         }
 
         view.get_button.setOnClickListener {
-            val previousObject = handler.getActualObject<Tower>()
-            previousObject.observe(viewLifecycleOwner, {
-                it.data?.let { it1 -> fillTower(handlerTowerLayout, it1) }
-            })
+            handler.getActualObject()
         }
 
         view.next_button.setOnClickListener {
-            val previousObject = handler.nextObject<Tower>()
-            previousObject.observe(viewLifecycleOwner, {
-                it.data?.let { it1 -> fillTower(handlerTowerLayout, it1) }
-            })
+            handler.nextObject()
         }
 
         view.prev_button.setOnClickListener {
-            val previousObject = handler.previousObject<Tower>()
-            previousObject.observe(viewLifecycleOwner, {
-                it.data?.let { it1 -> fillTower(handlerTowerLayout, it1) }
-            })
+            handler.previousObject()
         }
 
         return view

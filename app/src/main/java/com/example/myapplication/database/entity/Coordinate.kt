@@ -19,6 +19,6 @@ data class Coordinate(
         val coord_id: Long = 0,
         var changeDate: Date = Date(),
 
-        var longitude: Int,
-        var latitude: Int,
+        var longitude: Int?,
+        var latitude: Int?,
 )

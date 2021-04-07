@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_MainFragment_to_handlerTestFragment"
             app:destination="@id/handlerTestFragment" />
+        <action
+            android:id="@+id/action_MainFragment_to_additionalHandlerTestFragment"
+            app:destination="@id/additionalHandlerTestFragment" />
     </fragment>
 
     <fragment
@@ -70,11 +73,20 @@
     </fragment>
     <fragment
         android:id="@+id/handlerTestFragment"
-        android:name="com.example.myapplication.fragments.HandlerTestFragment"
+        android:name="com.example.myapplication.fragments.TowerHandlerTestFragment"
         android:label="fragment_handler_test"
-        tools:layout="@layout/fragment_handler_test" >
+        tools:layout="@layout/fragment_tower_handler_test" >
         <action
             android:id="@+id/action_handlerTestFragment_to_MainFragment"
+            app:destination="@id/MainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/additionalHandlerTestFragment"
+        android:name="com.example.myapplication.fragments.AdditionalHandlerTestFragment"
+        android:label="fragment_additional_handler_test"
+        tools:layout="@layout/fragment_additional_handler_test" >
+        <action
+            android:id="@+id/action_additionalHandlerTestFragment_to_MainFragment"
             app:destination="@id/MainFragment" />
     </fragment>
 </navigation>

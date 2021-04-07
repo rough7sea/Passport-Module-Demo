@@ -17,4 +17,7 @@ interface AdditionalDAO : BaseDAO<Additional> {
 
     @Query("select * from ${DatabaseConst.ADDITIONAL_TABLE_NAME} where add_id = :add_id")
     fun getById(add_id: Long): Additional
+
+    @Query("select * from ${DatabaseConst.ADDITIONAL_TABLE_NAME} where tower_id = :tower_id")
+    fun getByTowerId(tower_id: Long) : List<Additional>
 }

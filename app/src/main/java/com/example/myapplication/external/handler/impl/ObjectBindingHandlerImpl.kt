@@ -13,28 +13,31 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 // Passport -> Tower
-class ObjectBindingHandlerImpl(appDatabase: AppDatabase) : ObjectBindingHandler {
+class ObjectBindingHandlerImpl(appDatabase: AppDatabase) : ObjectBindingHandler<Tower>{
 
-    private val towerRepository: TowerRepository = TowerRepository(appDatabase.towerDao())
+    private val towerRepository = TowerRepository(appDatabase.towerDao())
     private var currentTowers: Map<Int, Long> = mutableMapOf()
     private var currentNumber: Int = -1
 
-    override fun <T> getActualObject(): LiveData<LoadResult<T>> {
-        val result = MutableLiveData<LoadResult<T>>()
+    private val result = MutableLiveData<LoadResult<Tower>>()
 
-        if (currentNumber == -1 || currentTowers.isEmpty()){
-            result.postValue(LoadResult.Error(RuntimeException("Must set object binding before!")))
-            return result
-        }
+    fun getLiveDataResult() : LiveData<LoadResult<Tower>> = result
 
+
+    override fun getActualObject(): LiveData<LoadResult<Tower>>{
         CoroutineScope(Dispatchers.IO).launch {
+            result.postValue(LoadResult.Loading())
+            if (currentNumber == -1 || currentTowers.isEmpty()){
+                result.postValue(LoadResult.Error(RuntimeException("Must set object binding before!")))
+                return@launch
+            }
 
             result.postValue(LoadResult.Loading())
 
             val towerId = currentTowers[currentNumber]
             if (towerId != null){
                 val tower = towerRepository.findTowerById(towerId)
-                result.postValue(LoadResult.Success(tower as T))
+                result.postValue(LoadResult.Success(tower))
             } else {
                 result.postValue(LoadResult.Error(Exception("Internal Error")))
             }
@@ -42,73 +45,69 @@ class ObjectBindingHandlerImpl(appDatabase: AppDatabase) : ObjectBindingHandler 
         return result
     }
 
-    override fun <T> setObjectBinding(objectBinding: T): LiveData<LoadResult<T>> {
-        val result = MutableLiveData<LoadResult<T>>()
-
+    override fun setObjectBinding(tower: Tower): LiveData<LoadResult<Tower>> {
         CoroutineScope(Dispatchers.IO).launch {
-            result.postValue(LoadResult.Loading(objectBinding))
+            result.postValue(LoadResult.Loading(tower))
 
-            val tower = (objectBinding as Tower)
             val towers = towerRepository.findAllByPassportId(tower.passport_id)
 
             var count = 0
 
             currentTowers = towers
-                .sortedBy { Integer.valueOf(Utils.clearNumber(it.number)) }
-                .map { count++ to it.tower_id }
-                .toMap()
+                    .sortedBy { Integer.valueOf(Utils.clearNumber(it.number)) }
+                    .map { count++ to it.tower_id }
+                    .toMap()
 
             currentNumber = currentTowers
-                .filterValues { it == tower.tower_id }.keys
-                .toList()[0]
+                    .filterValues { it == tower.tower_id }.keys
+                    .toList()[0]
 
-            result.postValue(LoadResult.Success(objectBinding))
+            result.postValue(LoadResult.Success(tower))
         }
         return result
     }
 
-    override fun <T> previousObject(): LiveData<LoadResult<T>> {
-        val result = MutableLiveData<LoadResult<T>>()
-        if (currentNumber == -1 || currentTowers.isEmpty()){
-            result.postValue(LoadResult.Error(RuntimeException("Must set object binding before!")))
-            return result
+    override fun nextObject(): LiveData<LoadResult<Tower>> {
+        CoroutineScope(Dispatchers.IO).launch {
+            result.postValue(LoadResult.Loading())
+            if (currentNumber == -1 || currentTowers.isEmpty()){
+                result.postValue(LoadResult.Error(RuntimeException("Must set object binding before!")))
+                return@launch
+            }
+            if (currentNumber + 1 >= currentTowers.size){
+                result.postValue(LoadResult.Error(RuntimeException("There are no more objects in this directions")))
+                return@launch
+            }
+            getObjectByNumber(result, ++currentNumber)
         }
-        if (currentNumber + 1 >= currentTowers.size){
-            result.postValue(LoadResult.Error(RuntimeException("There are no more objects in this directions")))
-            return result
-        }
-
-        getObjectByNumber(result, ++currentNumber)
-
         return result
     }
 
-    override fun <T> nextObject(): LiveData<LoadResult<T>> {
-        val result = MutableLiveData<LoadResult<T>>()
-        if (currentNumber == -1 || currentTowers.isEmpty()){
-            result.postValue(LoadResult.Error(RuntimeException("Must set object binding before!")))
-            return result
+    override fun previousObject(): LiveData<LoadResult<Tower>> {
+        CoroutineScope(Dispatchers.IO).launch {
+            result.postValue(LoadResult.Loading())
+            if (currentNumber == -1 || currentTowers.isEmpty()){
+                result.postValue(LoadResult.Error(RuntimeException("Must set object binding before!")))
+                return@launch
+            }
+            if (currentNumber - 1 < 0){
+                result.postValue(LoadResult.Error(RuntimeException("There are no more objects in this directions")))
+                return@launch
+            }
+            getObjectByNumber(result, --currentNumber)
         }
-        if (currentNumber - 1 < 0){
-            result.postValue(LoadResult.Error(RuntimeException("There are no more objects in this directions")))
-            return result
-        }
-
-        getObjectByNumber(result, --currentNumber)
-
         return result
     }
 
-    private fun <T> getObjectByNumber(result: MutableLiveData<LoadResult<T>>, currentNumber: Int) {
+    private fun getObjectByNumber(result: MutableLiveData<LoadResult<Tower>>, currentNumber: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             val towerId = currentTowers[currentNumber]
             if (towerId != null) {
                 val tower = towerRepository.findTowerById(towerId)
-                result.postValue(LoadResult.Success(tower as T))
+                result.postValue(LoadResult.Success(tower))
             } else {
                 result.postValue(LoadResult.Error(Exception("Internal Error")))
             }
-            result.postValue(LoadResult.Loading())
         }
     }
 }

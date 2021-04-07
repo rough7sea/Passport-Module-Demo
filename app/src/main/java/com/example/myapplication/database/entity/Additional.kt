@@ -20,7 +20,8 @@ import java.util.*
         indices = [
                 Index("add_id", unique = true),
                 Index("tower_id"),
-                Index("coord_id")
+                Index("coord_id"),
+                Index("type", "number", unique = true)
         ],
         tableName = DatabaseConst.ADDITIONAL_TABLE_NAME
 )
@@ -28,9 +29,9 @@ data class Additional(
         @PrimaryKey(autoGenerate = true)
         val add_id: Long = 0,
         var tower_id: Long = 0,
-        var coord_id: Long = 0,
+        var coord_id: Long?,
         var changeDate: Date = Date(),
 
-        var type: String = "",
-        var number: Long = 0,
+        var type: String?,
+        var number: String,
 )
