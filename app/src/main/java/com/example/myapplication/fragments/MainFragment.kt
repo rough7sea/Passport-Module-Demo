@@ -17,6 +17,7 @@ class MainFragment : Fragment() {
     private var filePath : String = ""
     private var uri: Uri = Uri.EMPTY
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,6 +47,12 @@ class MainFragment : Fragment() {
         view.additional_handler_test_button.setOnClickListener {
             findNavController().navigate(R.id.action_MainFragment_to_additionalHandlerTestFragment)
         }
+
+        // Passport -> 2 Tower( any count of Additional)
+        // ObjectHandel(Tower)
+        // InternalHandler(Additional)
+
+
 
 //        view.filePathButton.setOnClickListener {
 //            val intent = Intent()

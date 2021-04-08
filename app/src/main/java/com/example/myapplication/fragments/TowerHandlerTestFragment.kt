@@ -33,7 +33,11 @@ class TowerHandlerTestFragment : Fragment() {
                 is LoadResult.Success -> view.liveDataTextResult.text = it.data.toString()
                 is LoadResult.Error -> view.liveDataTextResult.text = it.error?.message ?: it.error.toString()
             }
-            it.data?.let { it1 -> fillTower(handlerTowerLayout, it1) }
+            it.data?.let {
+                    it1 -> fillTower(handlerTowerLayout, it1)
+                // internalHadnler <- addinal
+                // second internalHadnler <- pre addinal
+            }
         })
 
         view.set_button.setOnClickListener {

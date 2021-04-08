@@ -8,8 +8,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
  * For xml deserialization.
  */
 data class SectionCertificate(
-    @JacksonXmlElementWrapper(localName = "Header")
+    @JacksonXmlElementWrapper(localName = "Header", namespace = "Header")
         val header: XMLPassportDto? = null,
-    @JacksonXmlElementWrapper(localName = "Towers")
+    @JacksonXmlElementWrapper(localName = "Towers", namespace = "Towers")
         val towers: List<XMLTowerDto> = emptyList(),
 )

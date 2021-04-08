@@ -1,6 +1,5 @@
 package com.example.myapplication.database.entity
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -19,6 +18,6 @@ data class Coordinate(
         val coord_id: Long = 0,
         var changeDate: Date = Date(),
 
-        var longitude: Int?,
-        var latitude: Int?,
+        var longitude: Double,
+        var latitude: Double,
 )

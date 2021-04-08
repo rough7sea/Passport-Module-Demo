@@ -22,7 +22,7 @@ class CoordinateRepository(private val coordinateDAO: CoordinateDAO) {
         coordinateDAO.deleteAll()
     }
 
-    fun getCoordinateByLongitudeAndLatitude(longitude: Int, latitude: Int) : Coordinate?{
+    fun getCoordinateByLongitudeAndLatitude(longitude: Double, latitude: Double) : Coordinate?{
         return coordinateDAO.getByLongitudeAndLatitude(longitude, latitude)
     }
 

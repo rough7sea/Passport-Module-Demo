@@ -13,9 +13,24 @@ import kotlin.reflect.full.memberProperties
 
 object QueryBuilder {
 
-    fun buildCoordInRadiusQuery(longitude: Int, latitude: Int, radius: Int) =
-            SimpleSQLiteQuery("SELECT * FROM ${DatabaseConst.COORDINATE_TABLE_NAME} WHERE " +
-                    "sqrt(power(longitude - $longitude, 2) + power(latitude - $latitude, 2)) <= $radius;")
+    // radius in meters
+    fun buildCoordInRadiusQuery2(longitude: Int, latitude: Int, radius: Int) =
+            SimpleSQLiteQuery("""
+                SELECT * FROM ${DatabaseConst.COORDINATE_TABLE_NAME} WHERE 
+                 6378.137 * 2 * atan2(sqrt(
+                 power(SIN((RADIANS(latitude) - RADIANS($latitude))) / 2 , 2) + 
+                 COS(RADIANS($latitude)) * 
+                 COS(RADIANS(latitude)) * 
+                 power(SIN((RADIANS(longitude) - RADIANS($longitude))) / 2 , 2) 
+                ),
+                 sqrt(1 - 
+                 power(SIN((RADIANS(latitude) - RADIANS($latitude))) / 2 , 2) + 
+                 COS(RADIANS($latitude)) * 
+                 COS(RADIANS(latitude)) * 
+                 power(SIN((RADIANS(longitude) - RADIANS($longitude))) / 2 , 2) 
+                )) * 1000 
+                 <= 400; 
+            """.trimIndent())
 
 
     fun <T> buildSelectQuery(
@@ -158,8 +173,6 @@ object QueryBuilder {
         }
         return query
     }
-
-
 
     private fun fullAlter(passport: Passport) : String{
         val query = StringBuilder()

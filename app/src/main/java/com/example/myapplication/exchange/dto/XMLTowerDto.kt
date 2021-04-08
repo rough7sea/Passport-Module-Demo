@@ -34,8 +34,8 @@ data class XMLTowerDto(
     var wireType: String? = "",
     @JacksonXmlElementWrapper(localName = "CountWire")
     var countWire: String? = "",
-    var longitude: Int? = 0,
-    var latitude: Int? = 0,
+    var longitude: Double? = .0,
+    var latitude: Double? = .0,
     @JacksonXmlElementWrapper(localName = "Gabarit")
     var gabarit: String? = "",
 )
