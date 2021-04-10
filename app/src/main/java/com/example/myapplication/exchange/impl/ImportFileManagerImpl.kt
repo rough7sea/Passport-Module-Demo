@@ -41,7 +41,6 @@ class ImportFileManagerImpl(appDatabase: AppDatabase) : ImportFileManager {
 
             result.postValue(WorkResult.Progress(0))
 
-
             val filesCount = files.size
             val step = 100 / filesCount
             var progress = 0
@@ -71,54 +70,48 @@ class ImportFileManagerImpl(appDatabase: AppDatabase) : ImportFileManager {
         val error = WorkResult.Error()
 
         CoroutineScope(Dispatchers.IO).launch {
-
-            val sectionCertificate: SectionCertificate
-
             try {
 //                sectionCertificate = xmlMapper.readValue(file, SectionCertificate::class.java)
-                sectionCertificate = xmlMapper.readValue(test, SectionCertificate::class.java)
+                val sectionCertificate = xmlMapper.readValue(test, SectionCertificate::class.java)
+
+                if (sectionCertificate.header == null){
+                    throw RuntimeException("Passport for file{$file} is empty!")
+                }
+
+                val passport_id = passportRepository.addPassport(Converter.fromXMLToPassport(sectionCertificate.header))
+
+                val towersSize = sectionCertificate.towers.size
+                val step = 100 / towersSize
+                var progress = 0
+
+
+                val towers = sectionCertificate.towers.filter {
+                    it.assetNum != null && it.idtf != null && it.number != null
+                }.map {
+
+                    val tower = if (it.longitude != null && it.latitude != null){
+                        var insert = coordinateRepository.addCoordinate(
+                                Coordinate(longitude = it.longitude!!, latitude = it.latitude!!))
+                        if (insert == -1L){
+                            insert = coordinateRepository.getCoordinateByLongitudeAndLatitude(it.longitude!!, it.latitude!!)!!.coord_id
+                        }
+                        Converter.fromXMLTowerDtoToTower(it, insert)
+                    } else {
+                        Converter.fromXMLTowerDtoToTower(it, null)
+                    }
+
+                    tower.passport_id = passport_id
+                    liveData.postValue(WorkResult.Progress(progress + step))
+                    progress += step
+                    tower
+                }
+                towerRepository.addAllTowers(towers)
+                liveData.postValue(WorkResult.Completed())
             } catch (ex: Exception){
                 error.addError(ex)
-                return@launch
-            }
-
-            if (sectionCertificate.header == null){
-                error.addError(RuntimeException("Passport for file{$file} is empty!"))
                 liveData.postValue(error)
                 return@launch
             }
-
-            val passport_id = passportRepository.addPassport(Converter.fromXMLToPassport(sectionCertificate.header))
-
-            val towersSize = sectionCertificate.towers.size
-            val step = 100 / towersSize
-            var progress = 0
-
-
-            val towers = sectionCertificate.towers.filter {
-                it.assetNum != null && it.idtf != null && it.number != null
-            }.map {
-
-                val tower = if (it.longitude != null && it.latitude != null){
-                    var insert = coordinateRepository.addCoordinate(
-                            Coordinate(longitude = it.longitude!!, latitude = it.latitude!!))
-                    if (insert == -1L){
-                        insert = coordinateRepository.getCoordinateByLongitudeAndLatitude(it.longitude!!, it.latitude!!)!!.coord_id
-                    }
-                    Converter.fromXMLTowerDtoToTower(it, insert)
-                } else {
-                    Converter.fromXMLTowerDtoToTower(it, null)
-                }
-
-                tower.passport_id = passport_id
-
-                liveData.postValue(WorkResult.Progress(progress + step))
-                progress += step
-
-                tower
-            }
-            towerRepository.addAllTowers(towers)
-            liveData.postValue(WorkResult.Completed())
         }
         return error
     }

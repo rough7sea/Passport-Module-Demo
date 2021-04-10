@@ -92,6 +92,6 @@ dependencies {
     implementation "com.google.code.gson:gson:2.8.6"
 
     // XML
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.3'
     implementation group: 'javax.xml.stream', name: 'stax-api', version: '1.0'
 }

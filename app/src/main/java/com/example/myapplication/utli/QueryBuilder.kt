@@ -14,7 +14,7 @@ import kotlin.reflect.full.memberProperties
 object QueryBuilder {
 
     // radius in meters
-    fun buildCoordInRadiusQuery2(longitude: Int, latitude: Int, radius: Int) =
+    fun buildCoordInRadiusQuery(longitude: Double, latitude: Double, radius: Int) =
             SimpleSQLiteQuery("""
                 SELECT * FROM ${DatabaseConst.COORDINATE_TABLE_NAME} WHERE 
                  6378.137 * 2 * atan2(sqrt(
@@ -29,7 +29,7 @@ object QueryBuilder {
                  COS(RADIANS(latitude)) * 
                  power(SIN((RADIANS(longitude) - RADIANS($longitude))) / 2 , 2) 
                 )) * 1000 
-                 <= 400; 
+                 <= $radius; 
             """.trimIndent())
 
 
