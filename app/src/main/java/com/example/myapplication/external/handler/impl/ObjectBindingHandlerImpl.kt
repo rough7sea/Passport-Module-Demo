@@ -10,8 +10,9 @@ import com.example.myapplication.database.repository.TowerRepository
 import com.example.myapplication.external.entities.LoadResult
 import com.example.myapplication.external.handler.InternalObjectBindingHandler
 import com.example.myapplication.external.handler.ObjectBindingHandler
+import com.example.myapplication.utli.Utils
 
-class ObjectBindingHandlerImpl<T>(
+class ObjectBindingHandlerImpl(
     appDatabase: AppDatabase
 ) : ObjectBindingHandler{
 
@@ -21,22 +22,23 @@ class ObjectBindingHandlerImpl<T>(
     private val additionalRepository = AdditionalRepository(appDatabase.additionalDao())
     private val towerRepository = TowerRepository(appDatabase.towerDao())
 
-//    private val result = MutableLiveData<LoadResult<T>>()
-//    private var lastObject: Any? = null
-
     override fun <T> getActualObject(clazz: Class<T>): LiveData<LoadResult<T>> {
         return getHandler(clazz).getActualInternalObject()
     }
 
     override fun <T> setObjectBinding(objectBinding: T): MutableLiveData<LoadResult<T>> {
-//        lastObject = objectBinding
         val result = getHandler(objectBinding).setInternalObject(objectBinding)
         when(objectBinding){
             is Tower -> {
                 val additionals = additionalRepository.findAllByTowerId(objectBinding.tower_id)
                 if (additionals.isNotEmpty()){
-                    getHandler(Additional::class.java).setInternalObject(additionals[0])
+                    getHandler(Additional::class.java).setInternalObject(
+                        additionals.sortedBy { Integer.valueOf(Utils.clearNumber(it.number)) }[0])
                 }
+            }
+            is Additional -> {
+                val tower = towerRepository.findTowerById(objectBinding.tower_id)
+                getHandler(Tower::class.java).setInternalObject(tower)
             }
         }
         return result as MutableLiveData<LoadResult<T>>

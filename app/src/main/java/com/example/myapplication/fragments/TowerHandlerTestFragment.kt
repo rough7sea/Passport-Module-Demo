@@ -9,6 +9,7 @@ import com.example.myapplication.App
 import com.example.myapplication.R
 import com.example.myapplication.database.entity.Tower
 import com.example.myapplication.external.entities.LoadResult
+import com.example.myapplication.external.handler.impl.ObjectBindingHandlerImpl
 import com.example.myapplication.external.handler.impl.TowerBindingHandlerImpl
 import kotlinx.android.synthetic.main.fragment_tower_handler_test.view.*
 import kotlinx.android.synthetic.main.tower_layout.view.*
@@ -18,7 +19,7 @@ import kotlinx.coroutines.launch
 
 class TowerHandlerTestFragment : Fragment() {
 
-    private val handler = TowerBindingHandlerImpl(App.getDatabaseManager())
+    private val handler = App.getObjectBindingHandler()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -27,7 +28,7 @@ class TowerHandlerTestFragment : Fragment() {
 
         val handlerTowerLayout = view.handler_tower_layout
 
-        handler.getLiveDataResult().observe(viewLifecycleOwner, {
+        handler.getActualObject(Tower::class.java).observe(viewLifecycleOwner, {
             when(it){
                 is LoadResult.Loading -> view.liveDataTextResult.text = "Loading"
                 is LoadResult.Success -> view.liveDataTextResult.text = it.data.toString()
@@ -40,24 +41,25 @@ class TowerHandlerTestFragment : Fragment() {
             }
         })
 
-//        view.set_button.setOnClickListener {
-//            CoroutineScope(Dispatchers.IO).launch {
-//                val tower = App.getDatabaseManager().towerDao().getById(3)
-//                handler.setObjectBinding(tower)
-//            }
-//        }
-//
-//        view.get_button.setOnClickListener {
-//            handler.getActualObject()
-//        }
-//
-//        view.next_button.setOnClickListener {
-//            handler.nextObject()
-//        }
-//
-//        view.prev_button.setOnClickListener {
-//            handler.previousObject()
-//        }
+        view.set_button.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                val tower = App.getDatabaseManager().towerDao().getById(3)
+                handler.setObjectBinding(tower)
+                println("test")
+            }
+        }
+
+        view.get_button.setOnClickListener {
+            handler.getActualObject(Tower::class.java)
+        }
+
+        view.next_button.setOnClickListener {
+            handler.nextObject(Tower::class.java)
+        }
+
+        view.prev_button.setOnClickListener {
+            handler.previousObject(Tower::class.java)
+        }
 
         return view
     }

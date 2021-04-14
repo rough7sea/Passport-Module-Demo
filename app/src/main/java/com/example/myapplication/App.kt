@@ -5,6 +5,8 @@ import android.content.Context
 import android.util.Log
 import androidx.room.Room
 import com.example.myapplication.database.AppDatabase
+import com.example.myapplication.external.handler.ObjectBindingHandler
+import com.example.myapplication.external.handler.impl.ObjectBindingHandlerImpl
 
 class App : Application() {
 
@@ -14,9 +16,13 @@ class App : Application() {
 
         private lateinit var context: Context
 
+        private lateinit var objectBindingHandler: ObjectBindingHandler
+
         fun getAppContext() = context
 
-        fun getDatabaseManager()= dataManager
+        fun getDatabaseManager() = dataManager
+
+        fun getObjectBindingHandler() = objectBindingHandler
     }
 
 
@@ -34,6 +40,7 @@ class App : Application() {
                 .allowMainThreadQueries()
                 .build()
         }
+        objectBindingHandler = ObjectBindingHandlerImpl(dataManager)
         Log.d("DEBUG", "OnCreate App")
     }
 }

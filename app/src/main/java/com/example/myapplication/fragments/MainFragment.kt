@@ -37,7 +37,7 @@ class MainFragment : Fragment() {
         }
 
         view.import_button.setOnClickListener {
-            importFileManagerImpl.import(File(""))
+//            importFileManagerImpl.import(File(""))
         }
 
         view.handler_test_button.setOnClickListener {
