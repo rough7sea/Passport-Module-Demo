@@ -17,7 +17,7 @@ object QueryBuilder {
     fun buildCoordInRadiusQuery(longitude: Double, latitude: Double, radius: Int) =
             SimpleSQLiteQuery("""
                 SELECT * FROM ${DatabaseConst.COORDINATE_TABLE_NAME} WHERE 
-                 6378.137 * 2 * atan2(sqrt(
+                 6371 * 2 * atan2(sqrt(
                  power(SIN((RADIANS(latitude) - RADIANS($latitude))) / 2 , 2) + 
                  COS(RADIANS($latitude)) * 
                  COS(RADIANS(latitude)) * 
@@ -116,30 +116,21 @@ object QueryBuilder {
     private fun fullPassportParameters(passport: Passport) : StringBuilder{
         val query = StringBuilder()
         with(passport){
-            query.append(" siteId = $siteId AND ")
-//            if (sectionName.isNotEmpty())
+            if (siteId != null) query.append(" siteId = $siteId AND ")
             query.append(" sectionName = '$sectionName' AND")
-
-//            if (sectionId != null){
-//                if (sectionId!!.isNotEmpty())
-            query.append(" sectionId = '$sectionId' AND")
-//            }
-//            if (echName.isNotEmpty())
-            query.append(" echName = '$echName' AND")
-//            if (echkName.isNotEmpty())
-            query.append(" echkName = '$echkName' AND")
-//            if (locationId.isNotEmpty())
-            query.append(" locationId = '$locationId' AND")
-            query.append(" wayAmount = $wayAmount AND")
-//            if (currentWay.isNotEmpty())
-            query.append(" currentWay = '$currentWay' AND")
-            query.append(" currentWayId = $currentWayId AND")
-            query.append(" initialMeter = $initialMeter AND")
-            query.append(" initialKm = $initialKm AND")
-            query.append(" initialPk = $initialPk AND")
-            query.append(" initialM = $initialM AND")
-            query.append(" plotLength = $plotLength AND")
-            query.append(" suspensionAmount = $suspensionAmount AND")
+            if (sectionId != null) query.append(" sectionId = '$sectionId' AND")
+            if (echName != null) query.append(" echName = '$echName' AND")
+            if (echkName != null) query.append(" echkName = '$echkName' AND")
+            if (locationId != null) query.append(" locationId = '$locationId' AND")
+            if (wayAmount != null) query.append(" wayAmount = $wayAmount AND")
+            if (currentWay != null) query.append(" currentWay = '$currentWay' AND")
+            if (currentWayId != null) query.append(" currentWayId = $currentWayId AND")
+            if (initialMeter != null) query.append(" initialMeter = $initialMeter AND")
+            if (initialKm != null) query.append(" initialKm = $initialKm AND")
+            if (initialPk != null) query.append(" initialPk = $initialPk AND")
+            if (initialM != null) query.append(" initialM = $initialM AND")
+            if (plotLength != null) query.append(" plotLength = $plotLength AND")
+            if (suspensionAmount != null) query.append(" suspensionAmount = $suspensionAmount AND")
         }
         return query
     }

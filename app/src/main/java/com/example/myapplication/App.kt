@@ -14,11 +14,9 @@ class App : Application() {
 
         private lateinit var context: Context
 
-        fun getAppContext(): Context = context
+        fun getAppContext() = context
 
-        fun getDatabaseManager(): AppDatabase {
-            return dataManager
-        }
+        fun getDatabaseManager()= dataManager
     }
 
 

@@ -1,31 +1,27 @@
 package com.example.myapplication.exchange.dto
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import javax.xml.bind.annotation.XmlAccessType
+import javax.xml.bind.annotation.XmlAccessorType
+import javax.xml.bind.annotation.XmlRootElement
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-//@JsonInclude(JsonInclude.Include.NON_EMPTY)
+
+@XmlRootElement(name = "Header")
+@XmlAccessorType(XmlAccessType.FIELD)
 data class XMLPassportDto(
-    @JacksonXmlElementWrapper(localName = "CHANGEDATE")
-    var changeDate: String? = "",
+    var siteId: Long? = null,
     var sectionName: String = "",
-    var siteId: Long? = 0,
-    var sectionId: String? = "",
-    var echName: String? = "",
-    var echkName: String? = "",
-    var locationId: String? = "",
-    var wayAmount: Int? = 0,
-    var currentWay: String? = "",
-    @JacksonXmlElementWrapper(localName = "currentWayID")
-    var currentWayId: Long? = 0,
-    var initialMeter: Int? = 0,
-    @JacksonXmlElementWrapper(localName = "initialKM")
-    var initialKm: Int? = 0,
-    @JacksonXmlElementWrapper(localName = "initialPK")
-    var initialPk: Int? = 0,
-    @JacksonXmlElementWrapper(localName = "initialM")
-    var initialM: Int? = 0,
-    var plotLength: Int? = 0,
-    var suspensionAmount: Int? = 0,
+    var sectionId: String? = null,
+    var echName: String? = null,
+    var echkName: String? = null,
+    var locationId: String? = null,
+    var wayAmount: Int? = null,
+    var currentWay: String? = null,
+    var currentWayID: Long? = null,
+    var CHANGEDATE: String? = null,
+    var initialMeter: Int? = null,
+    var initialKM: Int? = null,
+    var initialPK: Int? = null,
+    var initialM: Int? = null,
+    var plotLength: Int? = null,
+    var suspensionAmount: Int? = null,
 )

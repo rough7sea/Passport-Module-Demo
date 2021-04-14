@@ -10,8 +10,7 @@ import com.example.myapplication.R
 import com.example.myapplication.database.entity.Additional
 import com.example.myapplication.database.repository.AdditionalRepository
 import com.example.myapplication.external.entities.LoadResult
-import com.example.myapplication.external.handler.impl.InternalObjectBindingHandlerImpl
-import com.example.myapplication.external.handler.impl.ObjectBindingHandlerImpl
+import com.example.myapplication.external.handler.impl.AdditionalBindingHandlerImpl
 import kotlinx.android.synthetic.main.fragment_tower_handler_test.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +19,7 @@ import java.util.*
 
 class AdditionalHandlerTestFragment : Fragment() {
 
-    private val handler = InternalObjectBindingHandlerImpl(App.getDatabaseManager())
+    private val handler = AdditionalBindingHandlerImpl(App.getDatabaseManager())
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -63,11 +62,11 @@ class AdditionalHandlerTestFragment : Fragment() {
         }
 
         view.next_button.setOnClickListener {
-            handler.nextObject()
+            handler.nextInternalObject()
         }
 
         view.prev_button.setOnClickListener {
-            handler.previousObject()
+            handler.previousInternalObject()
         }
 
         return view

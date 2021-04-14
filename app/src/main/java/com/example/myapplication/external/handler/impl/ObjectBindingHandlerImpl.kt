@@ -3,111 +3,69 @@ package com.example.myapplication.external.handler.impl
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.myapplication.database.AppDatabase
+import com.example.myapplication.database.entity.Additional
 import com.example.myapplication.database.entity.Tower
+import com.example.myapplication.database.repository.AdditionalRepository
 import com.example.myapplication.database.repository.TowerRepository
 import com.example.myapplication.external.entities.LoadResult
+import com.example.myapplication.external.handler.InternalObjectBindingHandler
 import com.example.myapplication.external.handler.ObjectBindingHandler
-import com.example.myapplication.utli.Utils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
-// Passport -> Tower
-class ObjectBindingHandlerImpl(appDatabase: AppDatabase) : ObjectBindingHandler<Tower>{
+class ObjectBindingHandlerImpl<T>(
+    appDatabase: AppDatabase
+) : ObjectBindingHandler{
 
+    private val towerBindingHandlerImpl = TowerBindingHandlerImpl(appDatabase)
+    private val additionalBindingHandlerImpl =  AdditionalBindingHandlerImpl(appDatabase)
+
+    private val additionalRepository = AdditionalRepository(appDatabase.additionalDao())
     private val towerRepository = TowerRepository(appDatabase.towerDao())
-    private var currentTowers: Map<Int, Long> = mutableMapOf()
-    private var currentNumber: Int = -1
 
-    private val result = MutableLiveData<LoadResult<Tower>>()
+//    private val result = MutableLiveData<LoadResult<T>>()
+//    private var lastObject: Any? = null
 
-    fun getLiveDataResult() : LiveData<LoadResult<Tower>> = result
-
-
-    override fun getActualObject(): LiveData<LoadResult<Tower>>{
-        CoroutineScope(Dispatchers.IO).launch {
-            result.postValue(LoadResult.Loading())
-            if (currentNumber == -1 || currentTowers.isEmpty()){
-                result.postValue(LoadResult.Error(RuntimeException("Must set object binding before!")))
-                return@launch
-            }
-
-            result.postValue(LoadResult.Loading())
-
-            val towerId = currentTowers[currentNumber]
-            if (towerId != null){
-                val tower = towerRepository.findTowerById(towerId)
-                result.postValue(LoadResult.Success(tower))
-            } else {
-                result.postValue(LoadResult.Error(Exception("Internal Error")))
-            }
-        }
-        return result
+    override fun <T> getActualObject(clazz: Class<T>): LiveData<LoadResult<T>> {
+        return getHandler(clazz).getActualInternalObject()
     }
 
-    override fun setObjectBinding(tower: Tower): LiveData<LoadResult<Tower>> {
-        CoroutineScope(Dispatchers.IO).launch {
-            result.postValue(LoadResult.Loading(tower))
-
-            val towers = towerRepository.findAllByPassportId(tower.passport_id)
-
-            var count = 0
-
-            currentTowers = towers
-                    .sortedBy { Integer.valueOf(Utils.clearNumber(it.number)) }
-                    .map { count++ to it.tower_id }
-                    .toMap()
-
-            currentNumber = currentTowers
-                    .filterValues { it == tower.tower_id }.keys
-                    .toList()[0]
-
-            result.postValue(LoadResult.Success(tower))
-        }
-        return result
-    }
-
-    override fun nextObject(): LiveData<LoadResult<Tower>> {
-        CoroutineScope(Dispatchers.IO).launch {
-            result.postValue(LoadResult.Loading())
-            if (currentNumber == -1 || currentTowers.isEmpty()){
-                result.postValue(LoadResult.Error(RuntimeException("Must set object binding before!")))
-                return@launch
-            }
-            if (currentNumber + 1 >= currentTowers.size){
-                result.postValue(LoadResult.Error(RuntimeException("There are no more objects in this directions")))
-                return@launch
-            }
-            getObjectByNumber(result, ++currentNumber)
-        }
-        return result
-    }
-
-    override fun previousObject(): LiveData<LoadResult<Tower>> {
-        CoroutineScope(Dispatchers.IO).launch {
-            result.postValue(LoadResult.Loading())
-            if (currentNumber == -1 || currentTowers.isEmpty()){
-                result.postValue(LoadResult.Error(RuntimeException("Must set object binding before!")))
-                return@launch
-            }
-            if (currentNumber - 1 < 0){
-                result.postValue(LoadResult.Error(RuntimeException("There are no more objects in this directions")))
-                return@launch
-            }
-            getObjectByNumber(result, --currentNumber)
-        }
-        return result
-    }
-
-    private fun getObjectByNumber(result: MutableLiveData<LoadResult<Tower>>, currentNumber: Int) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val towerId = currentTowers[currentNumber]
-            if (towerId != null) {
-                val tower = towerRepository.findTowerById(towerId)
-                result.postValue(LoadResult.Success(tower))
-            } else {
-                result.postValue(LoadResult.Error(Exception("Internal Error")))
+    override fun <T> setObjectBinding(objectBinding: T): MutableLiveData<LoadResult<T>> {
+//        lastObject = objectBinding
+        val result = getHandler(objectBinding).setInternalObject(objectBinding)
+        when(objectBinding){
+            is Tower -> {
+                val additionals = additionalRepository.findAllByTowerId(objectBinding.tower_id)
+                if (additionals.isNotEmpty()){
+                    getHandler(Additional::class.java).setInternalObject(additionals[0])
+                }
             }
         }
+        return result as MutableLiveData<LoadResult<T>>
     }
+
+    override fun <T> nextObject(clazz: Class<T>): LiveData<LoadResult<T>> {
+        return getHandler(clazz).nextInternalObject()
+    }
+
+    override fun <T> previousObject(clazz: Class<T>): LiveData<LoadResult<T>> {
+        return getHandler(clazz).previousInternalObject()
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> getHandler(objectBinding: T): InternalObjectBindingHandler<T>{
+        return when(objectBinding){
+            is Tower -> towerBindingHandlerImpl as InternalObjectBindingHandler<T>
+            is Additional -> additionalBindingHandlerImpl as InternalObjectBindingHandler<T>
+            else -> throw RuntimeException("Invalid input object type")
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> getHandler(clazz: Class<T>): InternalObjectBindingHandler<T>{
+        return when(clazz){
+            Tower::class.java -> towerBindingHandlerImpl as InternalObjectBindingHandler<T>
+            Additional::class.java -> additionalBindingHandlerImpl as InternalObjectBindingHandler<T>
+            else -> throw RuntimeException("Invalid input object type")
+        }
+    }
+
 }

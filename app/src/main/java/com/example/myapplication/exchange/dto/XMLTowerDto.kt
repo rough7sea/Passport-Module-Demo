@@ -1,41 +1,33 @@
 package com.example.myapplication.exchange.dto
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import javax.xml.bind.annotation.XmlAccessType
+import javax.xml.bind.annotation.XmlAccessorType
+import javax.xml.bind.annotation.XmlRootElement
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@XmlRootElement(name = "Tower")
+@XmlAccessorType(XmlAccessType.FIELD)
 data class XMLTowerDto(
-
-    var idtf: String? = "",
-    var assetNum: String? = "",
-    var stopSeq: Int? = 0,
-    var km: Int? = 0,
-    var pk: Int? = 0,
-    var m: Int? = 0,
-    @JacksonXmlElementWrapper(localName = "TF_TYPE")
-    var tfType: String? = "",
-    @JacksonXmlElementWrapper(localName = "TURN")
-    var turn: String? = "",
-    @JacksonXmlElementWrapper(localName = "RADIUS")
-    var radius: String? = "",
-    var number: String? = "",
-    var distance: Int? = 0,
-    var zigzag: Int? = 0,
-    var height: Int? = 0,
-    var offset: Int? = 0,
-    @JacksonXmlElementWrapper(localName = "Grounded")
-    var grounded: Int? = 0,
-    @JacksonXmlElementWrapper(localName = "SPEED")
-    var speed: Int? = 0,
-    var suspensionType: String? = "",
-    var catenary: Int? = 0,
-    @JacksonXmlElementWrapper(localName = "WireType")
-    var wireType: String? = "",
-    @JacksonXmlElementWrapper(localName = "CountWire")
-    var countWire: String? = "",
-    var longitude: Double? = .0,
-    var latitude: Double? = .0,
-    @JacksonXmlElementWrapper(localName = "Gabarit")
-    var gabarit: String? = "",
+    var idtf: String? = null,
+    var assetNum: String? = null,
+    var stopSeq: Int? = null,
+    var km: Int? = null,
+    var pk: Int? = null,
+    var m: Int? = null,
+    var TF_TYPE: String? = null,
+    var TURN: String? = null,
+    var RADIUS: String? = null,
+    var number: String? = null,
+    var distance: Int? = null,
+    var zigzag: Int? = null,
+    var height: Int? = null,
+    var offset: Int? = null,
+    var Grounded: Int? = null,
+    var SPEED: Int? = null,
+    var suspensionType: String? = null,
+    var catenary: Int? = null,
+    var WireType: String? = null,
+    var CountWire: String? = null,
+    var longitude: Double? = null,
+    var latitude: Double? = null,
+    var Gabarit: String? = null,
 )
