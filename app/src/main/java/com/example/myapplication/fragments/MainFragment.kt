@@ -36,6 +36,10 @@ class MainFragment : Fragment() {
             findNavController().navigate(R.id.action_MainFragment_to_passportListFragment)
         }
 
+        view.additional_list_button.setOnClickListener {
+            findNavController().navigate(R.id.action_MainFragment_to_additionalListFragment)
+        }
+
         view.import_button.setOnClickListener {
 //            importFileManagerImpl.import(File(""))
         }

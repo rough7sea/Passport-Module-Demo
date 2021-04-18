@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_MainFragment_to_additionalHandlerTestFragment"
             app:destination="@id/additionalHandlerTestFragment" />
+        <action
+            android:id="@+id/action_MainFragment_to_additionalListFragment"
+            app:destination="@id/additionalListFragment" />
     </fragment>
 
     <fragment
@@ -87,6 +90,15 @@
         tools:layout="@layout/fragment_additional_handler_test" >
         <action
             android:id="@+id/action_additionalHandlerTestFragment_to_MainFragment"
+            app:destination="@id/MainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/additionalListFragment"
+        android:name="com.example.myapplication.fragments.list.AdditionalListFragment"
+        android:label="fragment_additional_list"
+        tools:layout="@layout/fragment_additional_list" >
+        <action
+            android:id="@+id/action_additionalListFragment_to_MainFragment"
             app:destination="@id/MainFragment" />
     </fragment>
 </navigation>

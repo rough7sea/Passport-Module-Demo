@@ -15,4 +15,5 @@
     <string name="idtf">IDTF</string>
     <string name="longitude">Longitude</string>
     <string name="latitude">Latitude</string>
+    <string name="number">Number</string>
 </resources>
