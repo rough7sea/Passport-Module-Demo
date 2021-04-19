@@ -27,7 +27,7 @@ class AdditionalAdapter : RecyclerView.Adapter<MyViewHolder>()  {
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem = additionalList[position]
-        holder.itemView.id_textView.text = currentItem.tower_id.toString()
+        holder.itemView.id_textView.text = currentItem.add_id.toString()
         holder.itemView.number_textView.text = currentItem.number
 
         currentItem.coord_id?.let {

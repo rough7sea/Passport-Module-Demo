@@ -1,33 +1,31 @@
 package com.example.myapplication.exchange.dto
 
-import javax.xml.bind.annotation.XmlAccessType
-import javax.xml.bind.annotation.XmlAccessorType
-import javax.xml.bind.annotation.XmlRootElement
+import org.simpleframework.xml.Element
+import org.simpleframework.xml.Root
 
-@XmlRootElement(name = "Tower")
-@XmlAccessorType(XmlAccessType.FIELD)
+@Root(name = "Tower", strict = false)
 data class XMLTowerDto(
-    var idtf: String? = null,
-    var assetNum: String? = null,
-    var stopSeq: Int? = null,
-    var km: Int? = null,
-    var pk: Int? = null,
-    var m: Int? = null,
-    var TF_TYPE: String? = null,
-    var TURN: String? = null,
-    var RADIUS: String? = null,
-    var number: String? = null,
-    var distance: Int? = null,
-    var zigzag: Int? = null,
-    var height: Int? = null,
-    var offset: Int? = null,
-    var Grounded: Int? = null,
-    var SPEED: Int? = null,
-    var suspensionType: String? = null,
-    var catenary: Int? = null,
-    var WireType: String? = null,
-    var CountWire: String? = null,
-    var longitude: Double? = null,
-    var latitude: Double? = null,
-    var Gabarit: String? = null,
+    @field:Element(name = "idtf", required = false) var idtf: String? = null,
+    @field:Element(required = false) var assetNum: String? = null,
+    @field:Element(required = false) var stopSeq: Int? = null,
+    @field:Element(required = false) var km: Int? = null,
+    @field:Element(required = false) var pk: Int? = null,
+    @field:Element(required = false) var m: Int? = null,
+    @field:Element(name = "TF_TYPE", required = false) var tfType: String? = null,
+    @field:Element(name = "TURN", required = false) var turn: String? = null,
+    @field:Element(name = "RADIUS", required = false) var radius: String? = null,
+    @field:Element(required = false) var number: String? = null,
+    @field:Element(required = false) var distance: Int? = null,
+    @field:Element(required = false) var zigzag: Int? = null,
+    @field:Element(required = false) var height: Int? = null,
+    @field:Element(required = false) var offset: Int? = null,
+    @field:Element(name = "Grounded", required = false) var grounded: Int? = null,
+    @field:Element(name = "SPEED", required = false) var speed: Int? = null,
+    @field:Element(required = false) var suspensionType: String? = null,
+    @field:Element(required = false) var catenary: Int? = null,
+    @field:Element(name = "WireType", required = false) var wireType: String? = null,
+    @field:Element(name = "CountWire", required = false) var countWire: String? = null,
+    @field:Element(required = false) var longitude: Double? = null,
+    @field:Element(required = false) var latitude: Double? = null,
+    @field:Element(name = "Gabarit", required = false) var gabarit: String? = null,
 )

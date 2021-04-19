@@ -1,27 +1,24 @@
 package com.example.myapplication.exchange.dto
 
-import javax.xml.bind.annotation.XmlAccessType
-import javax.xml.bind.annotation.XmlAccessorType
-import javax.xml.bind.annotation.XmlRootElement
+import org.simpleframework.xml.Element
+import org.simpleframework.xml.Root
 
-
-@XmlRootElement(name = "Header")
-@XmlAccessorType(XmlAccessType.FIELD)
+@Root(name = "Header", strict = false)
 data class XMLPassportDto(
-    var siteId: Long? = null,
-    var sectionName: String = "",
-    var sectionId: String? = null,
-    var echName: String? = null,
-    var echkName: String? = null,
-    var locationId: String? = null,
-    var wayAmount: Int? = null,
-    var currentWay: String? = null,
-    var currentWayID: Long? = null,
-    var CHANGEDATE: String? = null,
-    var initialMeter: Int? = null,
-    var initialKM: Int? = null,
-    var initialPK: Int? = null,
-    var initialM: Int? = null,
-    var plotLength: Int? = null,
-    var suspensionAmount: Int? = null,
+    @field:Element(required = false) var siteId: Long? = null,
+    @field:Element(required = false) var sectionName: String = "",
+    @field:Element(required = false) var sectionId: String? = null,
+    @field:Element(required = false) var echName: String? = null,
+    @field:Element(required = false) var echkName: String? = null,
+    @field:Element(required = false) var locationId: String? = null,
+    @field:Element(required = false) var wayAmount: Int? = null,
+    @field:Element(required = false) var currentWay: String? = null,
+    @field:Element(required = false) var currentWayID: Long? = null,
+    @field:Element(name = "CHANGEDATE", required = false) var changeDate: String? = null,
+    @field:Element(required = false) var initialMeter: Int? = null,
+    @field:Element(required = false) var initialKM: Int? = null,
+    @field:Element(required = false) var initialPK: Int? = null,
+    @field:Element(required = false) var initialM: Int? = null,
+    @field:Element(required = false) var plotLength: Int? = null,
+    @field:Element(required = false) var suspensionAmount: Int? = null,
 )

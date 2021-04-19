@@ -69,5 +69,4 @@ class ObjectBindingHandlerImpl(
             else -> throw RuntimeException("Invalid input object type")
         }
     }
-
 }

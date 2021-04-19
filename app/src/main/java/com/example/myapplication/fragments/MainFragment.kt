@@ -3,17 +3,23 @@ package com.example.myapplication.fragments
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.App
 import com.example.myapplication.R
+import com.example.myapplication.exchange.impl.ExportFileManagerImpl
 import com.example.myapplication.exchange.impl.ImportFileManagerImpl
 import kotlinx.android.synthetic.main.fragment_main.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 
 class MainFragment : Fragment() {
 
     private lateinit var importFileManagerImpl: ImportFileManagerImpl
+    private lateinit var exportFileManagerImpl: ExportFileManagerImpl
     private var filePath : String = ""
     private var uri: Uri = Uri.EMPTY
 
@@ -27,6 +33,7 @@ class MainFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
 
         importFileManagerImpl = ImportFileManagerImpl(App.getDatabaseManager())
+        exportFileManagerImpl = ExportFileManagerImpl(App.getDatabaseManager())
 
         view.tower_list_button.setOnClickListener {
             findNavController().navigate(R.id.action_MainFragment_to_towerListFragment)
@@ -41,7 +48,21 @@ class MainFragment : Fragment() {
         }
 
         view.import_button.setOnClickListener {
-//            importFileManagerImpl.import(File(""))
+            importFileManagerImpl.import(File(""))
+        }
+
+        view.export_button.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+//                Toast.makeText(
+//                    requireContext(),
+//                    "Successfully started",
+//                    Toast.LENGTH_SHORT).show()
+                exportFileManagerImpl.export(App.getDatabaseManager().towerDao().getById(3), File(""))
+//                Toast.makeText(
+//                    requireContext(),
+//                    "Successfully ended",
+//                    Toast.LENGTH_SHORT).show()
+            }
         }
 
         view.handler_test_button.setOnClickListener {
@@ -51,10 +72,6 @@ class MainFragment : Fragment() {
         view.additional_handler_test_button.setOnClickListener {
             findNavController().navigate(R.id.action_MainFragment_to_additionalHandlerTestFragment)
         }
-
-        // Passport -> 2 Tower( any count of Additional)
-        // ObjectHandel(Tower)
-        // InternalHandler(Additional)
 
 
 
@@ -94,5 +111,4 @@ class MainFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.delete_menu, menu)
     }
-
 }

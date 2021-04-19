@@ -7,6 +7,7 @@ import com.example.myapplication.database.entity.Additional
 import com.example.myapplication.database.entity.Coordinate
 import com.example.myapplication.database.entity.Passport
 import com.example.myapplication.database.entity.Tower
+import com.example.myapplication.exchange.dto.XMLPassportDto
 import java.util.*
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
@@ -78,6 +79,10 @@ object QueryBuilder {
                 query.append("${DatabaseConst.PASSPORT_TABLE_NAME} WHERE")
                 query.append(fullPassportParameters(bindObject))
             }
+            is XMLPassportDto -> {
+                query.append("${DatabaseConst.PASSPORT_TABLE_NAME} WHERE")
+                query.append(fullPassportParameters(bindObject))
+            }
             is Tower -> {
                 query.append("${DatabaseConst.TOWER_TABLE_NAME} WHERE")
                 query.append(fullTowerParameters(bindObject))
@@ -128,6 +133,27 @@ object QueryBuilder {
             if (initialMeter != null) query.append(" initialMeter = $initialMeter AND")
             if (initialKm != null) query.append(" initialKm = $initialKm AND")
             if (initialPk != null) query.append(" initialPk = $initialPk AND")
+            if (initialM != null) query.append(" initialM = $initialM AND")
+            if (plotLength != null) query.append(" plotLength = $plotLength AND")
+            if (suspensionAmount != null) query.append(" suspensionAmount = $suspensionAmount AND")
+        }
+        return query
+    }
+    private fun fullPassportParameters(passport: XMLPassportDto) : StringBuilder{
+        val query = StringBuilder()
+        with(passport){
+            if (siteId != null) query.append(" siteId = $siteId AND ")
+            query.append(" sectionName = '$sectionName' AND")
+            if (sectionId != null) query.append(" sectionId = '$sectionId' AND")
+            if (echName != null) query.append(" echName = '$echName' AND")
+            if (echkName != null) query.append(" echkName = '$echkName' AND")
+            if (locationId != null) query.append(" locationId = '$locationId' AND")
+            if (wayAmount != null) query.append(" wayAmount = $wayAmount AND")
+            if (currentWay != null) query.append(" currentWay = '$currentWay' AND")
+            if (currentWayID != null) query.append(" currentWayId = $currentWayID AND")
+            if (initialMeter != null) query.append(" initialMeter = $initialMeter AND")
+            if (initialKM != null) query.append(" initialKm = $initialKM AND")
+            if (initialPK != null) query.append(" initialPk = $initialPK AND")
             if (initialM != null) query.append(" initialM = $initialM AND")
             if (plotLength != null) query.append(" plotLength = $plotLength AND")
             if (suspensionAmount != null) query.append(" suspensionAmount = $suspensionAmount AND")
