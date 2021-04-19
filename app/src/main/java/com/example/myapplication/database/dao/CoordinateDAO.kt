@@ -18,10 +18,10 @@ interface CoordinateDAO : BaseDAO<Coordinate> {
     fun deleteAll()
 
     @Query("select * from ${DatabaseConst.COORDINATE_TABLE_NAME} where coord_id = :coord_id")
-    fun getById(coord_id: Long): Coordinate?
+    fun getById(coord_id: Long): Coordinate
 
     @Query("select * from ${DatabaseConst.COORDINATE_TABLE_NAME} where longitude = :longitude and latitude = :latitude")
-    fun getByLongitudeAndLatitude(longitude: Int, latitude: Int): Coordinate?
+    fun getByLongitudeAndLatitude(longitude: Double, latitude: Double): Coordinate?
 
     @RawQuery
     fun getCoordsInRadius(query: SupportSQLiteQuery) : List<Coordinate>

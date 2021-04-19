@@ -1,41 +1,31 @@
 package com.example.myapplication.exchange.dto
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import org.simpleframework.xml.Element
+import org.simpleframework.xml.Root
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Root(name = "Tower", strict = false)
 data class XMLTowerDto(
-
-    var idtf: String? = "",
-    var assetNum: String? = "",
-    var stopSeq: Int? = 0,
-    var km: Int? = 0,
-    var pk: Int? = 0,
-    var m: Int? = 0,
-    @JacksonXmlElementWrapper(localName = "TF_TYPE")
-    var tfType: String? = "",
-    @JacksonXmlElementWrapper(localName = "TURN")
-    var turn: String? = "",
-    @JacksonXmlElementWrapper(localName = "RADIUS")
-    var radius: String? = "",
-    var number: String? = "",
-    var distance: Int? = 0,
-    var zigzag: Int? = 0,
-    var height: Int? = 0,
-    var offset: Int? = 0,
-    @JacksonXmlElementWrapper(localName = "Grounded")
-    var grounded: Int? = 0,
-    @JacksonXmlElementWrapper(localName = "SPEED")
-    var speed: Int? = 0,
-    var suspensionType: String? = "",
-    var catenary: Int? = 0,
-    @JacksonXmlElementWrapper(localName = "WireType")
-    var wireType: String? = "",
-    @JacksonXmlElementWrapper(localName = "CountWire")
-    var countWire: String? = "",
-    var longitude: Int? = 0,
-    var latitude: Int? = 0,
-    @JacksonXmlElementWrapper(localName = "Gabarit")
-    var gabarit: String? = "",
+    @field:Element(name = "idtf", required = false) var idtf: String? = null,
+    @field:Element(required = false) var assetNum: String? = null,
+    @field:Element(required = false) var stopSeq: Int? = null,
+    @field:Element(required = false) var km: Int? = null,
+    @field:Element(required = false) var pk: Int? = null,
+    @field:Element(required = false) var m: Int? = null,
+    @field:Element(name = "TF_TYPE", required = false) var tfType: String? = null,
+    @field:Element(name = "TURN", required = false) var turn: String? = null,
+    @field:Element(name = "RADIUS", required = false) var radius: String? = null,
+    @field:Element(required = false) var number: String? = null,
+    @field:Element(required = false) var distance: Int? = null,
+    @field:Element(required = false) var zigzag: Int? = null,
+    @field:Element(required = false) var height: Int? = null,
+    @field:Element(required = false) var offset: Int? = null,
+    @field:Element(name = "Grounded", required = false) var grounded: Int? = null,
+    @field:Element(name = "SPEED", required = false) var speed: Int? = null,
+    @field:Element(required = false) var suspensionType: String? = null,
+    @field:Element(required = false) var catenary: Int? = null,
+    @field:Element(name = "WireType", required = false) var wireType: String? = null,
+    @field:Element(name = "CountWire", required = false) var countWire: String? = null,
+    @field:Element(required = false) var longitude: Double? = null,
+    @field:Element(required = false) var latitude: Double? = null,
+    @field:Element(name = "Gabarit", required = false) var gabarit: String? = null,
 )

@@ -3,6 +3,7 @@ package com.example.myapplication.database.repository
 import androidx.lifecycle.LiveData
 import com.example.myapplication.database.dao.TowerDAO
 import com.example.myapplication.database.entity.Tower
+import androidx.sqlite.db.SupportSQLiteQuery
 
 class TowerRepository(private val towerDao: TowerDAO) {
 
@@ -13,6 +14,8 @@ class TowerRepository(private val towerDao: TowerDAO) {
     fun findAllByPassportId(passport_id: Long) = towerDao.getByPassportId(passport_id)
 
     fun findTowerById(tower_id: Long) = towerDao.getById(tower_id)
+
+    fun findTowerWithParameters(query: SupportSQLiteQuery) = towerDao.getCurrentObjectWithParameters(query)
 
     fun addAllTowers(towers: List<Tower>){
         towerDao.insert(towers)

@@ -3,8 +3,8 @@ package com.example.myapplication.external.handler.impl
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.myapplication.database.AppDatabase
-import com.example.myapplication.database.entity.Additional
-import com.example.myapplication.database.repository.AdditionalRepository
+import com.example.myapplication.database.entity.Tower
+import com.example.myapplication.database.repository.TowerRepository
 import com.example.myapplication.external.entities.LoadResult
 import com.example.myapplication.external.handler.InternalObjectBindingHandler
 import com.example.myapplication.utli.Utils
@@ -12,28 +12,31 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-// Tower -> Additional
-class InternalObjectBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBindingHandler<Additional>
-{
-    private val additionalRepository = AdditionalRepository(appDatabase.additionalDao())
-    private var currentAdditionals: Map<Int, Long> = mutableMapOf()
+class TowerBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBindingHandler<Tower> {
+
+    private val towerRepository = TowerRepository(appDatabase.towerDao())
+    private var currentTowers: Map<Int, Long> = mutableMapOf()
     private var currentNumber: Int = -1
 
-    private val result = MutableLiveData<LoadResult<Additional>>()
-    fun getLiveDataResult() : MutableLiveData<LoadResult<Additional>> = result
+    private val result = MutableLiveData<LoadResult<Tower>>()
 
-    override fun getActualInternalObject(): LiveData<LoadResult<Additional>> {
+    fun getLiveDataResult() : LiveData<LoadResult<Tower>> = result
+
+
+    override fun getActualInternalObject(): LiveData<LoadResult<Tower>>{
         CoroutineScope(Dispatchers.IO).launch {
-            if (currentNumber == -1 || currentAdditionals.isEmpty()){
+            result.postValue(LoadResult.Loading())
+            if (currentNumber == -1 || currentTowers.isEmpty()){
                 result.postValue(LoadResult.Error(RuntimeException("Must set object binding before!")))
                 return@launch
             }
+
             result.postValue(LoadResult.Loading())
 
-            val additionalId = currentAdditionals[currentNumber]
-            if (additionalId != null){
-                val additional = additionalRepository.findById(additionalId)
-                result.postValue(LoadResult.Success(additional))
+            val towerId = currentTowers[currentNumber]
+            if (towerId != null){
+                val tower = towerRepository.findTowerById(towerId)
+                result.postValue(LoadResult.Success(tower))
             } else {
                 result.postValue(LoadResult.Error(Exception("Internal Error")))
             }
@@ -41,36 +44,36 @@ class InternalObjectBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjec
         return result
     }
 
-    override fun setInternalObject(additional: Additional): LiveData<LoadResult<Additional>> {
+    override fun setInternalObject(internalObject: Tower): LiveData<LoadResult<Tower>> {
         CoroutineScope(Dispatchers.IO).launch {
-            result.postValue(LoadResult.Loading(additional))
+            result.postValue(LoadResult.Loading(internalObject))
 
-            val additionals = additionalRepository.findAllByTowerId(additional.tower_id)
+            val towers = towerRepository.findAllByPassportId(internalObject.passport_id)
 
             var count = 0
 
-            currentAdditionals = additionals
+            currentTowers = towers
                     .sortedBy { Integer.valueOf(Utils.clearNumber(it.number)) }
-                    .map { count++ to it.add_id }
+                    .map { count++ to it.tower_id }
                     .toMap()
 
-            currentNumber = currentAdditionals
-                    .filterValues { it == additional.add_id }.keys
+            currentNumber = currentTowers
+                    .filterValues { it == internalObject.tower_id }.keys
                     .toList()[0]
 
-            result.postValue(LoadResult.Success(additional))
+            result.postValue(LoadResult.Success(internalObject))
         }
         return result
     }
 
-    override fun nextObject(): LiveData<LoadResult<Additional>> {
+    override fun nextInternalObject(): LiveData<LoadResult<Tower>> {
         CoroutineScope(Dispatchers.IO).launch {
             result.postValue(LoadResult.Loading())
-            if (currentNumber == -1 || currentAdditionals.isEmpty()){
+            if (currentNumber == -1 || currentTowers.isEmpty()){
                 result.postValue(LoadResult.Error(RuntimeException("Must set object binding before!")))
                 return@launch
             }
-            if (currentNumber + 1 >= currentAdditionals.size){
+            if (currentNumber + 1 >= currentTowers.size){
                 result.postValue(LoadResult.Error(RuntimeException("There are no more objects in this directions")))
                 return@launch
             }
@@ -79,10 +82,10 @@ class InternalObjectBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjec
         return result
     }
 
-    override fun previousObject(): LiveData<LoadResult<Additional>> {
+    override fun previousInternalObject(): LiveData<LoadResult<Tower>> {
         CoroutineScope(Dispatchers.IO).launch {
             result.postValue(LoadResult.Loading())
-            if (currentNumber == -1 || currentAdditionals.isEmpty()){
+            if (currentNumber == -1 || currentTowers.isEmpty()){
                 result.postValue(LoadResult.Error(RuntimeException("Must set object binding before!")))
                 return@launch
             }
@@ -95,12 +98,12 @@ class InternalObjectBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjec
         return result
     }
 
-    private fun getObjectByNumber(result: MutableLiveData<LoadResult<Additional>>, currentNumber: Int) {
+    private fun getObjectByNumber(result: MutableLiveData<LoadResult<Tower>>, currentNumber: Int) {
         CoroutineScope(Dispatchers.IO).launch {
-            val additionalId = currentAdditionals[currentNumber]
-            if (additionalId != null) {
-                val additional = additionalRepository.findById(additionalId)
-                result.postValue(LoadResult.Success(additional))
+            val towerId = currentTowers[currentNumber]
+            if (towerId != null) {
+                val tower = towerRepository.findTowerById(towerId)
+                result.postValue(LoadResult.Success(tower))
             } else {
                 result.postValue(LoadResult.Error(Exception("Internal Error")))
             }

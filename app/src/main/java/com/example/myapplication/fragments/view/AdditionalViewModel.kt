@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class AdditionalViewModel(application: Application) : AndroidViewModel(application){
 
-    private val readAllData: LiveData<List<Additional>>
+    internal val readAllData: LiveData<List<Additional>>
     private val repository: AdditionalRepository
 
     init {
@@ -31,6 +31,12 @@ class AdditionalViewModel(application: Application) : AndroidViewModel(applicati
     fun addAdditional(additional: Additional){
         viewModelScope.launch(Dispatchers.IO){
             repository.addAdditional(additional)
+        }
+    }
+
+    fun deleteAllAdditionals(){
+        viewModelScope.launch(Dispatchers.IO){
+            repository.deleteAllAdditionals()
         }
     }
 

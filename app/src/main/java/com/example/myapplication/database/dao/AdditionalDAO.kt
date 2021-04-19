@@ -20,4 +20,7 @@ interface AdditionalDAO : BaseDAO<Additional> {
 
     @Query("select * from ${DatabaseConst.ADDITIONAL_TABLE_NAME} where tower_id = :tower_id")
     fun getByTowerId(tower_id: Long) : List<Additional>
+
+    @Query("select * from ${DatabaseConst.ADDITIONAL_TABLE_NAME} where coord_id = :coord_id")
+    fun getByCoordinateId(coord_id: Long): List<Additional>
 }

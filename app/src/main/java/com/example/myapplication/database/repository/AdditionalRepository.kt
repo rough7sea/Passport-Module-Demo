@@ -24,8 +24,6 @@ class AdditionalRepository(private val additionalDAO: AdditionalDAO) {
         additionalDAO.delete(additional)
     }
 
-    fun deleteAllAdditional(){
-        additionalDAO.deleteAll()
-    }
+    fun deleteAllAdditionals() = additionalDAO.deleteAll()
 
 }

@@ -1,31 +1,24 @@
 package com.example.myapplication.exchange.dto
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import org.simpleframework.xml.Element
+import org.simpleframework.xml.Root
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-//@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@Root(name = "Header", strict = false)
 data class XMLPassportDto(
-    @JacksonXmlElementWrapper(localName = "CHANGEDATE")
-    var changeDate: String? = "",
-    var sectionName: String = "",
-    var siteId: Long? = 0,
-    var sectionId: String? = "",
-    var echName: String? = "",
-    var echkName: String? = "",
-    var locationId: String? = "",
-    var wayAmount: Int? = 0,
-    var currentWay: String? = "",
-    @JacksonXmlElementWrapper(localName = "currentWayID")
-    var currentWayId: Long? = 0,
-    var initialMeter: Int? = 0,
-    @JacksonXmlElementWrapper(localName = "initialKM")
-    var initialKm: Int? = 0,
-    @JacksonXmlElementWrapper(localName = "initialPK")
-    var initialPk: Int? = 0,
-    @JacksonXmlElementWrapper(localName = "initialM")
-    var initialM: Int? = 0,
-    var plotLength: Int? = 0,
-    var suspensionAmount: Int? = 0,
+    @field:Element(required = false) var siteId: Long? = null,
+    @field:Element(required = false) var sectionName: String = "",
+    @field:Element(required = false) var sectionId: String? = null,
+    @field:Element(required = false) var echName: String? = null,
+    @field:Element(required = false) var echkName: String? = null,
+    @field:Element(required = false) var locationId: String? = null,
+    @field:Element(required = false) var wayAmount: Int? = null,
+    @field:Element(required = false) var currentWay: String? = null,
+    @field:Element(required = false) var currentWayID: Long? = null,
+    @field:Element(name = "CHANGEDATE", required = false) var changeDate: String? = null,
+    @field:Element(required = false) var initialMeter: Int? = null,
+    @field:Element(required = false) var initialKM: Int? = null,
+    @field:Element(required = false) var initialPK: Int? = null,
+    @field:Element(required = false) var initialM: Int? = null,
+    @field:Element(required = false) var plotLength: Int? = null,
+    @field:Element(required = false) var suspensionAmount: Int? = null,
 )
