@@ -9,12 +9,14 @@ import java.util.*
                 ForeignKey(
                         entity = Passport::class,
                         parentColumns = ["passport_id"],
-                        childColumns = ["passport_id"]
+                        childColumns = ["passport_id"],
+                        onDelete = ForeignKey.CASCADE
                 ),
                 ForeignKey(
                         entity = Coordinate::class,
                         parentColumns = ["coord_id"],
-                        childColumns = ["coord_id"]
+                        childColumns = ["coord_id"],
+                        onDelete = ForeignKey.CASCADE
                 )
         ],
         indices = [

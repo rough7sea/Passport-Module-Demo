@@ -1,5 +1,6 @@
 package com.example.myapplication.exchange.impl
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.myapplication.database.AppDatabase
@@ -41,12 +42,11 @@ class ExportFileManagerImpl(appDatabase: AppDatabase)
             result.postValue(WorkResult.Progress(0))
             try {
 //                serializer.write(getFullSectionCertificate(bindingEntity), destinationPath)
-                println("----------------------------------- start export ---------------------")
                 val out = ByteArrayOutputStream()
                 serializer.write(getFullSectionCertificate(bindingEntity), out, "utf-8")
-                println("----------------------------------- end export ---------------------")
+                Log.i(this::javaClass.toString(), "export for entity $bindingEntity successfully ended")
+//                Log.i(this::javaClass.toString(), out.toString("utf-8"))
                 result.postValue(WorkResult.Progress(100))
-                println(out.toString("utf-8"))
             } catch (ex: Exception){
                 println(ex)
                 error.addError(ex)

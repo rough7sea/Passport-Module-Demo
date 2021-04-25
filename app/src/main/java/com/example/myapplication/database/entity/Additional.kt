@@ -1,6 +1,7 @@
 package com.example.myapplication.database.entity
 
 import androidx.room.*
+import androidx.room.ForeignKey.CASCADE
 import com.example.myapplication.database.DatabaseConst
 import java.util.*
 
@@ -9,12 +10,14 @@ import java.util.*
                 ForeignKey(
                         entity = Tower::class,
                         parentColumns = ["tower_id"],
-                        childColumns = ["tower_id"]
+                        childColumns = ["tower_id"],
+                        onDelete = CASCADE
                 ),
                 ForeignKey(
                         entity = Coordinate::class,
                         parentColumns = ["coord_id"],
-                        childColumns = ["coord_id"]
+                        childColumns = ["coord_id"],
+                        onDelete = CASCADE
                 )
         ],
         indices = [
