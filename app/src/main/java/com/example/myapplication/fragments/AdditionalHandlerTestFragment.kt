@@ -33,21 +33,8 @@ class AdditionalHandlerTestFragment : Fragment() {
             }
         })
 
-        val tower_id = 52L
         val additionalRepository =
             AdditionalRepository(App.getDatabaseManager().additionalDao())
-        val list = listOf(
-            Additional(0, tower_id, null, Date(), "syper", "2r"),
-            Additional(0, tower_id, null, Date(), "syper", "4r"),
-            Additional(0, tower_id, null, Date(), "ko syper", "5r"),
-            Additional(0, tower_id, 7, Date(), "syper", "6r"),
-            Additional(0, tower_id, null, Date(), "sper", "7r"),
-            Additional(0, tower_id, null, Date(), "sypr", "8r"),
-            Additional(0, tower_id, null, Date(), "sypREer", "9r"),
-            Additional(0, tower_id, null, Date(), "syperRR", "10r"),
-            Additional(0, tower_id, 8, Date(), "ultra syper", "1r"),
-        )
-        additionalRepository.addAllAdditionals(list)
 
         view.set_button.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {

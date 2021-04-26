@@ -19,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.simpleframework.xml.core.Persister
+import org.simpleframework.xml.core.ValueRequiredException
 import java.io.File
 
 
@@ -46,7 +47,9 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
 
             result.postValue(WorkResult.Progress(0))
 
-            val filesCount = files.size
+            val filesCount = if (files.isNotEmpty()){
+                files.size
+            } else { 1 }
             val step = 100 / filesCount
             var progress = 0
 
@@ -75,19 +78,28 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
         val error = WorkResult.Error()
 
         CoroutineScope(Dispatchers.IO).launch {
-            when {
-                serializer.validate(SectionCertificate::class.java, file) -> {
-                    passportImport(file, liveData, error)
-                }
-                serializer.validate(FullSectionCertificate::class.java, file) -> {
+            try {
+                if (serializer.validate(FullSectionCertificate::class.java, file)) {
                     fullTowerImport(file, liveData, error)
+                    Log.i("IMPORT","Import done for file $file")
+                    return@launch
                 }
-                else -> {
-                    Log.e("IMPORT","Wrong file type $file")
-                    throw RuntimeException("Wrong file type $file")
-                }
+            }catch (ex: ValueRequiredException){
+
+            } catch (ex: Exception){
+                Log.e("IMPORT", ex.localizedMessage, ex)
             }
-            Log.i("IMPORT","Import done for file $file")
+            try {
+                if (serializer.validate(SectionCertificate::class.java, file)){
+                    passportImport(file, liveData, error)
+                    Log.i("IMPORT","Import done for file $file")
+                    return@launch
+                }
+            }catch (ex: Exception){
+                Log.e("IMPORT", ex.localizedMessage, ex)
+            }
+            Log.e("IMPORT","Wrong file type $file")
+            throw RuntimeException("Wrong file type $file")
         }
         return error
     }

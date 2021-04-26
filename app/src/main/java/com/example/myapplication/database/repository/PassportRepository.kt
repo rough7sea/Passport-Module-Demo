@@ -11,6 +11,8 @@ class PassportRepository(private val passportDAO: PassportDAO) {
 
     fun addPassport(passport: Passport): Long = passportDAO.insert(passport)
 
+    fun addPassports(passports: List<Passport>) = passportDAO.insert(passports)
+
     fun findPassportById(passport_id: Long) =  passportDAO.getById(passport_id)
 
     fun findPassportWithParameters(query: SupportSQLiteQuery) = passportDAO.getCurrentObjectWithParameters(query)

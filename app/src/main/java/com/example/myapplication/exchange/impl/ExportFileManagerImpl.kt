@@ -20,7 +20,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.simpleframework.xml.core.Persister
-import java.io.ByteArrayOutputStream
 import java.io.File
 
 class ExportFileManagerImpl(appDatabase: AppDatabase)
@@ -41,14 +40,13 @@ class ExportFileManagerImpl(appDatabase: AppDatabase)
 
             result.postValue(WorkResult.Progress(0))
             try {
-//                serializer.write(getFullSectionCertificate(bindingEntity), destinationPath)
-                val out = ByteArrayOutputStream()
-                serializer.write(getFullSectionCertificate(bindingEntity), out, "utf-8")
-                Log.i(this::javaClass.toString(), "export for entity $bindingEntity successfully ended")
-//                Log.i(this::javaClass.toString(), out.toString("utf-8"))
+                Log.i("EXPORT", "export for entity ${bindingEntity!!::class.java.canonicalName} start")
+                destinationPath.createNewFile()
+                serializer.write(getFullSectionCertificate(bindingEntity), destinationPath)
+                Log.i("EXPORT", "export for entity ${bindingEntity!!::class.java.canonicalName} successfully ended")
                 result.postValue(WorkResult.Progress(100))
             } catch (ex: Exception){
-                println(ex)
+                Log.e("EXPORT", ex.localizedMessage, ex)
                 error.addError(ex)
             }
 
@@ -70,9 +68,7 @@ class ExportFileManagerImpl(appDatabase: AppDatabase)
 
             else -> throw RuntimeException("Invalid input object type")
         }
-        val full = createFullSectionCertificate(passport_id)
-        println(full)
-        return full
+        return createFullSectionCertificate(passport_id)
     }
 
     private fun createFullSectionCertificate(passport_id: Long): FullSectionCertificate{
@@ -93,34 +89,4 @@ class ExportFileManagerImpl(appDatabase: AppDatabase)
         return FullSectionCertificate(passportXml, fullTowers)
     }
 
-//    override fun <B> export(bindingEntity: List<B>, destinationPath: File) : LiveData<WorkResult>{
-//        val result = MutableLiveData<WorkResult>()
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val error = WorkResult.Error()
-//
-//            val size = bindingEntity.size
-//            val step = 100 / size
-//            var progress = 0
-//
-//            result.postValue(WorkResult.Progress(0))
-//            bindingEntity.forEach {
-//                try {
-//
-//
-////                    destinationPath.writeBytes(xmlMapper.writeValueAsBytes(it))
-//                    result.postValue(WorkResult.Progress(progress + step))
-//                    progress += step
-//                } catch (ex: Exception){
-//                    error.addError(ex)
-//                }
-//            }
-//
-//            if (error.errors.isNotEmpty()){
-//                result.postValue(error)
-//            } else {
-//                result.postValue(WorkResult.Completed())
-//            }
-//        }
-//        return result
-//    }
 }

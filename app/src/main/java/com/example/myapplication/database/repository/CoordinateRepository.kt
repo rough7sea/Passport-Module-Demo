@@ -10,6 +10,8 @@ class CoordinateRepository(private val coordinateDAO: CoordinateDAO) {
 
     fun addCoordinate(coordinate: Coordinate): Long = coordinateDAO.insert(coordinate)
 
+    fun addCoordinates(coordinates: List<Coordinate>) = coordinateDAO.insert(coordinates)
+
     fun updateCoordinate(coordinate: Coordinate){
         coordinateDAO.update(coordinate)
     }

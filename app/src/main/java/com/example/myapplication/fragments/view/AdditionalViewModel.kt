@@ -1,6 +1,7 @@
 package com.example.myapplication.fragments.view
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
@@ -22,7 +23,7 @@ class AdditionalViewModel(application: Application) : AndroidViewModel(applicati
 
         readAllData.observeForever { it ->
             it.forEach {
-                println(it)
+                Log.i("TEST", it.toString())
             }
         }
 
