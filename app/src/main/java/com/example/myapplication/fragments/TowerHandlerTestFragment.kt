@@ -1,12 +1,15 @@
 package com.example.myapplication.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.myapplication.App
 import com.example.myapplication.R
+import com.example.myapplication.database.DatabaseConst
 import com.example.myapplication.database.entity.Tower
 import com.example.myapplication.external.entities.LoadResult
 import com.example.myapplication.external.handler.impl.ObjectBindingHandlerImpl
@@ -36,16 +39,15 @@ class TowerHandlerTestFragment : Fragment() {
             }
             it.data?.let {
                     it1 -> fillTower(handlerTowerLayout, it1)
-                // internalHadnler <- addinal
-                // second internalHadnler <- pre addinal
             }
         })
 
         view.set_button.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                val tower = App.getDatabaseManager().towerDao().getById(3)
+                val tower = App.getDatabaseManager().towerDao().getWithParameters(
+                        SimpleSQLiteQuery("select * from ${DatabaseConst.TOWER_TABLE_NAME}"))[0]
                 handler.setObjectBinding(tower)
-                println("test")
+                Log.i("HANDLER_TEST", "Set Tower ${tower.idtf} & ${tower.number} to handler")
             }
         }
 

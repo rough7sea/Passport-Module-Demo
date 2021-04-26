@@ -21,10 +21,8 @@ class AdditionalViewModel(application: Application) : AndroidViewModel(applicati
         repository = AdditionalRepository(additionalDAO)
         readAllData = repository.allAdditionalData
 
-        readAllData.observeForever { it ->
-            it.forEach {
-                Log.i("TEST", it.toString())
-            }
+        readAllData.observeForever {
+            Log.i("TEST", "Receive ${it.size} additionals")
         }
 
     }

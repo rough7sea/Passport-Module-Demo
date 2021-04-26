@@ -21,10 +21,8 @@ class TowerViewModel(application: Application) : AndroidViewModel(application){
         repository = TowerRepository(towerDao)
         readAllData = repository.allTowersData
 
-        readAllData.observeForever { it ->
-            it.forEach {
-                Log.i("TEST", it.toString())
-            }
+        readAllData.observeForever {
+            Log.i("TEST", "Receive ${it.size} towers")
         }
     }
 

@@ -19,6 +19,7 @@ import com.example.myapplication.external.entities.WorkResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.jetbrains.annotations.NotNull
 import org.simpleframework.xml.core.Persister
 import java.io.File
 
@@ -33,17 +34,17 @@ class ExportFileManagerImpl(appDatabase: AppDatabase)
     private val additionalRepository = AdditionalRepository(appDatabase.additionalDao())
 
 
-    override fun <B> export(bindingEntity: B, destinationPath: File) : LiveData<WorkResult> {
+    override fun <B : Any> export(@NotNull bindingEntity: B,@NotNull destinationPath: File) : LiveData<WorkResult> {
         val result = MutableLiveData<WorkResult>()
         CoroutineScope(Dispatchers.IO).launch {
             val error = WorkResult.Error()
 
             result.postValue(WorkResult.Progress(0))
             try {
-                Log.i("EXPORT", "export for entity ${bindingEntity!!::class.java.canonicalName} start")
+                Log.i("EXPORT", "export for entity ${bindingEntity::class.java.canonicalName} start")
                 destinationPath.createNewFile()
                 serializer.write(getFullSectionCertificate(bindingEntity), destinationPath)
-                Log.i("EXPORT", "export for entity ${bindingEntity!!::class.java.canonicalName} successfully ended")
+                Log.i("EXPORT", "export for entity ${bindingEntity::class.java.canonicalName} successfully ended")
                 result.postValue(WorkResult.Progress(100))
             } catch (ex: Exception){
                 Log.e("EXPORT", ex.localizedMessage, ex)

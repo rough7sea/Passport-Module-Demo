@@ -64,7 +64,8 @@ class MainFragment : Fragment() {
         }
 
         if (!isExternalStorageAvailable || isExternalStorageReadOnly) {
-            import_button.isEnabled = false
+            view.import_button.isEnabled = false
+            view.import_button2.isEnabled = false
         }
 
         view.import_button.setOnClickListener {
@@ -79,7 +80,8 @@ class MainFragment : Fragment() {
         view.export_button.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 exportFileManager.export(
-                        App.getDatabaseManager().towerDao().getWithParameters(SimpleSQLiteQuery("select * from ${DatabaseConst.TOWER_TABLE_NAME}"))[0],
+                        App.getDatabaseManager().towerDao().getWithParameters(
+                                SimpleSQLiteQuery("select * from ${DatabaseConst.TOWER_TABLE_NAME}"))[0],
                         File(requireActivity().getExternalFilesDir(filepath), "fullTower.xml"))
             }
         }

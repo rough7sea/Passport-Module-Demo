@@ -143,6 +143,7 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
                         progress += step
                         tower
                     }
+            Log.i("IMPORT", "Import ${towers.size} towers")
             towerRepository.addAllTowers(towers)
             liveData.postValue(WorkResult.Completed())
         } catch (ex: Exception){
@@ -163,13 +164,13 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
 
             var passport_id = passportRepository.addPassport(Converter.fromXmlToPassport(fullTower.passport!!))
             if (passport_id == -1L){
-                passport_id = passportRepository.findPassportWithParameters(QueryBuilder.buildSearchByAllFieldsQuery(fullTower.passport!!)).passport_id
+                passport_id = passportRepository.findPassportWithParameters(
+                        QueryBuilder.buildSearchByAllFieldsQuery(fullTower.passport!!)).passport_id
             }
 
             if (fullTower.towers.isEmpty()){
                 throw RuntimeException("Tower from file{$file} is empty!")
             }
-
 
             val towersSize: Int = if (fullTower.towers.isNotEmpty()){
                 fullTower.towers.size
@@ -177,7 +178,7 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
             val step = 100 / towersSize
             var progress = 0
 
-            fullTower.towers
+            val towers = fullTower.towers
                     .filter {
                         it.tower != null &&
                                 it.tower!!.assetNum != null &&
@@ -226,6 +227,7 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
 
                             additional
                         }
+                        Log.i("IMPORT", "Import ${additionals.size} additionals")
                         additionalRepository.addAllAdditionals(additionals)
 
                         tower.passport_id = passport_id
@@ -233,6 +235,7 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
                         progress += step
                         tower
                     }
+            Log.i("IMPORT", "Import ${towers.size} towers")
             liveData.postValue(WorkResult.Completed())
         } catch (ex: Exception){
             Log.e("IMPORT", ex.localizedMessage, ex)

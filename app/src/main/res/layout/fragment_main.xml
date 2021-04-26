@@ -10,7 +10,7 @@
         android:id="@+id/passport_list_button"
         android:layout_width="300dp"
         android:layout_height="80dp"
-        android:layout_marginTop="188dp"
+        android:layout_marginTop="152dp"
         android:text="Passports"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,11 +22,11 @@
         android:id="@+id/wipe_data_button"
         android:layout_width="120dp"
         android:layout_height="50dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="32dp"
         android:text="Wipe Data"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.188"
+        app:layout_constraintHorizontal_bias="0.189"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,11 +34,11 @@
         android:id="@+id/init_data_button"
         android:layout_width="120dp"
         android:layout_height="50dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="32dp"
         android:text="Init Data"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.808"
+        app:layout_constraintHorizontal_bias="0.807"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -70,11 +70,11 @@
         android:id="@+id/import_button"
         android:layout_width="140dp"
         android:layout_height="70dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="36dp"
         android:text="Import Old"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.202"
+        app:layout_constraintEnd_toStartOf="@+id/import_button2"
+        app:layout_constraintHorizontal_bias="0.733"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -86,13 +86,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.793"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/export_button"
+        app:layout_constraintVertical_bias="0.809" />
 
     <Button
         android:id="@+id/handler_test_button"
         android:layout_width="140dp"
         android:layout_height="70dp"
-        android:text="TowerTestHandler"
+        android:text="Tower Test Handler"
         app:layout_constraintBottom_toTopOf="@+id/import_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.263"
@@ -104,7 +106,8 @@
         android:id="@+id/additional_handler_test_button"
         android:layout_width="140dp"
         android:layout_height="70dp"
-        android:text="AdditionalTestHandler"
+        android:text="Additional Test Handler"
+        android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/import_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.202"
@@ -116,12 +119,12 @@
         android:id="@+id/export_button"
         android:layout_width="140dp"
         android:layout_height="70dp"
-        android:layout_marginBottom="116dp"
+        android:layout_marginTop="24dp"
         android:text="Export"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.263"
-        app:layout_constraintStart_toEndOf="@+id/import_button" />
+        app:layout_constraintHorizontal_bias="0.793"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/handler_test_button" />
 
     <TextView
         android:id="@+id/data_progress"
@@ -133,6 +136,6 @@
         app:layout_constraintHorizontal_bias="0.172"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.174" />
+        app:layout_constraintVertical_bias="0.146" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

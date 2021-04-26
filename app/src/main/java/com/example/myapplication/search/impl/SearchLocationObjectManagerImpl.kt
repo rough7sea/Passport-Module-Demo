@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
 import com.example.myapplication.App
@@ -56,7 +57,6 @@ class SearchLocationObjectManagerImpl(
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             throw RuntimeException("Don't have location permission")
-            return
         }
         locationManager.requestLocationUpdates(
             LocationManager.GPS_PROVIDER,
@@ -66,9 +66,7 @@ class SearchLocationObjectManagerImpl(
             findObjects.observeForever {
                 it.data?.let { it1 -> listener.invoke(it1) }
             }
-
-            println(it.longitude)
-            println(it.latitude)
+            Log.i("TEST", "Longitude : ${it.longitude}, Latitude : ${it.latitude}")
         }
     }
 }

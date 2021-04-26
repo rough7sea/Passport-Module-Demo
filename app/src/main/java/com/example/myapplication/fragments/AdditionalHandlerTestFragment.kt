@@ -1,12 +1,15 @@
 package com.example.myapplication.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.myapplication.App
 import com.example.myapplication.R
+import com.example.myapplication.database.DatabaseConst
 import com.example.myapplication.database.entity.Additional
 import com.example.myapplication.database.repository.AdditionalRepository
 import com.example.myapplication.external.entities.LoadResult
@@ -33,14 +36,16 @@ class AdditionalHandlerTestFragment : Fragment() {
             }
         })
 
-        val additionalRepository =
-            AdditionalRepository(App.getDatabaseManager().additionalDao())
-
         view.set_button.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-
-                val additional = additionalRepository.findById(3)
-                handler.setObjectBinding(additional)
+                val additionals = App.getDatabaseManager().additionalDao().getWithParameters(
+                        SimpleSQLiteQuery("select * from ${DatabaseConst.ADDITIONAL_TABLE_NAME}"))
+                if (additionals.isNotEmpty()){
+                    handler.setObjectBinding(additionals[0])
+                    Log.i("HANDLER_TEST", "Set Additional ${additionals[0].add_id} & ${additionals[0].number} to handler")
+                }else {
+                    Log.w("HANDLER_TEST", "No Additional in database")
+                }
             }
         }
 

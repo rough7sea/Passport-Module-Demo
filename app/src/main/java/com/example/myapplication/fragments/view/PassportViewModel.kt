@@ -21,10 +21,8 @@ class PassportViewModel(application: Application) : AndroidViewModel(application
         repository = PassportRepository(passportDAO)
         readAllData = repository.allPassportsData
 
-        readAllData.observeForever { it ->
-            it.forEach {
-                Log.i("TEST", it.toString())
-            }
+        readAllData.observeForever {
+            Log.i("TEST", "Receive ${it.size} passports")
         }
     }
 
