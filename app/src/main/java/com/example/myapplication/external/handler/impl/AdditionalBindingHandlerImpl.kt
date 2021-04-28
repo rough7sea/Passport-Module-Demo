@@ -18,7 +18,6 @@ class AdditionalBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBin
     private var currentNumber: Int = -1
 
     private val result = MutableLiveData<LoadResult<Additional>>()
-    fun getLiveDataResult() : MutableLiveData<LoadResult<Additional>> = result
 
     override fun getActualInternalObject(): LiveData<LoadResult<Additional>> {
         CoroutineScope(Dispatchers.IO).launch {

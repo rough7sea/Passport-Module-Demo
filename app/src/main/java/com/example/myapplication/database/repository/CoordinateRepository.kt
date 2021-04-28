@@ -12,17 +12,12 @@ class CoordinateRepository(private val coordinateDAO: CoordinateDAO) {
 
     fun addCoordinates(coordinates: List<Coordinate>) = coordinateDAO.insert(coordinates)
 
-    fun updateCoordinate(coordinate: Coordinate){
-        coordinateDAO.update(coordinate)
-    }
+    fun updateCoordinate(coordinate: Coordinate) = coordinateDAO.update(coordinate)
 
-    fun deleteCoordinate(coordinate: Coordinate){
-        coordinateDAO.delete(coordinate)
-    }
+    fun deleteCoordinate(coordinate: Coordinate) = coordinateDAO.delete(coordinate)
 
-    fun deleteAllCoordinate(){
-        coordinateDAO.deleteAll()
-    }
+    fun deleteAllCoordinate() = coordinateDAO.deleteAll()
+
 
     fun getCoordinateByLongitudeAndLatitude(longitude: Double, latitude: Double) =
         coordinateDAO.getByLongitudeAndLatitude(longitude, latitude)

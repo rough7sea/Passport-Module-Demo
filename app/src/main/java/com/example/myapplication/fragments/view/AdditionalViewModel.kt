@@ -14,17 +14,13 @@ import kotlinx.coroutines.launch
 class AdditionalViewModel(application: Application) : AndroidViewModel(application){
 
     internal val readAllData: LiveData<List<Additional>>
-    private val repository: AdditionalRepository
+    private val repository: AdditionalRepository = AdditionalRepository(App.getDatabase().additionalDao())
 
     init {
-        val additionalDAO = App.getDatabaseManager().additionalDao()
-        repository = AdditionalRepository(additionalDAO)
         readAllData = repository.allAdditionalData
-
-        readAllData.observeForever {
+        repository.allAdditionalData.observeForever {
             Log.i("TEST", "Receive ${it.size} additionals")
         }
-
     }
 
     fun addAdditional(additional: Additional){
@@ -38,5 +34,4 @@ class AdditionalViewModel(application: Application) : AndroidViewModel(applicati
             repository.deleteAllAdditionals()
         }
     }
-
 }

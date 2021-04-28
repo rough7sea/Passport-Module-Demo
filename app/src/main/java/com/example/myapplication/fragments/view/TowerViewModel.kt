@@ -14,14 +14,11 @@ import kotlinx.coroutines.launch
 class TowerViewModel(application: Application) : AndroidViewModel(application){
 
     val readAllData: LiveData<List<Tower>>
-    private val repository: TowerRepository
+    private val repository: TowerRepository = TowerRepository(App.getDatabase().towerDao())
 
     init {
-        val towerDao = App.getDatabaseManager().towerDao()
-        repository = TowerRepository(towerDao)
         readAllData = repository.allTowersData
-
-        readAllData.observeForever {
+        repository.allTowersData.observeForever {
             Log.i("TEST", "Receive ${it.size} towers")
         }
     }

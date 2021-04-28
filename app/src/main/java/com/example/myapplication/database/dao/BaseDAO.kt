@@ -8,7 +8,7 @@ interface BaseDAO<T> {
     fun insert(objs: List<T>)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(obj: T): Long // возвращает id объекта!!!!
+    fun insert(obj: T): Long
 
     @Update
     fun update(obj: T)
@@ -21,5 +21,8 @@ interface BaseDAO<T> {
 
     @RawQuery
     fun getCurrentObjectWithParameters(query: SupportSQLiteQuery): T
+
+    @Query("DELETE FROM sqlite_sequence")
+    fun clearAutoincrement(): Int
 
 }

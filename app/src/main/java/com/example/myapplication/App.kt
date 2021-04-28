@@ -2,6 +2,7 @@ package com.example.myapplication
 
 import android.app.Application
 import android.content.Context
+import android.location.LocationManager
 import android.util.Log
 import androidx.room.Room
 import com.example.myapplication.database.AppDatabase
@@ -12,17 +13,17 @@ class App : Application() {
 
     companion object{
         @Volatile
-        private lateinit var dataManager: AppDatabase
+        private lateinit var appDatabase: AppDatabase
 
         private lateinit var context: Context
 
-        private lateinit var objectBindingHandler: ObjectBindingHandler
+        private lateinit var dataManager: IPassportManager<Any>
 
         fun getAppContext() = context
 
-        fun getDatabaseManager() = dataManager
+        fun getDatabase() = appDatabase
 
-        fun getObjectBindingHandler() = objectBindingHandler
+        fun getDataManager() = dataManager
     }
 
 
@@ -31,16 +32,16 @@ class App : Application() {
         super.onCreate()
         context = applicationContext
         synchronized(this){
-            dataManager = Room.databaseBuilder(
+            appDatabase = Room.databaseBuilder(
                 applicationContext,
                 AppDatabase::class.java,
-                "test_DB"
+                "passportModuleDB"
             )
                 .fallbackToDestructiveMigration()
                 .allowMainThreadQueries()
                 .build()
         }
-        objectBindingHandler = ObjectBindingHandlerImpl(dataManager)
+        dataManager = DataManager(appDatabase, getSystemService(LOCATION_SERVICE) as LocationManager)
         Log.d("DEBUG", "OnCreate App")
     }
 }

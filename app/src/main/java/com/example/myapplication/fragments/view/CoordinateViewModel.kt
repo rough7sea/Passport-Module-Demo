@@ -14,14 +14,11 @@ import kotlinx.coroutines.launch
 class CoordinateViewModel(application: Application) : AndroidViewModel(application){
 
     val readAllData: LiveData<List<Coordinate>>
-    private val repository: CoordinateRepository
+    private val repository: CoordinateRepository = CoordinateRepository(App.getDatabase().coordinateDao())
 
     init {
-        val coordinateDAO = App.getDatabaseManager().coordinateDao()
-        repository = CoordinateRepository(coordinateDAO)
         readAllData = repository.allCoordinatesData
-
-        readAllData.observeForever {
+        repository.allCoordinatesData.observeForever {
             Log.i("TEST", "Receive ${it.size} coordinates")
         }
     }

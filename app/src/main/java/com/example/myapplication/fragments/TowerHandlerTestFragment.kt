@@ -12,8 +12,6 @@ import com.example.myapplication.R
 import com.example.myapplication.database.DatabaseConst
 import com.example.myapplication.database.entity.Tower
 import com.example.myapplication.external.entities.LoadResult
-import com.example.myapplication.external.handler.impl.ObjectBindingHandlerImpl
-import com.example.myapplication.external.handler.impl.TowerBindingHandlerImpl
 import kotlinx.android.synthetic.main.fragment_tower_handler_test.view.*
 import kotlinx.android.synthetic.main.tower_layout.view.*
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +20,7 @@ import kotlinx.coroutines.launch
 
 class TowerHandlerTestFragment : Fragment() {
 
-    private val handler = App.getObjectBindingHandler()
+    private val handler = App.getDataManager()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -44,7 +42,7 @@ class TowerHandlerTestFragment : Fragment() {
 
         view.set_button.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                val tower = App.getDatabaseManager().towerDao().getWithParameters(
+                val tower = App.getDatabase().towerDao().getWithParameters(
                         SimpleSQLiteQuery("select * from ${DatabaseConst.TOWER_TABLE_NAME}"))[0]
                 handler.setObjectBinding(tower)
                 Log.i("HANDLER_TEST", "Set Tower ${tower.idtf} & ${tower.number} to handler")
@@ -70,7 +68,7 @@ class TowerHandlerTestFragment : Fragment() {
         handlerTowerLayout.id_textView.text = tower.tower_id.toString()
         handlerTowerLayout.idtf_textView.text = tower.idtf
         if (tower.coord_id != null){
-            val coord = App.getDatabaseManager().coordinateDao().getById(tower.coord_id!!)!!
+            val coord = App.getDatabase().coordinateDao().getById(tower.coord_id!!)!!
             handlerTowerLayout.longitude_textView.text = coord.longitude.toString()
             handlerTowerLayout.latitude_textView.text = coord.latitude.toString()
         } else {

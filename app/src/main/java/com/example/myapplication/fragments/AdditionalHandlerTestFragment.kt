@@ -11,17 +11,15 @@ import com.example.myapplication.App
 import com.example.myapplication.R
 import com.example.myapplication.database.DatabaseConst
 import com.example.myapplication.database.entity.Additional
-import com.example.myapplication.database.repository.AdditionalRepository
 import com.example.myapplication.external.entities.LoadResult
 import kotlinx.android.synthetic.main.fragment_tower_handler_test.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 
 class AdditionalHandlerTestFragment : Fragment() {
 
-    private val handler = App.getObjectBindingHandler()
+    private val handler = App.getDataManager()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -38,7 +36,7 @@ class AdditionalHandlerTestFragment : Fragment() {
 
         view.set_button.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                val additionals = App.getDatabaseManager().additionalDao().getWithParameters(
+                val additionals = App.getDatabase().additionalDao().getWithParameters(
                         SimpleSQLiteQuery("select * from ${DatabaseConst.ADDITIONAL_TABLE_NAME}"))
                 if (additionals.isNotEmpty()){
                     handler.setObjectBinding(additionals[0])

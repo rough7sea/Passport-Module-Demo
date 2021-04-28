@@ -1,7 +1,6 @@
 package com.example.myapplication.search.impl
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
@@ -9,7 +8,6 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
 import com.example.myapplication.App
-import com.example.myapplication.external.entities.NearestObjectListener
 import com.example.myapplication.external.entities.RequestResult
 import com.example.myapplication.search.SearchLocationObjectManager
 import com.example.myapplication.utli.QueryBuilder
@@ -21,7 +19,7 @@ class SearchLocationObjectManagerImpl(
     private val locationManager: LocationManager
 ) : SearchLocationObjectManager<Any> {
 
-    private var dataBase  = App.getDatabaseManager()
+    private var dataBase  = App.getDatabase()
     private val result = MutableLiveData<RequestResult<Any>>()
 
     override fun findObjects(gpsLocation: Location, radius: Int): MutableLiveData<RequestResult<Any>> {

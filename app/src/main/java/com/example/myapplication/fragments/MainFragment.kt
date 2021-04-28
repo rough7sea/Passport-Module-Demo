@@ -1,4 +1,4 @@
-package com.example.myapplication.fragments
+ package com.example.myapplication.fragments
 
 import android.os.Bundle
 import android.os.Environment
@@ -23,8 +23,6 @@ import com.example.myapplication.exchange.ExportFileManager
 import com.example.myapplication.exchange.ImportFileManager
 import com.example.myapplication.exchange.impl.ExportFileManagerImpl
 import com.example.myapplication.exchange.impl.ImportFileManagerImpl
-import com.example.myapplication.utli.QueryBuilder
-import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.fragment_main.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,13 +32,8 @@ import java.util.*
 
 class MainFragment : Fragment() {
 
-    private val importFileManager: ImportFileManager by lazy{
-        ImportFileManagerImpl(App.getDatabaseManager())
-    }
-
-    private val exportFileManager: ExportFileManager by lazy{
-        ExportFileManagerImpl(App.getDatabaseManager())
-    }
+    private val importFileManager: ImportFileManager = App.getDataManager()
+    private val exportFileManager: ExportFileManager = App.getDataManager()
 
     private val filepath = "MyFileStorage"
     private var myExternalFile: File? = null
@@ -80,7 +73,7 @@ class MainFragment : Fragment() {
         view.export_button.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 exportFileManager.export(
-                        App.getDatabaseManager().towerDao().getWithParameters(
+                        App.getDatabase().towerDao().getWithParameters(
                                 SimpleSQLiteQuery("select * from ${DatabaseConst.TOWER_TABLE_NAME}"))[0],
                         File(requireActivity().getExternalFilesDir(filepath), "fullTower.xml"))
             }
@@ -96,7 +89,7 @@ class MainFragment : Fragment() {
 
         view.wipe_data_button.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                val dbManager = App.getDatabaseManager()
+                val dbManager = App.getDatabase()
                 dbManager.coordinateDao().deleteAll()
                 dbManager.additionalDao().deleteAll()
                 dbManager.towerDao().deleteAll()
@@ -181,10 +174,10 @@ class MainFragment : Fragment() {
                     Additional(0, 3, null, Date(), "syperRR", "10r"),
                     Additional(0, 3, 1, Date(), "ultra syper", "1r"),
             )
-            PassportRepository(App.getDatabaseManager().passportDao()).addPassports(passports)
-            CoordinateRepository(App.getDatabaseManager().coordinateDao()).addCoordinates(coordinates)
-            TowerRepository(App.getDatabaseManager().towerDao()).addAllTowers(towers)
-            AdditionalRepository(App.getDatabaseManager().additionalDao()).addAllAdditionals(additionals)
+            PassportRepository(App.getDatabase().passportDao()).addPassports(passports)
+            CoordinateRepository(App.getDatabase().coordinateDao()).addCoordinates(coordinates)
+            TowerRepository(App.getDatabase().towerDao()).addAllTowers(towers)
+            AdditionalRepository(App.getDatabase().additionalDao()).addAllAdditionals(additionals)
             requireActivity().runOnUiThread {
                 Toast.makeText(activity, "Successfully added all data", Toast.LENGTH_SHORT).show()
             }

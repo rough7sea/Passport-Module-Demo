@@ -28,32 +28,32 @@ class Converter {
 
         fun fromXmlToPassport(dto: XMLPassportDto): Passport {
             with(dto) {
-                return Passport(0, changeDate?.let { fromStringToDate(it) } ?: Date(), sectionName,
-                    siteId, sectionId, echName, echkName, locationId, wayAmount,
-                    currentWay, currentWayID, initialMeter, initialKM, initialPK,
-                    initialM, plotLength, suspensionAmount)
+                return Passport(0, changeDate?.let { fromStringToDate(it) } ?: Date(),
+                        sectionName ?: "", siteId, sectionId, echName, echkName,
+                        locationId, wayAmount, currentWay, currentWayID, initialMeter, initialKM,
+                        initialPK, initialM, plotLength, suspensionAmount)
             }
         }
 
         fun fromPassportToXml(passport: Passport): XMLPassportDto {
             with(passport) {
                 return XMLPassportDto(siteId,  sectionName,
-                     sectionId, echName, echkName, locationId, wayAmount,
-                    currentWay, currentWayId, simpleDateFormat.format(passport.changeDate), initialMeter,
-                    initialKm, initialPk, initialM, plotLength, suspensionAmount)
+                        sectionId, echName, echkName, locationId, wayAmount,
+                        currentWay, currentWayId, simpleDateFormat.format(passport.changeDate), initialMeter,
+                        initialKm, initialPk, initialM, plotLength, suspensionAmount)
             }
         }
 
         fun fromXmlToTower(dto: XMLTowerDto, coord_id: Long?): Tower {
             with(dto) {
                 return Tower(
-                    0, 0, coord_id,
-                    Date(), idtf ?: "", assetNum ?: "",
-                    stopSeq, km, pk, m,
-                    tfType , turn, radius, number ?: "",
-                    distance, zigzag, height, offset,
-                    grounded, speed, suspensionType,
-                    catenary, wireType, countWire, gabarit
+                        0, 0, coord_id,
+                        Date(), idtf ?: "", assetNum ?: "",
+                        stopSeq, km, pk, m,
+                        tfType , turn, radius, number ?: "",
+                        distance, zigzag, height, offset,
+                        grounded, speed, suspensionType,
+                        catenary, wireType, countWire, gabarit
                 )
             }
         }
@@ -61,13 +61,13 @@ class Converter {
         fun fromTowerToXml(tower: Tower, coordinate: Coordinate?): XMLTowerDto {
             with(tower) {
                 return XMLTowerDto(
-                    idtf, assetNum,
-                    stopSeq, km, pk, m,
-                    tfType , turn, radius, number,
-                    distance, zigzag, height, offset,
-                    grounded, speed, suspensionType,
-                    catenary, wireType, countWire,
-                    coordinate?.longitude, coordinate?.latitude, gabarit
+                        idtf, assetNum,
+                        stopSeq, km, pk, m,
+                        tfType , turn, radius, number,
+                        distance, zigzag, height, offset,
+                        grounded, speed, suspensionType,
+                        catenary, wireType, countWire,
+                        coordinate?.longitude, coordinate?.latitude, gabarit
                 )
             }
         }
@@ -75,8 +75,8 @@ class Converter {
         fun fromXmlToAdditional(dto: XMLAdditionalDto, tower_id: Long, coord_id: Long?): Additional{
             with(dto){
                 return Additional(0, tower_id, coord_id,
-                    changeDate?.let { fromStringToDate(it) } ?: Date(),
-                    type, number ?: "")
+                        changeDate?.let { fromStringToDate(it) } ?: Date(),
+                        type, number ?: "")
             }
         }
 
@@ -84,7 +84,7 @@ class Converter {
 
             with(additional){
                 return XMLAdditionalDto(coordinate?.longitude, coordinate?.latitude,
-                    simpleDateFormat.format(additional.changeDate), type, number
+                        simpleDateFormat.format(additional.changeDate), type, number
                 )
             }
         }

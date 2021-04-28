@@ -14,14 +14,11 @@ import kotlinx.coroutines.launch
 class PassportViewModel(application: Application) : AndroidViewModel(application){
 
     val readAllData: LiveData<List<Passport>>
-    private val repository: PassportRepository
+    private val repository: PassportRepository = PassportRepository(App.getDatabase().passportDao())
 
     init {
-        val passportDAO = App.getDatabaseManager().passportDao()
-        repository = PassportRepository(passportDAO)
         readAllData = repository.allPassportsData
-
-        readAllData.observeForever {
+        repository.allPassportsData.observeForever {
             Log.i("TEST", "Receive ${it.size} passports")
         }
     }

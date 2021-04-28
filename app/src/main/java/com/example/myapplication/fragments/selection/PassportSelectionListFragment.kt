@@ -33,10 +33,8 @@ class PassportSelectionListFragment : Fragment() {
             adapter.setData(passports)
         })
 
-
         setHasOptionsMenu(true)
 
         return view
     }
-
 }
