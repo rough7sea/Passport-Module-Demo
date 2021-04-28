@@ -1,2 +1,3 @@
-include ':app'
+include ':dataManager'
+include ':uitest'
 rootProject.name = "Passport Module Demo"
