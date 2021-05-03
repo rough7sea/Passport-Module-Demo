@@ -28,9 +28,21 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
 {
     private val serializer = Persister()
 
+    /**
+     * Passport Repository.
+     */
     private val passportRepository =  PassportRepository(appDatabase.passportDao())
+    /**
+     * Tower Repository.
+     */
     private val towerRepository = TowerRepository(appDatabase.towerDao())
+    /**
+     * Coordinate Repository.
+     */
     private val coordinateRepository = CoordinateRepository(appDatabase.coordinateDao())
+    /**
+     * Additional Repository.
+     */
     private val additionalRepository = AdditionalRepository(appDatabase.additionalDao())
 
     override fun import(file: File) : LiveData<WorkResult>{

@@ -25,7 +25,7 @@ class TowerAdapter : RecyclerView.Adapter<MyViewHolder>()  {
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem = towerList[position]
-        holder.itemView.id_textView.text = currentItem.tower_id.toString()
+        holder.itemView.towerNumber_textView.text = currentItem.number
         holder.itemView.idtf_textView.text = currentItem.idtf
 
         currentItem.coord_id?.let {

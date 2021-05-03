@@ -77,7 +77,7 @@ class TowerHandlerTestFragment : Fragment() {
     }
 
     private fun fillTower(handlerTowerLayout: View, tower: Tower){
-        handlerTowerLayout.id_textView.text = tower.tower_id.toString()
+        handlerTowerLayout.towerNumber_textView.text = tower.number
         handlerTowerLayout.idtf_textView.text = tower.idtf
         if (tower.coord_id != null){
             val coord = coordinateRepository.getById(tower.coord_id!!)

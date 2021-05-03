@@ -6,5 +6,5 @@ import com.example.datamanager.external.entities.RequestResult
 
 interface SearchLocationObjectManager<T> {
     fun findObjects(gpsLocation: Location, radius: Int): MutableLiveData<RequestResult<T>>
-    fun addListenerToNearestObjects(gpsLocation: Location, radius: Int, listener: (List<Any>) -> Unit)
+    fun addListenerToNearestObjects(gpsLocation: Location, radius: Int, listener: (List<T>) -> Unit)
 }

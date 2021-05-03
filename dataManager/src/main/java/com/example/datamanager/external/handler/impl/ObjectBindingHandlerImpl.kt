@@ -11,6 +11,9 @@ import com.example.datamanager.external.entities.LoadResult
 import com.example.datamanager.external.handler.InternalObjectBindingHandler
 import com.example.datamanager.external.handler.ObjectBindingHandler
 import com.example.datamanager.utli.Utils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ObjectBindingHandlerImpl(
     appDatabase: AppDatabase
@@ -28,18 +31,20 @@ class ObjectBindingHandlerImpl(
 
     override fun <T> setObjectBinding(objectBinding: T): MutableLiveData<LoadResult<T>> {
         val result = getHandler(objectBinding).setInternalObject(objectBinding)
-        when(objectBinding){
-            is Tower -> {
-                val additionals = additionalRepository.findAllByTowerId(objectBinding.tower_id)
-                if (additionals.isNotEmpty()){
-                    getHandler(Additional::class.java).setInternalObject(
-                        additionals.sortedBy { Integer.valueOf(Utils.clearNumber(it.number)) }[0])
+        CoroutineScope(Dispatchers.IO).launch {
+            when(objectBinding){
+                is Tower -> {
+                    val additionals = additionalRepository.findAllByTowerId(objectBinding.tower_id)
+                    if (additionals.isNotEmpty()){
+                        getHandler(Additional::class.java).setInternalObject(
+                                additionals.sortedBy { Integer.valueOf(Utils.clearNumber(it.number)) }[0])
+                    }
                 }
-            }
-            is Additional -> {
-                val tower = towerRepository.getById(objectBinding.tower_id)
-                    ?: throw RuntimeException("Tower with id[${objectBinding.tower_id}] can't be null")
-                getHandler(Tower::class.java).setInternalObject(tower)
+                is Additional -> {
+                    val tower = towerRepository.getById(objectBinding.tower_id)
+                            ?: throw RuntimeException("Tower with id[${objectBinding.tower_id}] can't be null")
+                    getHandler(Tower::class.java).setInternalObject(tower)
+                }
             }
         }
         return result as MutableLiveData<LoadResult<T>>

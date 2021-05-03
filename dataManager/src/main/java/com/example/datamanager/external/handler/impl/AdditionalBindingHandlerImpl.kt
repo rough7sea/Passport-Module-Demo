@@ -1,5 +1,6 @@
 package com.example.datamanager.external.handler.impl
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.datamanager.database.AppDatabase
@@ -13,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class AdditionalBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBindingHandler<Additional> {
+
     private val additionalRepository = AdditionalRepository(appDatabase.additionalDao())
     private var currentAdditionals: Map<Int, Long> = mutableMapOf()
     private var currentNumber: Int = -1
@@ -26,14 +28,7 @@ class AdditionalBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBin
                 return@launch
             }
             result.postValue(LoadResult.Loading())
-
-            val additionalId = currentAdditionals[currentNumber]
-            if (additionalId != null){
-                val additional = additionalRepository.getById(additionalId)
-                result.postValue(LoadResult.Success(additional!!))
-            } else {
-                result.postValue(LoadResult.Error(Exception("Internal Error")))
-            }
+            getObjectByNumber(result, currentNumber)
         }
         return result
     }
@@ -55,6 +50,7 @@ class AdditionalBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBin
                 .filterValues { it == internalObject.add_id }.keys
                 .toList()[0]
 
+            Log.i("ADDITIONAL_HANDLER", "Set additional to handler with id[${internalObject.add_id}]")
             result.postValue(LoadResult.Success(internalObject))
         }
         return result
@@ -95,10 +91,16 @@ class AdditionalBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBin
     private fun getObjectByNumber(result: MutableLiveData<LoadResult<Additional>>, currentNumber: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             val additionalId = currentAdditionals[currentNumber]
-            if (additionalId != null) {
+            if (additionalId != null){
                 val additional = additionalRepository.getById(additionalId)
-                result.postValue(LoadResult.Success(additional!!))
+                if (additional != null){
+                    result.postValue(LoadResult.Success(additional))
+                } else {
+                    result.postValue(LoadResult.Error(
+                            RuntimeException("There are no Additional in system with id[$additionalId]")))
+                }
             } else {
+                Log.e("ADDITIONAL_HANDLER", "Additional id can't be null")
                 result.postValue(LoadResult.Error(Exception("Internal Error")))
             }
         }

@@ -1,5 +1,6 @@
 package com.example.datamanager.external.handler.impl
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.datamanager.database.AppDatabase
@@ -11,6 +12,7 @@ import com.example.datamanager.utli.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
 
 class TowerBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBindingHandler<Tower> {
 
@@ -29,14 +31,7 @@ class TowerBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBindingH
             }
 
             result.postValue(LoadResult.Loading())
-
-            val towerId = currentTowers[currentNumber]
-            if (towerId != null){
-                val tower = towerRepository.getById(towerId)
-                result.postValue(LoadResult.Success(tower!!))
-            } else {
-                result.postValue(LoadResult.Error(Exception("Internal Error")))
-            }
+            getObjectByNumber(result, currentNumber)
         }
         return result
     }
@@ -58,6 +53,7 @@ class TowerBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBindingH
                     .filterValues { it == internalObject.tower_id }.keys
                     .toList()[0]
 
+            Log.i("TOWER_HANDLER", "Set tower to handler with id[${internalObject.tower_id}]")
             result.postValue(LoadResult.Success(internalObject))
         }
         return result
@@ -100,8 +96,14 @@ class TowerBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBindingH
             val towerId = currentTowers[currentNumber]
             if (towerId != null) {
                 val tower = towerRepository.getById(towerId)
-                result.postValue(LoadResult.Success(tower!!))
+                if (tower != null){
+                    result.postValue(LoadResult.Success(tower))
+                } else {
+                    result.postValue(LoadResult.Error(
+                            RuntimeException("There are no Tower in system with id[$towerId]")))
+                }
             } else {
+                Log.e("TOWER_HANDLER", "Tower id can't be null")
                 result.postValue(LoadResult.Error(Exception("Internal Error")))
             }
         }

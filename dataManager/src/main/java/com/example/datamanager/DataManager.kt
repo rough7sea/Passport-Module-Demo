@@ -18,20 +18,46 @@ import com.example.datamanager.search.SearchLocationObjectManager
 import com.example.datamanager.search.impl.SearchLocationObjectManagerImpl
 import java.io.File
 
+/**
+ * Main API point for module.
+ * @property database Main application database.
+ * @property searchLocationObjectManager Search Location Manager.
+ */
 class DataManager(
     private val database: AppDatabase,
     private val searchLocationObjectManager: SearchLocationObjectManager<Any>
 ): IPassportManager<Any> {
 
+    /**
+     * Import File Manager.
+     */
     private val importFileManager by lazy { ImportFileManagerImpl(database) }
+    /**
+     * Export File Manager.
+     */
     private val exportFileManager by lazy { ExportFileManagerImpl(database) }
+    /**
+     * Object Binding Handler.
+     */
     private val objectBindingHandler by lazy { ObjectBindingHandlerImpl(database) }
+    /**
+     * Repository Provider.
+     */
     private val repositoryProvider by lazy { RepositoryProviderImpl(database) }
 
+    /**
+     * Main initializing point of DataManger.
+     * - Require [LocationManager] to get GPS/location data.
+     * - Require Application [Context] to get GPS/location permission.
+     */
     companion object Builder{
         private lateinit var appDatabase: AppDatabase
         private lateinit var searchLocationObjectManager: SearchLocationObjectManager<Any>
 
+        /**
+         * @param [locationManager] require Location Manager to get GPS/location data.
+         * @param context require Application Context to get GPS/location permission.
+         */
         fun initialize(context: Context, locationManager: LocationManager) = apply {
             this.appDatabase = AppDatabase.initialize(context).build()
             this.searchLocationObjectManager = SearchLocationObjectManagerImpl(locationManager, context, appDatabase)
@@ -71,6 +97,5 @@ class DataManager(
 
     override fun <T> getRepository(clazz: Class<T>): Repository<T> =
         repositoryProvider.getRepository(clazz)
-
 
 }

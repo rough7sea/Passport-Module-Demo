@@ -39,8 +39,12 @@ class SearchLocationObjectManagerImpl(
 
             val towers = appDatabase.towerDao().getByCoordinateId(coordinate.coord_id)
             val additionals = appDatabase.additionalDao().getByCoordinateId(coordinate.coord_id)
+            val objects = listOf(towers, additionals)
 
-            result.postValue(RequestResult.Completed(listOf(towers, additionals)))
+            Log.i("SEARCH_LOCATION_MANAGER",
+                    "Find [${objects.size}] in location " +
+                            "[long:${gpsLocation.longitude} & lat:${gpsLocation.latitude}] with radius [$radius]")
+            result.postValue(RequestResult.Completed(objects))
         }
 
         return result
@@ -56,17 +60,18 @@ class SearchLocationObjectManagerImpl(
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            throw RuntimeException("Don't have location permission")
+            Log.e("SEARCH_LOCATION_MANAGER", "Location permission denied")
+            throw RuntimeException("Location permission denied")
         }
         locationManager.requestLocationUpdates(
             LocationManager.GPS_PROVIDER,
-            1000 * 10L, 10f){ it ->
+            1000 * 10L, 10f){ location ->
 
-            val findObjects = findObjects(it, radius)
+            val findObjects = findObjects(location, radius)
             findObjects.observeForever {
                 it.data?.let { it1 -> listener.invoke(it1) }
             }
-            Log.i("TEST", "Longitude : ${it.longitude}, Latitude : ${it.latitude}")
+            Log.i("SEARCH_LOCATION_MANAGER", "Current location [long:${location.longitude} & lat:${location.latitude}]")
         }
     }
 }

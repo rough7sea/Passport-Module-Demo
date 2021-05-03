@@ -2,10 +2,7 @@ package com.example.myapplication.fragments.list
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -22,8 +19,8 @@ class TowerListFragment : Fragment() {
     private lateinit var mTowerViewModel: TowerViewModel
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_tower_list, container, false)
@@ -47,6 +44,10 @@ class TowerListFragment : Fragment() {
         return view
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.delete_menu, menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_delete){
             deleteAllTowers()
@@ -60,9 +61,9 @@ class TowerListFragment : Fragment() {
         builder.setPositiveButton("Yes"){  _, _ ->
             mTowerViewModel.deleteAllTowers()
             Toast.makeText(
-                requireContext(),
-                "Successfully removed all towers",
-                Toast.LENGTH_SHORT).show()
+                    requireContext(),
+                    "Successfully removed all towers",
+                    Toast.LENGTH_SHORT).show()
         }
 
         builder.setNegativeButton("No"){  _, _ -> }
