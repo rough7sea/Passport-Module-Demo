@@ -151,6 +151,7 @@ class MainFragment : Fragment() {
 
     private fun initData(){
         CoroutineScope(Dispatchers.IO).launch {
+            // TODO correct test data
             val passports = listOf(
                 Passport(0, Date(), "123", 123, "123", "123", "123"),
 //                Passport(0, Date(), "111", 111, "111", "111", "111"),
