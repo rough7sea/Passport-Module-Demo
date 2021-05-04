@@ -23,6 +23,11 @@ import org.jetbrains.annotations.NotNull
 import org.simpleframework.xml.core.Persister
 import java.io.File
 
+/**
+ * Implementation [ExportFileManager].
+ *
+ * @param appDatabase Main application database.
+ */
 class ExportFileManagerImpl(appDatabase: AppDatabase)
     : ExportFileManager
 {
@@ -41,10 +46,10 @@ class ExportFileManagerImpl(appDatabase: AppDatabase)
 
             result.postValue(WorkResult.Progress(0))
             try {
-                Log.i("EXPORT", "export for entity ${bindingEntity::class.java.canonicalName} start")
+                Log.i("EXPORT", "export for entity [${bindingEntity::class.java.canonicalName}] start")
                 destinationPath.createNewFile()
                 serializer.write(getFullSectionCertificate(bindingEntity), destinationPath)
-                Log.i("EXPORT", "export for entity ${bindingEntity::class.java.canonicalName} successfully ended")
+                Log.i("EXPORT", "export for entity [${bindingEntity::class.java.canonicalName}] successfully ended")
                 result.postValue(WorkResult.Progress(100))
             } catch (ex: Exception){
                 Log.e("EXPORT", ex.localizedMessage, ex)
@@ -60,6 +65,13 @@ class ExportFileManagerImpl(appDatabase: AppDatabase)
         return result
     }
 
+    /**
+     * Method get object tree [Passport] -> [Tower] -> [Additional] via passport ID.
+     *
+     * @param bindingEntity start point for collect data. Can be [Passport], [Tower], [Additional] object type.
+     * @return full passport data in [FullSectionCertificate]-schema.
+     * @throws [RuntimeException] if passport id *null*.
+     */
     private fun <B> getFullSectionCertificate(bindingEntity: B): FullSectionCertificate {
         val passport_id: Long = when(bindingEntity){
 
@@ -70,12 +82,21 @@ class ExportFileManagerImpl(appDatabase: AppDatabase)
                 tower.passport_id
             }
             is Passport -> bindingEntity.passport_id
-
-            else -> throw RuntimeException("Invalid input object type")
+            else -> {
+                Log.e("EXPORT", "Invalid input object type [$bindingEntity]")
+                throw RuntimeException("Invalid input object type [$bindingEntity]")
+            }
         }
         return createFullSectionCertificate(passport_id)
     }
 
+    /**
+     * Create object tree [Passport] -> [Tower] -> [Additional] via passport ID.
+     *
+     * @param passport_id start point for collect data.
+     * @return full passport data in [FullSectionCertificate]-schema.
+     * @throws [RuntimeException] if passport id *null*.
+     */
     private fun createFullSectionCertificate(passport_id: Long): FullSectionCertificate{
         val passport = passportRepository.getById(passport_id)
             ?: throw RuntimeException("Passport with id{$passport_id} can not be null")
@@ -95,5 +116,4 @@ class ExportFileManagerImpl(appDatabase: AppDatabase)
         }
         return FullSectionCertificate(passportXml, fullTowers)
     }
-
 }

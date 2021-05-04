@@ -11,26 +11,36 @@ import com.example.datamanager.exchange.dto.XMLPassportDto
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
 
+/**
+ * Util query builder class.
+ */
 object QueryBuilder {
 
-    // radius in meters
-    fun buildCoordInRadiusQuery(longitude: Double, latitude: Double, radius: Int) =
-            SimpleSQLiteQuery("""
-                SELECT * FROM ${DatabaseConst.COORDINATE_TABLE_NAME} WHERE 
-                 6371 * 2 * atan2(sqrt(
-                 power(SIN((RADIANS(latitude) - RADIANS($latitude))) / 2 , 2) + 
-                 COS(RADIANS($latitude)) * 
-                 COS(RADIANS(latitude)) * 
-                 power(SIN((RADIANS(longitude) - RADIANS($longitude))) / 2 , 2) 
-                ),
-                 sqrt(1 - 
-                 power(SIN((RADIANS(latitude) - RADIANS($latitude))) / 2 , 2) + 
-                 COS(RADIANS($latitude)) * 
-                 COS(RADIANS(latitude)) * 
-                 power(SIN((RADIANS(longitude) - RADIANS($longitude))) / 2 , 2) 
-                )) * 1000 
-                 <= $radius; 
-            """.trimIndent())
+//    /**
+//     * Search objects query for current location in radius.
+//     * Coordinate received from Database.
+//     *
+//     * @param longitude coordinate longitude.
+//     * @param latitude coordinate latitude.
+//     * @param radius searching radius in meters.
+//     */
+//    fun buildCoordInRadiusQuery(longitude: Double, latitude: Double, radius: Float) =
+//            SimpleSQLiteQuery("""
+//                SELECT * FROM ${DatabaseConst.COORDINATE_TABLE_NAME} WHERE
+//                 ${6371 * 2} * atan2(sqrt(
+//                 power(SIN((RADIANS(latitude) - RADIANS($latitude))) / 2 , 2) +
+//                 COS(RADIANS($latitude)) *
+//                 COS(RADIANS(latitude)) *
+//                 power(SIN((RADIANS(longitude) - RADIANS($longitude))) / 2 , 2)
+//                ),
+//                 sqrt(1 -
+//                 power(SIN((RADIANS(latitude) - RADIANS($latitude))) / 2 , 2) +
+//                 COS(RADIANS($latitude)) *
+//                 COS(RADIANS(latitude)) *
+//                 power(SIN((RADIANS(longitude) - RADIANS($longitude))) / 2 , 2)
+//                )) * 1000
+//                 <= $radius;
+//            """.trimIndent())
 
 
     fun <T> buildSelectQuery(
@@ -50,12 +60,27 @@ object QueryBuilder {
         return SimpleSQLiteQuery(query.append(";").toString())
     }
 
+    /**
+     * Build select all query.
+     *
+     * @param clazz mapping parameter to process object.
+     * @return [SimpleSQLiteQuery] to find all objects.
+     */
     fun <T> buildSelectAllQuery(clazz: Class<T>) =
         SimpleSQLiteQuery("SELECT * FROM ${getTableName(clazz)};")
 
+    /**
+     * Build count object query.
+     *
+     * @param clazz mapping parameter to process object.
+     * @return [SimpleSQLiteQuery] to find objects count.
+     */
     fun <T> buildCountQuery(clazz: Class<T>) =
         SimpleSQLiteQuery("SELECT COUNT(*) FROM ${getTableName(clazz)}")
 
+    /**
+     * @suppress
+     */
     private fun <T> getTableName(clazz: Class<T>) : String{
         return when(clazz){
             Tower::class.java -> DatabaseConst.TOWER_TABLE_NAME
@@ -79,12 +104,22 @@ object QueryBuilder {
         return SimpleSQLiteQuery(query.toString())
     }
 
+    /**
+     * Build search query by all object's parameters.
+     * If parameter is *null* - they skip.
+     *
+     * @param bindObject process object.
+     * @return [SimpleSQLiteQuery] to find objects via parameters.
+     */
     fun <E> buildSearchByAllFieldsQuery(bindObject: E): SimpleSQLiteQuery {
         val query = StringBuilder("SELECT * FROM ")
         buildParametersQuery(bindObject, query)
         return SimpleSQLiteQuery(query.toString())
     }
 
+    /**
+     * @suppress
+     */
     private fun <E> buildParametersQuery(bindObject: E, query: StringBuilder){
         when (bindObject) {
             is Passport -> {
@@ -114,6 +149,9 @@ object QueryBuilder {
         query.append(';')
     }
 
+    /**
+     * @suppress
+     */
     private fun fullWithParameters(coordinate: Coordinate) : StringBuilder{
         val query = StringBuilder()
         with(coordinate){
@@ -122,6 +160,10 @@ object QueryBuilder {
         }
         return query
     }
+
+    /**
+     * @suppress
+     */
     private fun fullWithParameters(additional: Additional) : StringBuilder{
         val query = StringBuilder()
         with(additional){
@@ -130,6 +172,10 @@ object QueryBuilder {
         }
         return query
     }
+
+    /**
+     * @suppress
+     */
     private fun fullWithParameters(passport: Passport) : StringBuilder{
         val query = StringBuilder()
         with(passport){
@@ -151,6 +197,10 @@ object QueryBuilder {
         }
         return query
     }
+
+    /**
+     * @suppress
+     */
     private fun fullWithParameters(passport: XMLPassportDto) : StringBuilder{
         val query = StringBuilder()
         with(passport){
@@ -173,6 +223,9 @@ object QueryBuilder {
         return query
     }
 
+    /**
+     * @suppress
+     */
     private fun fullWithParameters(tower: Tower) : StringBuilder{
         val query = StringBuilder()
         with(tower){
@@ -201,7 +254,10 @@ object QueryBuilder {
         return query
     }
 
-    // method cool but not optimized
+    /**
+     * method cool but not optimized
+     * @suppress
+     */
     private fun fullAlter(passport: Passport) : String{
         val query = StringBuilder()
         val excludeFields = listOf("passport_id", "changeDate")

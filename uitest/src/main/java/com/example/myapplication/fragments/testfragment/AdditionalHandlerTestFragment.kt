@@ -1,4 +1,4 @@
-package com.example.myapplication.fragments
+package com.example.myapplication.fragments.testfragment
 
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import com.example.datamanager.database.entity.Additional
 import com.example.datamanager.database.repository.impl.AdditionalRepository
 import com.example.datamanager.external.entities.LoadResult
-import com.example.datamanager.utli.QueryBuilder
 import com.example.myapplication.App
 import com.example.myapplication.R
 import kotlinx.android.synthetic.main.fragment_tower_handler_test.view.*

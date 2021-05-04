@@ -1,8 +1,10 @@
 package com.example.datamanager.external.handler.impl
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.datamanager.database.AppDatabase
+import com.example.datamanager.database.entity.Additional
 import com.example.datamanager.database.entity.Tower
 import com.example.datamanager.database.repository.impl.TowerRepository
 import com.example.datamanager.external.entities.LoadResult
@@ -11,7 +13,16 @@ import com.example.datamanager.utli.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
 
+/**
+ * Implementation [InternalObjectBindingHandler] with [Tower] object.
+ *
+ * @param appDatabase Main application database.
+ * @property currentTowers current [Tower]'s map with *<Number, Tower ID>* format.
+ * @property currentNumber current number of selected object.
+ * @property result main return [LiveData] object.
+ */
 class TowerBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBindingHandler<Tower> {
 
     private val towerRepository = TowerRepository(appDatabase.towerDao())
@@ -29,14 +40,7 @@ class TowerBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBindingH
             }
 
             result.postValue(LoadResult.Loading())
-
-            val towerId = currentTowers[currentNumber]
-            if (towerId != null){
-                val tower = towerRepository.getById(towerId)
-                result.postValue(LoadResult.Success(tower!!))
-            } else {
-                result.postValue(LoadResult.Error(Exception("Internal Error")))
-            }
+            getObjectByNumber(result, currentNumber)
         }
         return result
     }
@@ -58,6 +62,7 @@ class TowerBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBindingH
                     .filterValues { it == internalObject.tower_id }.keys
                     .toList()[0]
 
+            Log.i("TOWER_HANDLER", "Set tower to handler with id[${internalObject.tower_id}]")
             result.postValue(LoadResult.Success(internalObject))
         }
         return result
@@ -95,13 +100,26 @@ class TowerBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBindingH
         return result
     }
 
+    /**
+     * Find tower in [currentTowers] map by number.
+     *
+     * @param result [LiveData] to collect result.
+     * @param currentNumber tower object number to receive.
+     */
     private fun getObjectByNumber(result: MutableLiveData<LoadResult<Tower>>, currentNumber: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             val towerId = currentTowers[currentNumber]
             if (towerId != null) {
                 val tower = towerRepository.getById(towerId)
-                result.postValue(LoadResult.Success(tower!!))
+                if (tower != null){
+                    result.postValue(LoadResult.Success(tower))
+                } else {
+                    Log.e("TOWER_HANDLER", "There are no Tower in system with id[$towerId]")
+                    result.postValue(LoadResult.Error(
+                            RuntimeException("There are no Tower in system with id[$towerId]")))
+                }
             } else {
+                Log.e("TOWER_HANDLER", "Tower id can't be null")
                 result.postValue(LoadResult.Error(Exception("Internal Error")))
             }
         }

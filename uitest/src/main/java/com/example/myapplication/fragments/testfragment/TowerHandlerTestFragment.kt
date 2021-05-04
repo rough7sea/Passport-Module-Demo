@@ -1,4 +1,4 @@
-package com.example.myapplication.fragments
+package com.example.myapplication.fragments.testfragment
 
 import android.os.Bundle
 import android.util.Log
@@ -11,7 +11,6 @@ import com.example.datamanager.database.entity.Tower
 import com.example.datamanager.database.repository.impl.CoordinateRepository
 import com.example.datamanager.database.repository.impl.TowerRepository
 import com.example.datamanager.external.entities.LoadResult
-import com.example.datamanager.utli.QueryBuilder
 import com.example.myapplication.App
 import com.example.myapplication.R
 import kotlinx.android.synthetic.main.fragment_tower_handler_test.view.*
@@ -77,7 +76,7 @@ class TowerHandlerTestFragment : Fragment() {
     }
 
     private fun fillTower(handlerTowerLayout: View, tower: Tower){
-        handlerTowerLayout.id_textView.text = tower.tower_id.toString()
+        handlerTowerLayout.towerNumber_textView.text = tower.number
         handlerTowerLayout.idtf_textView.text = tower.idtf
         if (tower.coord_id != null){
             val coord = coordinateRepository.getById(tower.coord_id!!)

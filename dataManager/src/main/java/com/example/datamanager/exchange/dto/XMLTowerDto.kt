@@ -3,6 +3,9 @@ package com.example.datamanager.exchange.dto
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.Root
 
+/**
+ * Dto entity for deserialization internal data into xml.
+ */
 @Root(name = "Tower", strict = false)
 data class XMLTowerDto(
     @field:Element(name = "idtf", required = false) var idtf: String? = null,
@@ -25,7 +28,7 @@ data class XMLTowerDto(
     @field:Element(required = false) var catenary: Int? = null,
     @field:Element(name = "WireType", required = false) var wireType: String? = null,
     @field:Element(name = "CountWire", required = false) var countWire: String? = null,
-    @field:Element(required = false) var longitude: Double? = null,
     @field:Element(required = false) var latitude: Double? = null,
+    @field:Element(required = false) var longitude: Double? = null,
     @field:Element(name = "Gabarit", required = false) var gabarit: String? = null,
 )

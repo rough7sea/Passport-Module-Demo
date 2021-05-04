@@ -3,6 +3,9 @@ package com.example.datamanager.exchange.dto
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.Root
 
+/**
+ * Dto entity for deserialization internal data into xml.
+ */
 @Root(name = "Header", strict = false)
 data class XMLPassportDto(
         @field:Element(required = false) var siteId: Long? = null,

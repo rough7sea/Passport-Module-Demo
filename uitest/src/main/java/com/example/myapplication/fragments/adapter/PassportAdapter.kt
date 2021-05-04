@@ -19,9 +19,8 @@ class PassportAdapter : RecyclerView.Adapter<MyViewHolder>() {
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem = passportList[position]
         holder.itemView.passport_id_textView.text = currentItem.passport_id.toString()
-        holder.itemView.passport_siteId_editText.text = currentItem.siteId.toString()
+        holder.itemView.passport_sectionName_editText.text = currentItem.sectionName
         holder.itemView.passport_changeDate_editText.text = currentItem.changeDate.toString()
-
     }
 
     override fun getItemCount(): Int = passportList.size

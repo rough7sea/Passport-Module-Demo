@@ -1,5 +1,6 @@
 package com.example.datamanager.external.handler.impl
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.datamanager.database.AppDatabase
@@ -12,7 +13,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * Implementation [InternalObjectBindingHandler] with [Additional] object.
+ *
+ * @param appDatabase Main application database.
+ * @property currentAdditionals current [Additional]'s map with *<Number, additional ID>* format.
+ * @property currentNumber current number of selected object.
+ * @property result main return [LiveData] object.
+ */
 class AdditionalBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBindingHandler<Additional> {
+
     private val additionalRepository = AdditionalRepository(appDatabase.additionalDao())
     private var currentAdditionals: Map<Int, Long> = mutableMapOf()
     private var currentNumber: Int = -1
@@ -26,14 +36,7 @@ class AdditionalBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBin
                 return@launch
             }
             result.postValue(LoadResult.Loading())
-
-            val additionalId = currentAdditionals[currentNumber]
-            if (additionalId != null){
-                val additional = additionalRepository.getById(additionalId)
-                result.postValue(LoadResult.Success(additional!!))
-            } else {
-                result.postValue(LoadResult.Error(Exception("Internal Error")))
-            }
+            getObjectByNumber(result, currentNumber)
         }
         return result
     }
@@ -55,6 +58,7 @@ class AdditionalBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBin
                 .filterValues { it == internalObject.add_id }.keys
                 .toList()[0]
 
+            Log.i("ADDITIONAL_HANDLER", "Set additional to handler with id[${internalObject.add_id}]")
             result.postValue(LoadResult.Success(internalObject))
         }
         return result
@@ -92,13 +96,26 @@ class AdditionalBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBin
         return result
     }
 
+    /**
+     * Find additional in [currentAdditionals] map by number.
+     *
+     * @param result [LiveData] to collect result.
+     * @param currentNumber additional object number to receive.
+     */
     private fun getObjectByNumber(result: MutableLiveData<LoadResult<Additional>>, currentNumber: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             val additionalId = currentAdditionals[currentNumber]
-            if (additionalId != null) {
+            if (additionalId != null){
                 val additional = additionalRepository.getById(additionalId)
-                result.postValue(LoadResult.Success(additional!!))
+                if (additional != null){
+                    result.postValue(LoadResult.Success(additional))
+                } else {
+                    Log.e("ADDITIONAL_HANDLER", "There are no Additional in system with id[$additionalId]")
+                    result.postValue(LoadResult.Error(
+                            RuntimeException("There are no Additional in system with id[$additionalId]")))
+                }
             } else {
+                Log.e("ADDITIONAL_HANDLER", "Additional id can't be null")
                 result.postValue(LoadResult.Error(Exception("Internal Error")))
             }
         }

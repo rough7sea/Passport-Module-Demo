@@ -2,11 +2,8 @@ package com.example.myapplication.fragments.list
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,8 +17,8 @@ class PassportListFragment : Fragment() {
     private lateinit var mPassportViewModel: PassportViewModel
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_passport_list, container, false)
@@ -41,6 +38,10 @@ class PassportListFragment : Fragment() {
         return view
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.delete_menu, menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_delete){
             deleteAllPassports()
@@ -53,13 +54,11 @@ class PassportListFragment : Fragment() {
         builder.setPositiveButton("Yes"){  _, _ ->
             mPassportViewModel.deleteAllPassports()
             Toast.makeText(
-                requireContext(),
-                "Successfully removed all passports",
-                Toast.LENGTH_SHORT).show()
+                    requireContext(),
+                    "Successfully removed all passports",
+                    Toast.LENGTH_SHORT).show()
         }
-        builder.setNegativeButton("No"){  _, _ ->
-
-        }
+        builder.setNegativeButton("No"){  _, _ -> }
         builder.setTitle("Delete all passports?")
         builder.setMessage("Are you sure you want to delete all passports?")
         builder.create().show()

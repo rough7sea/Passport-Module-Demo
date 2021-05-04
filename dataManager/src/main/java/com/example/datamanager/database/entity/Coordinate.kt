@@ -6,6 +6,12 @@ import androidx.room.PrimaryKey
 import com.example.datamanager.database.DatabaseConst
 import java.util.*
 
+/**
+ * Main Coordinate entity object. Used to save/represent data into the system.
+ *
+ * @param coord_id primary entity id. Must be 0 before inserting new instant in DataBase.
+ * @param changeDate Last time entity changed.
+ */
 @Entity(
         indices = [
                 Index(value = ["coord_id"], unique = true),
@@ -18,6 +24,6 @@ data class Coordinate(
         val coord_id: Long = 0,
         var changeDate: Date = Date(),
 
-        var longitude: Double,
         var latitude: Double,
+        var longitude: Double,
 )

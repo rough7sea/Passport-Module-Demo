@@ -10,7 +10,6 @@ import com.example.myapplication.App
 import com.example.myapplication.R
 import com.example.myapplication.fragments.holder.MyViewHolder
 import kotlinx.android.synthetic.main.additional_layout.view.*
-import kotlinx.android.synthetic.main.tower_layout.view.id_textView
 import kotlinx.android.synthetic.main.tower_layout.view.latitude_textView
 import kotlinx.android.synthetic.main.tower_layout.view.longitude_textView
 import java.util.Collections.emptyList
