@@ -8,9 +8,9 @@ Android application with main task "Automation of monitoring the state of infras
 
 
 #### Data Manager module
+ - Kotlin components
  - Room components
  - Lifecycle components
- - Kotlin components
  - XML, JSON
  - Dokka (documentation)
  - Gralde

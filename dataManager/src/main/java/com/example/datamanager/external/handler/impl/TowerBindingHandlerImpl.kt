@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.datamanager.database.AppDatabase
+import com.example.datamanager.database.entity.Additional
 import com.example.datamanager.database.entity.Tower
 import com.example.datamanager.database.repository.impl.TowerRepository
 import com.example.datamanager.external.entities.LoadResult
@@ -14,6 +15,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
+/**
+ * Implementation [InternalObjectBindingHandler] with [Tower] object.
+ *
+ * @param appDatabase Main application database.
+ * @property currentTowers current [Tower]'s map with *<Number, Tower ID>* format.
+ * @property currentNumber current number of selected object.
+ * @property result main return [LiveData] object.
+ */
 class TowerBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBindingHandler<Tower> {
 
     private val towerRepository = TowerRepository(appDatabase.towerDao())
@@ -91,6 +100,12 @@ class TowerBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBindingH
         return result
     }
 
+    /**
+     * Find tower in [currentTowers] map by number.
+     *
+     * @param result [LiveData] to collect result.
+     * @param currentNumber tower object number to receive.
+     */
     private fun getObjectByNumber(result: MutableLiveData<LoadResult<Tower>>, currentNumber: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             val towerId = currentTowers[currentNumber]
@@ -99,6 +114,7 @@ class TowerBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBindingH
                 if (tower != null){
                     result.postValue(LoadResult.Success(tower))
                 } else {
+                    Log.e("TOWER_HANDLER", "There are no Tower in system with id[$towerId]")
                     result.postValue(LoadResult.Error(
                             RuntimeException("There are no Tower in system with id[$towerId]")))
                 }

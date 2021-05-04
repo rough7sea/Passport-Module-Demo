@@ -12,6 +12,8 @@ class TowerRepository(private val towerDao: TowerDAO) : Repository<Tower> {
 
     fun findAllByPassportId(passport_id: Long) = towerDao.getByPassportId(passport_id)
 
+    fun findAllByCoordinateId(coord_id: Long) = towerDao.getByCoordinateId(coord_id)
+
     override fun getData(): LiveData<List<Tower>> = towerDao.getAll()
 
     override fun getById(id: Long): Tower? = towerDao.getById(id)

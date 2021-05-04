@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.TowerHandlerTestFragment">
+    tools:context=".fragments.testfragment.TowerHandlerTestFragment">
 
     <include
         android:id="@+id/handler_tower_layout"

@@ -46,11 +46,6 @@ class AddTowerFragment : Fragment() {
             insertDataToDataBase(view)
         }
 
-        view.editAssertNum.setOnClickListener {
-            val action = AddTowerFragmentDirections.actionAddTowerFragmentToPassportSelectionListFragment()
-            view.findNavController().navigate(action)
-        }
-
         return view
     }
 

@@ -4,6 +4,14 @@ import androidx.room.*
 import com.example.datamanager.database.DatabaseConst
 import java.util.*
 
+/**
+ * Main Tower entity object. Used to save/represent data into the system.
+ *
+ * @param tower_id primary entity id. Must be 0 before inserting new instant in DataBase.
+ * @param passport_id Entity have foreign key from [Passport] object via *passport_id*.
+ * @param coord_id Entity have foreign key from [Coordinate] object via *coord_id*. Can be *null* if entity no coordinate.
+ * @param changeDate Last time entity changed.
+ */
 @Entity(
         foreignKeys = [
                 ForeignKey(

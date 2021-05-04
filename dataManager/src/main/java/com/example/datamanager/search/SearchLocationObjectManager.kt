@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.datamanager.external.entities.RequestResult
 
 interface SearchLocationObjectManager<T> {
-    fun findObjects(gpsLocation: Location, radius: Int): MutableLiveData<RequestResult<T>>
-    fun addListenerToNearestObjects(gpsLocation: Location, radius: Int, listener: (List<T>) -> Unit)
+    fun getSearchResult(): MutableLiveData<RequestResult<T>>
+    fun findObjects(gpsLocation: Location, radius: Float): MutableLiveData<RequestResult<T>>
+    fun addListenerToNearestObjects(radius: Float, listener: (List<T>) -> Unit)
 }

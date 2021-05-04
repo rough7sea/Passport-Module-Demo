@@ -13,6 +13,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * Implementation [InternalObjectBindingHandler] with [Additional] object.
+ *
+ * @param appDatabase Main application database.
+ * @property currentAdditionals current [Additional]'s map with *<Number, additional ID>* format.
+ * @property currentNumber current number of selected object.
+ * @property result main return [LiveData] object.
+ */
 class AdditionalBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBindingHandler<Additional> {
 
     private val additionalRepository = AdditionalRepository(appDatabase.additionalDao())
@@ -88,6 +96,12 @@ class AdditionalBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBin
         return result
     }
 
+    /**
+     * Find additional in [currentAdditionals] map by number.
+     *
+     * @param result [LiveData] to collect result.
+     * @param currentNumber additional object number to receive.
+     */
     private fun getObjectByNumber(result: MutableLiveData<LoadResult<Additional>>, currentNumber: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             val additionalId = currentAdditionals[currentNumber]
@@ -96,6 +110,7 @@ class AdditionalBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBin
                 if (additional != null){
                     result.postValue(LoadResult.Success(additional))
                 } else {
+                    Log.e("ADDITIONAL_HANDLER", "There are no Additional in system with id[$additionalId]")
                     result.postValue(LoadResult.Error(
                             RuntimeException("There are no Additional in system with id[$additionalId]")))
                 }

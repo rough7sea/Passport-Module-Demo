@@ -4,6 +4,12 @@ import androidx.room.*
 import com.example.datamanager.database.DatabaseConst
 import java.util.*
 
+/**
+ * Main Passport entity object. Used to save/represent data into the system.
+ *
+ * @param passport_id primary entity id. Must be 0 before inserting new instant in DataBase.
+ * @param changeDate Last time entity changed.
+ */
 @Entity(
         indices = [
                 Index("passport_id", unique = true),

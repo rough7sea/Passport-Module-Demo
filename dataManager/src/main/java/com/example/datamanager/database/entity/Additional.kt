@@ -5,6 +5,14 @@ import androidx.room.ForeignKey.CASCADE
 import com.example.datamanager.database.DatabaseConst
 import java.util.*
 
+/**
+ * Main Additional entity object. Used to save/represent data into the system.
+ *
+ * @param add_id primary entity id. Must be 0 before inserting new instant in DataBase.
+ * @param tower_id Entity have foreign key from [Tower] object via *tower_id*.
+ * @param coord_id Entity have foreign key from [Coordinate] object via *coord_id*. Can be *null* if entity no coordinate.
+ * @param changeDate Last time entity changed.
+ */
 @Entity(
         foreignKeys = [
                 ForeignKey(

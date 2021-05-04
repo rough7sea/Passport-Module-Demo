@@ -22,7 +22,11 @@ import org.simpleframework.xml.core.Persister
 import org.simpleframework.xml.core.ValueRequiredException
 import java.io.File
 
-
+/**
+ * Implementation [ImportFileManager].
+ *
+ * @param appDatabase Main application database.
+ */
 class ImportFileManagerImpl(appDatabase: AppDatabase)
     : ImportFileManager
 {

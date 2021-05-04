@@ -9,23 +9,10 @@ dokkaHtml.configure {
     dokkaSourceSets {
         named("main") {
             noAndroidSdkLink.set(false)
+            includeNonPublic.set(true)
         }
     }
 }
-
-//tasks.dokkaHtml.configure {
-////    outputDirectory.set(buildDir.resolve("dokka"))
-//    moduleDisplayName = "Passport module demo"
-//}
-
-//tasks.named("dokkaHtml") {
-////    outputDirectory.set(buildDir.resolve("dokka"))
-//}
-//
-//dokkaHtml {
-//    outputFormat = 'javadoc'
-//    outputDirectory = "$buildDir/javadoc"
-//}
 
 android {
     compileSdkVersion 30
@@ -86,8 +73,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
 
     // Kotlin components
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.31'
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8"
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.32'
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2-native-mt"
 
     //DataBinding

@@ -11,6 +11,8 @@ class AdditionalRepository(private val additionalDAO: AdditionalDAO) : Repositor
 
     fun findAllByTowerId(tower_id: Long) = additionalDAO.getByTowerId(tower_id)
 
+    fun findAllByCoordinateId(coord_id: Long) = additionalDAO.getByCoordinateId(coord_id)
+
     override fun getData(): LiveData<List<Additional>> = additionalDAO.getAll()
 
     override fun getById(id: Long): Additional? = additionalDAO.getById(id)

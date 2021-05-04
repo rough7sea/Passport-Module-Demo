@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_MainFragment_to_additionalListFragment"
             app:destination="@id/additionalListFragment" />
+        <action
+            android:id="@+id/action_MainFragment_to_searchTestFragment"
+            app:destination="@id/searchTestFragment" />
     </fragment>
 
     <fragment
@@ -35,9 +38,6 @@
         <action
             android:id="@+id/action_addTowerFragment_to_towerListFragment"
             app:destination="@id/towerListFragment" />
-        <action
-            android:id="@+id/action_addTowerFragment_to_passportSelectionListFragment"
-            app:destination="@id/passportSelectionListFragment" />
     </fragment>
     <fragment
         android:id="@+id/coordinateListFragment"
@@ -66,17 +66,8 @@
             app:destination="@id/MainFragment" />
     </fragment>
     <fragment
-        android:id="@+id/passportSelectionListFragment"
-        android:name="com.example.myapplication.fragments.selection.PassportSelectionListFragment"
-        android:label="fragment_passport_selection_list"
-        tools:layout="@layout/fragment_passport_selection_list" >
-        <action
-            android:id="@+id/action_passportSelectionListFragment_to_addTowerFragment"
-            app:destination="@id/addTowerFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/handlerTestFragment"
-        android:name="com.example.myapplication.fragments.TowerHandlerTestFragment"
+        android:name="com.example.myapplication.fragments.testfragment.TowerHandlerTestFragment"
         android:label="fragment_handler_test"
         tools:layout="@layout/fragment_tower_handler_test" >
         <action
@@ -85,7 +76,7 @@
     </fragment>
     <fragment
         android:id="@+id/additionalHandlerTestFragment"
-        android:name="com.example.myapplication.fragments.AdditionalHandlerTestFragment"
+        android:name="com.example.myapplication.fragments.testfragment.AdditionalHandlerTestFragment"
         android:label="fragment_additional_handler_test"
         tools:layout="@layout/fragment_additional_handler_test" >
         <action
@@ -99,6 +90,15 @@
         tools:layout="@layout/fragment_additional_list" >
         <action
             android:id="@+id/action_additionalListFragment_to_MainFragment"
+            app:destination="@id/MainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchTestFragment"
+        android:name="com.example.myapplication.fragments.testfragment.SearchTestFragment"
+        android:label="fragment_search_test"
+        tools:layout="@layout/fragment_search_test" >
+        <action
+            android:id="@+id/action_searchTestFragment_to_MainFragment"
             app:destination="@id/MainFragment" />
     </fragment>
 </navigation>

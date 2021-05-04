@@ -20,6 +20,9 @@ import java.io.File
 
 /**
  * Main API point for module.
+ * Use the [DataManager.build] factory method to
+ * create an instance of this fragment.
+ *
  * @property database Main application database.
  * @property searchLocationObjectManager Search Location Manager.
  */
@@ -51,10 +54,14 @@ class DataManager(
      * - Require Application [Context] to get GPS/location permission.
      */
     companion object Builder{
+
         private lateinit var appDatabase: AppDatabase
         private lateinit var searchLocationObjectManager: SearchLocationObjectManager<Any>
 
         /**
+         * Use this method to initialize a new instance of
+         * this Data Manager using the provided parameters.
+         *
          * @param [locationManager] require Location Manager to get GPS/location data.
          * @param context require Application Context to get GPS/location permission.
          */
@@ -63,6 +70,9 @@ class DataManager(
             this.searchLocationObjectManager = SearchLocationObjectManagerImpl(locationManager, context, appDatabase)
         }
 
+        /**
+         * Use this factory method to create a new instance of this Data Manager.
+         */
         fun build() =
             if (::appDatabase.isInitialized && ::searchLocationObjectManager.isInitialized)
                 DataManager(appDatabase, searchLocationObjectManager)
@@ -77,11 +87,14 @@ class DataManager(
     override fun <B : Any> export(bindingEntity: B, destinationPath: File): LiveData<WorkResult> =
         exportFileManager.export(bindingEntity, destinationPath)
 
-    override fun findObjects(gpsLocation: Location, radius: Int): MutableLiveData<RequestResult<Any>> =
+    override fun getSearchResult(): MutableLiveData<RequestResult<Any>> =
+        searchLocationObjectManager.getSearchResult()
+
+    override fun findObjects(gpsLocation: Location, radius: Float): MutableLiveData<RequestResult<Any>> =
         searchLocationObjectManager.findObjects(gpsLocation, radius)
 
-    override fun addListenerToNearestObjects(gpsLocation: Location, radius: Int, listener: (List<Any>) -> Unit) =
-        searchLocationObjectManager.addListenerToNearestObjects(gpsLocation, radius, listener)
+    override fun addListenerToNearestObjects(radius: Float, listener: (List<Any>) -> Unit) =
+        searchLocationObjectManager.addListenerToNearestObjects(radius, listener)
 
     override fun <T> getActualObject(clazz: Class<T>): LiveData<LoadResult<T>> =
         objectBindingHandler.getActualObject(clazz)
