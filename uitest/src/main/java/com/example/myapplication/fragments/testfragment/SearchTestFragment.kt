@@ -2,6 +2,7 @@ package com.example.myapplication.fragments.testfragment
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
@@ -33,25 +34,32 @@ class SearchTestFragment : Fragment() {
             it.data?.forEach { obj ->
                 Log.i("SEARCH_TEST_FRAGMENT", obj.toString())
             }
-            view.textView_object_count.text = it.data?.size.toString()
+            view.textView_object_count.text = (it.data?.size ?: 0).toString()
             requireActivity().runOnUiThread {
-                Toast.makeText(activity, "Receive [${it.data?.size}] objects.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Receive [${it.data?.size ?: 0}] objects.", Toast.LENGTH_SHORT).show()
             }
         })
 
+        val listener = LocationListener {  }
+
         view.listen_button.setOnClickListener {
+            locationManager.removeUpdates(listener)
             val radius = view.edit_radius_field.text.toString()
 
             view.edit_longitude_field.text = "Nan"
             view.edit_latitude_field.text = "Nan"
             if (radius.isNotEmpty()) {
-                searchLocationObjectManager.addListenerToNearestObjects(radius.toFloat()) {
+                searchLocationObjectManager.addListenerToNearestObjects(radius.toFloat()){
                     view.textView_object_count.text = it.size.toString()
                     it.forEach { obj ->
                         Log.i("SEARCH_TEST_FRAGMENT", obj.toString())
                     }
                     requireActivity().runOnUiThread {
-                        Toast.makeText(activity, "Receive [${it.size}] objects.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            activity,
+                            "Receive [${it.size}] objects.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             } else {
@@ -62,6 +70,7 @@ class SearchTestFragment : Fragment() {
         }
 
         view.search_button.setOnClickListener {
+            locationManager.removeUpdates(listener)
             val radius = view.edit_radius_field.text.toString()
             if (ActivityCompat.checkSelfPermission(
                     requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
@@ -69,9 +78,10 @@ class SearchTestFragment : Fragment() {
                     requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED) {
                 Log.e("SEARCH_LOCATION_MANAGER", "Location permission denied")
-                throw RuntimeException("Location permission denied")
+                Toast.makeText(activity, "Location permission denied", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 * 10L, radius.toFloat(), {})
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 * 10L, 1f, listener)
             CoroutineScope(Dispatchers.IO).launch {
                 val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 if (radius.isNotEmpty() && location != null){

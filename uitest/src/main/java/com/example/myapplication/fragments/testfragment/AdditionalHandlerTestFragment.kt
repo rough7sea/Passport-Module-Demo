@@ -11,7 +11,12 @@ import com.example.datamanager.database.repository.impl.AdditionalRepository
 import com.example.datamanager.external.entities.LoadResult
 import com.example.myapplication.App
 import com.example.myapplication.R
+import kotlinx.android.synthetic.main.fragment_additional_handler_test.view.*
 import kotlinx.android.synthetic.main.fragment_tower_handler_test.view.*
+import kotlinx.android.synthetic.main.fragment_tower_handler_test.view.get_button
+import kotlinx.android.synthetic.main.fragment_tower_handler_test.view.next_button
+import kotlinx.android.synthetic.main.fragment_tower_handler_test.view.prev_button
+import kotlinx.android.synthetic.main.fragment_tower_handler_test.view.set_button
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,14 +30,20 @@ class AdditionalHandlerTestFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_additional_handler_test, container, false)
 
         handler.getActualObject(Additional::class.java).observe(viewLifecycleOwner, {
             when(it){
-                is LoadResult.Loading -> view.liveDataTextResult.text = "Loading"
-                is LoadResult.Success -> view.liveDataTextResult.text = it.data.toString()
-                is LoadResult.Error -> view.liveDataTextResult.text = it.error?.message ?: it.error.toString()
+                is LoadResult.Loading ->{
+                    view.additional_liveDataTextResult.text = "Loading"
+                }
+                is LoadResult.Success -> {
+                    view.additional_liveDataTextResult.text = it.data.toString()
+                    view.add_number_textView.text = it.data?.number
+                }
+                is LoadResult.Error -> {
+                    view.additional_liveDataTextResult.text = it.error?.message ?: it.error.toString()
+                }
             }
         })
 
@@ -64,5 +75,4 @@ class AdditionalHandlerTestFragment : Fragment() {
 
         return view
     }
-
 }

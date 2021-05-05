@@ -73,7 +73,7 @@ class SearchLocationObjectManagerImpl(
         }
         locationManager.requestLocationUpdates(
             LocationManager.GPS_PROVIDER,
-            1000 * 10L, radius){ location ->
+            100 * 10L, radius){ location ->
 
             val findObjects = findObjects(location, radius)
             findObjects.observeForever {

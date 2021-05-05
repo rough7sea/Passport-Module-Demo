@@ -76,7 +76,6 @@ class MainFragment : Fragment() {
             import("fullTower.xml", view)
         }
 
-
         view.export_button.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 val towers = towerRepository.findAll()
@@ -148,47 +147,28 @@ class MainFragment : Fragment() {
         inflater.inflate(R.menu.delete_menu, menu)
     }
 
-
     private fun initData(){
         CoroutineScope(Dispatchers.IO).launch {
-            // TODO correct test data
             val passports = listOf(
-                Passport(0, Date(), "123", 123, "123", "123", "123"),
-//                Passport(0, Date(), "111", 111, "111", "111", "111"),
-//                Passport(0, Date(), "112", 112, "112", "112", "112"),
+                Passport(0, Date(), "test", 123, "test", "test", "test"),
             )
             val coordinates = listOf(
                 Coordinate(0, Date(), 60.014443, 30.648889),
                 Coordinate(0, Date(), 60.017926, 30.664085),
+                Coordinate(0, Date(), 60.015179, 30.673251),
                 Coordinate(0, Date(), 60.016507, 30.666208),
-                Coordinate(0, Date(), 60.015179, 30.673251)
+                Coordinate(0, Date(), 60.017678, 30.681093),
+                Coordinate(0, Date(), 60.013649, 30.666173),
             )
             val towers = listOf(
-                Tower(0, 1, 1, Date(), "obj 970", "123", number = "123f"),
-                Tower(0, 1, 2, Date(), "obj 254", "111", number = "111f"),
-                Tower(0, 1, 3, Date(), "obj 79", "112", number = "112f"),
-//                Tower(0, 1, null, Date(), "113", "113", number = "113f"),
-//                Tower(0, 2, 2, Date(), "114", "114", number = "114f"),
-//                Tower(0, 2, 3, Date(), "115", "115", number = "115f"),
-//                Tower(0, 2, 1, Date(), "116", "116", number = "116f"),
-//                Tower(0, 2, null, Date(), "117", "117", number = "117f"),
-//                Tower(0, 3, 3, Date(), "118", "118", number = "118f"),
-//                Tower(0, 3, 1, Date(), "119", "119", number = "119f"),
-//                Tower(0, 3, 2, Date(), "120", "120", number = "120f"),
-//                Tower(0, 3, null, Date(), "121", "121", number = "121f"),
-//                Tower(0, 3, null, Date(), "122", "122", number = "122f"),
-//                Tower(0, 3, null, Date(), "124", "124", number = "124f"),
+                Tower(0, 1, 1, Date(), "dist 980", "980", number = "1f"),
+                Tower(0, 1, 2, Date(), "dist 270", "270", number = "3f"),
+                Tower(0, 1, 3, Date(), "dist 386", "386", number = "5f"),
+                Tower(0, 1, 5, Date(), "dist 850", "850", number = "7f"),
                 )
             val additionals = listOf(
-                Additional(0, 1, 4, Date(), "obj 393", "2r"),
-//                Additional(0, 1, 3, Date(), "syper", "4r"),
-//                Additional(0, 1, null, Date(), "ko syper", "5r"),
-//                Additional(0, 2, 1, Date(), "syper", "6r"),
-//                Additional(0, 2, 2, Date(), "sper", "7r"),
-//                Additional(0, 2, 3, Date(), "sypr", "8r"),
-//                Additional(0, 2, null, Date(), "sypREer", "9r"),
-//                Additional(0, 3, null, Date(), "syperRR", "10r"),
-//                Additional(0, 3, 1, Date(), "ultra syper", "1r"),
+                Additional(0, 1, 4, Date(), "obj 89", "2test"),
+                Additional(0, 1, 6, Date(), "obj 226", "4test"),
             )
             passportRepository.addAll(passports)
             coordinateRepository.addAll(coordinates)
