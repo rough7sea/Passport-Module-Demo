@@ -40,11 +40,6 @@
             app:destination="@id/towerListFragment" />
     </fragment>
     <fragment
-        android:id="@+id/coordinateListFragment"
-        android:name="com.example.myapplication.fragments.list.CoordinateListFragment"
-        android:label="fragment_coordinate_list"
-        tools:layout="@layout/fragment_coordinate_list" />
-    <fragment
         android:id="@+id/towerListFragment"
         android:name="com.example.myapplication.fragments.list.TowerListFragment"
         android:label="fragment_tower_list"
@@ -55,6 +50,9 @@
         <action
             android:id="@+id/action_towerListFragment_to_MainFragment"
             app:destination="@id/MainFragment" />
+        <action
+            android:id="@+id/action_towerListFragment_to_towerUpdateFragment"
+            app:destination="@id/towerUpdateFragment" />
     </fragment>
     <fragment
         android:id="@+id/passportListFragment"
@@ -100,5 +98,18 @@
         <action
             android:id="@+id/action_searchTestFragment_to_MainFragment"
             app:destination="@id/MainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/towerUpdateFragment"
+        android:name="com.example.myapplication.fragments.update.TowerUpdateFragment"
+        android:label="fragment_tower_update"
+        tools:layout="@layout/fragment_tower_update" >
+        <action
+            android:id="@+id/action_towerUpdateFragment_to_towerListFragment"
+            app:destination="@id/towerListFragment" />
+        <argument
+            android:name="currentTower"
+            app:argType="com.example.datamanager.database.entity.Tower"
+            />
     </fragment>
 </navigation>

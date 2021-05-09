@@ -1,7 +1,9 @@
 package com.example.datamanager.database.entity
 
+import android.os.Parcelable
 import androidx.room.*
 import com.example.datamanager.database.DatabaseConst
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 /**
@@ -17,6 +19,7 @@ import java.util.*
         ],
         tableName = DatabaseConst.PASSPORT_TABLE_NAME
 )
+@Parcelize
 data class Passport (
         @PrimaryKey(autoGenerate = true)
         val passport_id: Long = 0,
@@ -37,4 +40,4 @@ data class Passport (
         var initialM: Int?= null,
         var plotLength: Int?= null,
         var suspensionAmount: Int? = null,
-)
+) : Parcelable

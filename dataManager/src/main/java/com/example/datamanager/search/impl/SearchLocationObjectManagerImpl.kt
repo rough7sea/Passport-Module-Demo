@@ -36,18 +36,18 @@ class SearchLocationObjectManagerImpl(
         CoroutineScope(Dispatchers.IO).launch {
             result.postValue(RequestResult.Loading())
 
-            val coordinates = coordinateRepository.findAll()
-                .filter { Utils.distanceInMeters(it.latitude, it.longitude, gpsLocation.latitude, gpsLocation.longitude) <= radius }
+            val objects = mutableListOf<Any>()
 
-            if (coordinates.isEmpty()){
-                result.postValue(RequestResult.Error(RuntimeException("There are no objects in this area")))
-                return@launch
+            coordinateRepository.findAll().forEach {
+                if (Utils.distanceInMeters(it.latitude, it.longitude, gpsLocation.latitude, gpsLocation.longitude) <= radius){
+                    objects.addAll(towerRepository.findAllByCoordinateId(it.coord_id))
+                    objects.addAll(additionalRepository.findAllByCoordinateId(it.coord_id))
+                }
             }
 
-            val objects = mutableListOf<Any>()
-            coordinates.forEach {
-                objects.addAll(towerRepository.findAllByCoordinateId(it.coord_id))
-                objects.addAll(additionalRepository.findAllByCoordinateId(it.coord_id))
+            if (objects.isEmpty()){
+                result.postValue(RequestResult.Error(RuntimeException("There are no objects in this area")))
+                return@launch
             }
 
             Log.i("SEARCH_LOCATION_MANAGER",

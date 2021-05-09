@@ -1,8 +1,10 @@
 package com.example.datamanager.database.entity
 
+import android.os.Parcelable
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 import com.example.datamanager.database.DatabaseConst
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 /**
@@ -36,6 +38,7 @@ import java.util.*
         ],
         tableName = DatabaseConst.ADDITIONAL_TABLE_NAME
 )
+@Parcelize
 data class Additional(
         @PrimaryKey(autoGenerate = true)
         val add_id: Long = 0,
@@ -45,4 +48,4 @@ data class Additional(
 
         var type: String?,
         var number: String,
-)
+) : Parcelable

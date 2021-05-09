@@ -112,7 +112,7 @@ class AdditionalBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBin
                 } else {
                     Log.e("ADDITIONAL_HANDLER", "There are no Additional in system with id[$additionalId]")
                     result.postValue(LoadResult.Error(
-                            RuntimeException("There are no Additional in system with id[$additionalId]")))
+                        RuntimeException("There are no Additional in system with id[$additionalId]")))
                 }
             } else {
                 Log.e("ADDITIONAL_HANDLER", "Additional id can't be null")

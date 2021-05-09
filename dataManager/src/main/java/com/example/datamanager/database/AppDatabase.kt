@@ -17,9 +17,9 @@ import com.example.datamanager.database.entity.Passport
 import com.example.datamanager.database.entity.Tower
 
 @Database(
-        entities = [Tower::class, Passport::class, Additional::class, Coordinate::class],
-        version = 1,
-        exportSchema = false,
+    entities = [Tower::class, Passport::class, Additional::class, Coordinate::class],
+    version = 1,
+    exportSchema = false,
 )
 @TypeConverters(Converter::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -29,6 +29,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun additionalDao(): AdditionalDAO
 
     companion object Builder{
+        @Volatile
         private lateinit var appDatabase: AppDatabase
 
         fun initialize(context: Context) = apply{

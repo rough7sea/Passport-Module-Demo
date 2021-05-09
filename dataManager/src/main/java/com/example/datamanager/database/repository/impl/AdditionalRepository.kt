@@ -7,7 +7,7 @@ import com.example.datamanager.database.entity.Additional
 import com.example.datamanager.database.repository.Repository
 import com.example.datamanager.utli.QueryBuilder
 
-class AdditionalRepository(private val additionalDAO: AdditionalDAO) : Repository<Additional>{
+class AdditionalRepository(private val additionalDAO: AdditionalDAO) : BaseRepository<Additional>(additionalDAO){
 
     fun findAllByTowerId(tower_id: Long) = additionalDAO.getByTowerId(tower_id)
 
@@ -17,21 +17,7 @@ class AdditionalRepository(private val additionalDAO: AdditionalDAO) : Repositor
 
     override fun getById(id: Long): Additional? = additionalDAO.getById(id)
 
-    override fun add(addObject: Additional): Long = additionalDAO.insert(addObject)
-
-    override fun addAll(addObjects: List<Additional>) = additionalDAO.insert(addObjects)
-
-    override fun update(updateObject: Additional) = additionalDAO.update(updateObject)
-
-    override fun delete(deleteObject: Additional)  = additionalDAO.delete(deleteObject)
-
     override fun deleteAll() = additionalDAO.deleteAll()
-
-    override fun findWithParameters(query: SupportSQLiteQuery): List<Additional> =
-        additionalDAO.getWithParameters(query)
-
-    override fun findCurrentWithParameter(query: SupportSQLiteQuery): Additional? =
-        additionalDAO.getCurrentObjectWithParameters(query)
 
     override fun findAll(): List<Additional> =
         additionalDAO.getWithParameters(QueryBuilder.buildSelectAllQuery(Additional::class.java))

@@ -8,8 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.example.datamanager.database.entity.Coordinate
 import com.example.datamanager.database.entity.Passport
 import com.example.datamanager.database.entity.Tower
@@ -22,6 +20,7 @@ import kotlinx.android.synthetic.main.fragment_add_tower.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
 
 class AddTowerFragment : Fragment() {
 
@@ -65,14 +64,16 @@ class AddTowerFragment : Fragment() {
                     Log.i("FRAGMENT_TEST", "There are no any passport in system")
                     return@launch
                 }
-                var insert: Long? = null
+                var coord_id: Long? = null
                 if (longitude.isNotEmpty() && latitude.isNotEmpty()){
-                    insert = coordinateRepository.add(Coordinate(longitude = longitude.toDouble(), latitude = latitude.toDouble()))
-                    if (insert == -1L){
-                        insert = coordinateRepository.getCoordinateByLongitudeAndLatitude(longitude.toDouble(), latitude.toDouble())!!.coord_id
+                    coord_id = coordinateRepository.add(
+                        Coordinate(0, Date(), latitude.toDouble(), longitude.toDouble()))
+                    if (coord_id == -1L){
+                        coord_id = coordinateRepository
+                            .getCoordinateByLongitudeAndLatitude(latitude.toDouble(), longitude.toDouble())!!.coord_id
                     }
                 }
-                val tower = Tower(0, passports[(passports.indices).random()].passport_id, insert,
+                val tower = Tower(0, passports[(passports.indices).random()].passport_id, coord_id,
                     idtf = editIDTF, assetNum = assertNum, number = number)
                 towerRepository.add(tower)
                 requireActivity().runOnUiThread {
@@ -80,7 +81,6 @@ class AddTowerFragment : Fragment() {
                     Toast.makeText(requireContext(), "Successfully added!", Toast.LENGTH_LONG).show()
                 }
             }
-            findNavController().navigate(R.id.action_addTowerFragment_to_towerListFragment)
         } else {
             Toast.makeText(requireContext(), "Fill out all fields", Toast.LENGTH_LONG).show()
         }

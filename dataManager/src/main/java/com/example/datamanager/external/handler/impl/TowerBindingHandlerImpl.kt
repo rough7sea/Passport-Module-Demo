@@ -54,13 +54,13 @@ class TowerBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBindingH
             var count = 0
 
             currentTowers = towers
-                    .sortedBy { Integer.valueOf(Utils.clearNumber(it.number)) }
-                    .map { count++ to it.tower_id }
-                    .toMap()
+                .sortedBy { Integer.valueOf(Utils.clearNumber(it.number)) }
+                .map { count++ to it.tower_id }
+                .toMap()
 
             currentNumber = currentTowers
-                    .filterValues { it == internalObject.tower_id }.keys
-                    .toList()[0]
+                .filterValues { it == internalObject.tower_id }.keys
+                .toList()[0]
 
             Log.i("TOWER_HANDLER", "Set tower to handler with id[${internalObject.tower_id}]")
             result.postValue(LoadResult.Success(internalObject))
@@ -116,7 +116,7 @@ class TowerBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBindingH
                 } else {
                     Log.e("TOWER_HANDLER", "There are no Tower in system with id[$towerId]")
                     result.postValue(LoadResult.Error(
-                            RuntimeException("There are no Tower in system with id[$towerId]")))
+                        RuntimeException("There are no Tower in system with id[$towerId]")))
                 }
             } else {
                 Log.e("TOWER_HANDLER", "Tower id can't be null")

@@ -55,11 +55,8 @@ class SearchTestFragment : Fragment() {
                         Log.i("SEARCH_TEST_FRAGMENT", obj.toString())
                     }
                     requireActivity().runOnUiThread {
-                        Toast.makeText(
-                            activity,
-                            "Receive [${it.size}] objects.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(activity, "Receive [${it.size}] objects.",
+                            Toast.LENGTH_SHORT).show()
                     }
                 }
             } else {

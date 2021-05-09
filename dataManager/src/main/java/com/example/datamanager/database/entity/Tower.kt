@@ -1,7 +1,9 @@
 package com.example.datamanager.database.entity
 
+import android.os.Parcelable
 import androidx.room.*
 import com.example.datamanager.database.DatabaseConst
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 /**
@@ -35,6 +37,7 @@ import java.util.*
         ],
         tableName = DatabaseConst.TOWER_TABLE_NAME
 )
+@Parcelize
 data class Tower(
         @PrimaryKey(autoGenerate = true)
         val tower_id: Long = 0,
@@ -63,4 +66,4 @@ data class Tower(
         var wireType: String? = null,
         var countWire: String? = null,
         var gabarit: String? = null,
-)
+) : Parcelable

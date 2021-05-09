@@ -136,7 +136,7 @@ class Converter {
          */
         fun fromAdditionalToXml(additional: Additional, coordinate: Coordinate?): XMLAdditionalDto{
             with(additional){
-                return XMLAdditionalDto( coordinate?.latitude, coordinate?.longitude,
+                return XMLAdditionalDto(coordinate?.latitude, coordinate?.longitude,
                     simpleDateFormat.format(additional.changeDate), type, number
                 )
             }

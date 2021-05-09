@@ -19,6 +19,6 @@ interface CoordinateDAO : BaseDAO<Coordinate> {
     fun getById(coord_id: Long): Coordinate?
 
     @Query("select * from ${DatabaseConst.COORDINATE_TABLE_NAME} where longitude = :longitude and latitude = :latitude")
-    fun getByLongitudeAndLatitude(longitude: Double, latitude: Double): Coordinate?
+    fun getByLongitudeAndLatitude(latitude: Double, longitude: Double): Coordinate?
 
 }
