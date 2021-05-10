@@ -4,6 +4,9 @@ import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.datamanager.database.dao.BaseDAO
 import com.example.datamanager.database.repository.Repository
 
+/**
+ * Base implementation of [Repository] functionality.
+ */
 abstract class BaseRepository<T>(private val dao : BaseDAO<T>) : Repository<T> {
 
     override fun add(addObject: T): Long = dao.insert(addObject)

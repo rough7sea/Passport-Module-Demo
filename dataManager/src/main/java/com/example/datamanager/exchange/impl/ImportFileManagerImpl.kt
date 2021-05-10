@@ -50,15 +50,14 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
      */
     private val additionalRepository = AdditionalRepository(appDatabase.additionalDao())
 
+    val result = MutableLiveData<WorkResult>()
+
     override fun import(file: File) : LiveData<WorkResult>{
-        val mutableLiveData = MutableLiveData<WorkResult>()
-        importXmlFromFile(file, mutableLiveData)
-        return mutableLiveData
+//        val mutableLiveData = MutableLiveData<WorkResult>()
+        importXmlFromFile(file, result)
+        return result
     }
-
     override fun import(files: List<File>) : LiveData<WorkResult> {
-
-        val result = MutableLiveData<WorkResult>()
 
         CoroutineScope(Dispatchers.IO).launch {
             val exportErrors: MutableList<Exception> = mutableListOf()

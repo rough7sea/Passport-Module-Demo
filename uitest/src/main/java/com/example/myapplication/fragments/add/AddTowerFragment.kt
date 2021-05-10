@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.datamanager.database.entity.Coordinate
@@ -34,12 +35,23 @@ class AddTowerFragment : Fragment() {
         App.getDataManager().getRepository(Passport::class.java) as PassportRepository
     }
 
+    private var _binding: View? = null
+    private val binding get() = _binding!!
+
+    override fun onResume() {
+        super.onResume()
+        val list = passportRepository.findAll().map { it.passport_id.toString() }
+        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, list)
+        binding.addTowerAutoCompleteTextView.setAdapter(arrayAdapter)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_add_tower, container, false)
+        _binding = view
 
         view.addTowerButton.setOnClickListener {
             insertDataToDataBase(view)
@@ -55,13 +67,14 @@ class AddTowerFragment : Fragment() {
         val number = view.editNumber.text.toString()
         val longitude = view.editLongitude.text.toString()
         val latitude = view.editLatitude.text.toString()
+        val passport_id = view.addTowerAutoCompleteTextView.text.toString()
 
 
-        if (inputCheck(editIDTF, assertNum, number)){
+        if (validate(editIDTF, assertNum, number, passport_id)){
             CoroutineScope(Dispatchers.IO).launch {
-                val passports = passportRepository.findAll()
-                if (passports.isEmpty()){
-                    Log.i("FRAGMENT_TEST", "There are no any passport in system")
+                val passport = passportRepository.getById(passport_id.toLong())
+                if (passport == null){
+                    Log.i("FRAGMENT_TEST", "There are no passport with id[$passport_id] in system")
                     return@launch
                 }
                 var coord_id: Long? = null
@@ -73,7 +86,7 @@ class AddTowerFragment : Fragment() {
                             .getCoordinateByLongitudeAndLatitude(latitude.toDouble(), longitude.toDouble())!!.coord_id
                     }
                 }
-                val tower = Tower(0, passports[(passports.indices).random()].passport_id, coord_id,
+                val tower = Tower(0, passport_id.toLong(), coord_id,
                     idtf = editIDTF, assetNum = assertNum, number = number)
                 towerRepository.add(tower)
                 requireActivity().runOnUiThread {
@@ -86,8 +99,12 @@ class AddTowerFragment : Fragment() {
         }
     }
 
-    private fun inputCheck(editIDTF: String, assertNum: String, number: String): Boolean {
-        return !TextUtils.isEmpty(editIDTF) && !TextUtils.isEmpty(assertNum) && !TextUtils.isEmpty(number)
+    private fun validate(vararg args: String): Boolean {
+        for (a in args){
+            if (TextUtils.isEmpty(a)){
+                return false
+            }
+        }
+        return true
     }
-
 }

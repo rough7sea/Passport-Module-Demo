@@ -3,6 +3,9 @@ package com.example.datamanager.database.repository
 import androidx.lifecycle.LiveData
 import androidx.sqlite.db.SupportSQLiteQuery
 
+/**
+ * Main repository API.
+ */
 interface Repository<T> {
 
     fun getData(): LiveData<List<T>>

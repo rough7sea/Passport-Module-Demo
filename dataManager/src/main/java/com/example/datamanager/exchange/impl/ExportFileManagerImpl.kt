@@ -37,10 +37,9 @@ class ExportFileManagerImpl(appDatabase: AppDatabase)
     private val towerRepository = TowerRepository(appDatabase.towerDao())
     private val coordinateRepository = CoordinateRepository(appDatabase.coordinateDao())
     private val additionalRepository = AdditionalRepository(appDatabase.additionalDao())
-
+    private val result = MutableLiveData<WorkResult>()
 
     override fun <B : Any> export(@NotNull bindingEntity: B,@NotNull destinationPath: File) : LiveData<WorkResult> {
-        val result = MutableLiveData<WorkResult>()
         CoroutineScope(Dispatchers.IO).launch {
             val error = WorkResult.Error()
 
