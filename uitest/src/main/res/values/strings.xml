@@ -26,4 +26,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="radius">Radius</string>
     <string name="listen_objects">Listen objects</string>
+    <string name="update">Update</string>
 </resources>

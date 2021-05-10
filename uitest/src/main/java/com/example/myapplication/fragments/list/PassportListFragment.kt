@@ -6,6 +6,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.R
 import com.example.myapplication.fragments.adapter.PassportAdapter
@@ -32,6 +33,10 @@ class PassportListFragment : Fragment() {
         mPassportViewModel.readAllData.observe(viewLifecycleOwner, { passports ->
             adapter.setData(passports)
         })
+
+        view.addPassportFloatingActionButton.setOnClickListener {
+            findNavController().navigate(R.id.action_passportListFragment_to_addPassportFragment)
+        }
 
         setHasOptionsMenu(true)
 

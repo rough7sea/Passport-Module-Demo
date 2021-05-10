@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
 import android.widget.ArrayAdapter
-import androidx.fragment.app.Fragment
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.example.datamanager.database.entity.Coordinate
 import com.example.datamanager.database.entity.Passport
@@ -16,12 +16,7 @@ import com.example.datamanager.database.repository.impl.PassportRepository
 import com.example.datamanager.database.repository.impl.TowerRepository
 import com.example.myapplication.App
 import com.example.myapplication.R
-import kotlinx.android.synthetic.main.fragment_add_tower.view.*
-import kotlinx.android.synthetic.main.fragment_add_tower.view.editAssertNum
-import kotlinx.android.synthetic.main.fragment_add_tower.view.editIDTF
-import kotlinx.android.synthetic.main.fragment_add_tower.view.editLatitude
-import kotlinx.android.synthetic.main.fragment_add_tower.view.editLongitude
-import kotlinx.android.synthetic.main.fragment_add_tower.view.editNumber
+import com.example.myapplication.fragments.utils.Utils.validate
 import kotlinx.android.synthetic.main.fragment_tower_update.*
 import kotlinx.android.synthetic.main.fragment_tower_update.view.*
 import kotlinx.coroutines.CoroutineScope
@@ -120,15 +115,6 @@ class TowerUpdateFragment : Fragment() {
         } else {
             Toast.makeText(requireContext(), "Fill out all fields", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun validate(vararg args: String): Boolean {
-        for (a in args){
-            if (TextUtils.isEmpty(a)){
-                return false
-            }
-        }
-        return true
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
