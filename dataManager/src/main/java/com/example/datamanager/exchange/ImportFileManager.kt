@@ -26,4 +26,6 @@ interface ImportFileManager {
      * @return [LiveData] with [WorkResult] value.
      */
     fun import(files: List<File>): LiveData<WorkResult>
+
+    fun getImportResult(): LiveData<WorkResult>
 }

@@ -111,4 +111,10 @@ class DataManager(
     override fun <T> getRepository(clazz: Class<T>): Repository<T> =
         repositoryProvider.getRepository(clazz)
 
+    override fun getImportResult(): LiveData<WorkResult> =
+        importFileManager.getImportResult()
+
+    override fun getExportResult(): LiveData<WorkResult> =
+        exportFileManager.getExportResult()
+
 }

@@ -95,6 +95,12 @@
         <action
             android:id="@+id/action_additionalListFragment_to_MainFragment"
             app:destination="@id/MainFragment" />
+        <action
+            android:id="@+id/action_additionalListFragment_to_addAdditionalFragment"
+            app:destination="@id/addAdditionalFragment" />
+        <action
+            android:id="@+id/action_additionalListFragment_to_additionalUpdateFragment"
+            app:destination="@id/additionalUpdateFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchTestFragment"
@@ -138,6 +144,28 @@
         <argument
             android:name="currentPassport"
             app:argType="com.example.datamanager.database.entity.Passport"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/addAdditionalFragment"
+        android:name="com.example.myapplication.fragments.add.AddAdditionalFragment"
+        android:label="fragment_add_additional"
+        tools:layout="@layout/fragment_add_additional" >
+        <action
+            android:id="@+id/action_addAdditionalFragment_to_additionalListFragment"
+            app:destination="@id/additionalListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/additionalUpdateFragment"
+        android:name="com.example.myapplication.fragments.update.AdditionalUpdateFragment"
+        android:label="fragment_additional_update"
+        tools:layout="@layout/fragment_additional_update" >
+        <action
+            android:id="@+id/action_additionalUpdateFragment_to_additionalListFragment"
+            app:destination="@id/additionalListFragment" />
+        <argument
+            android:name="currentAdditional"
+            app:argType="com.example.datamanager.database.entity.Additional"
             />
     </fragment>
 </navigation>

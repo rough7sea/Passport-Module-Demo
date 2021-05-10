@@ -2,6 +2,7 @@ package com.example.myapplication.fragments.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datamanager.database.entity.Additional
 import com.example.datamanager.database.entity.Coordinate
@@ -9,6 +10,7 @@ import com.example.datamanager.database.repository.impl.CoordinateRepository
 import com.example.myapplication.App
 import com.example.myapplication.R
 import com.example.myapplication.fragments.holder.MyViewHolder
+import com.example.myapplication.fragments.list.AdditionalListFragmentDirections
 import kotlinx.android.synthetic.main.additional_layout.view.*
 import kotlinx.android.synthetic.main.tower_layout.view.latitude_textView
 import kotlinx.android.synthetic.main.tower_layout.view.longitude_textView
@@ -36,6 +38,11 @@ class AdditionalAdapter : RecyclerView.Adapter<MyViewHolder>()  {
                 holder.itemView.longitude_textView.text = coordinate.longitude.toString()
                 holder.itemView.latitude_textView.text = coordinate.latitude.toString()
             }
+        }
+
+        holder.itemView.additional_layout.setOnClickListener {
+            val action = AdditionalListFragmentDirections.actionAdditionalListFragmentToAdditionalUpdateFragment(currentItem)
+            holder.itemView.findNavController().navigate(action)
         }
     }
 

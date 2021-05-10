@@ -29,16 +29,16 @@ class MainFragment : Fragment() {
 
     private val dataManager: DataManager by lazy { App.getDataManager() }
     private val additionalRepository: AdditionalRepository by lazy {
-        App.getDataManager().getRepository(Additional::class.java) as AdditionalRepository
+        dataManager.getRepository(Additional::class.java) as AdditionalRepository
     }
     private val towerRepository: TowerRepository by lazy {
-        App.getDataManager().getRepository(Tower::class.java) as TowerRepository
+        dataManager.getRepository(Tower::class.java) as TowerRepository
     }
     private val coordinateRepository: CoordinateRepository by lazy {
-        App.getDataManager().getRepository(Coordinate::class.java) as CoordinateRepository
+        dataManager.getRepository(Coordinate::class.java) as CoordinateRepository
     }
     private val passportRepository: PassportRepository by lazy {
-        App.getDataManager().getRepository(Passport::class.java) as PassportRepository
+        dataManager.getRepository(Passport::class.java) as PassportRepository
     }
 
     private val filepath = "MyFileStorage"
@@ -63,39 +63,40 @@ class MainFragment : Fragment() {
         }
 
         view.import_button.setOnClickListener {
-            import("0100101M.001.xml", view)
+            import("0100101M.001.xml")
         }
 
         view.import_button2.setOnClickListener {
-            import("fullTower.xml", view)
+            import("fullTower.xml")
         }
 
         view.export_button.setOnClickListener {
-//            CoroutineScope(Dispatchers.IO).launch {
-            val towers = towerRepository.findAll()
-            if (towers.isNotEmpty()){
-                dataManager.export(
-                    towers[0],
-                    File(requireActivity().getExternalFilesDir(filepath), "fullTower.xml")
-                ).observe(viewLifecycleOwner,{
-                    when (it){
-                        is WorkResult.Completed -> {
-                            Toast.makeText(activity, "Successfully exported data", Toast.LENGTH_SHORT).show()
-                        }
-                        is WorkResult.Loading -> {}
-                        is WorkResult.Progress -> {}
-                        is WorkResult.Canceled -> {}
-                        is WorkResult.Error -> {
-                            Toast.makeText(activity, "Unexpected error"  , Toast.LENGTH_SHORT).show()
-                        }
-                        else -> throw Exception("Invalid work result")
+            dataManager.getExportResult().observe(viewLifecycleOwner,{
+                when (it){
+                    is WorkResult.Completed -> {
+                        Toast.makeText(activity, "Successfully exported data", Toast.LENGTH_SHORT).show()
                     }
-                })
-                Log.i("HANDLER_TEST", "Set Tower ${towers[0].coord_id} & ${towers[0].number} to handler")
-            } else {
-                Log.w("HANDLER_TEST", "There are no Towers in database")
+                    is WorkResult.Loading -> {}
+                    is WorkResult.Progress -> {}
+                    is WorkResult.Canceled -> {}
+                    is WorkResult.Error -> {
+                        Toast.makeText(activity, "Unexpected error"  , Toast.LENGTH_SHORT).show()
+                    }
+                    else -> throw Exception("Invalid work result")
+                }
+            })
+            CoroutineScope(Dispatchers.IO).launch {
+                val towers = towerRepository.findAll()
+                if (towers.isNotEmpty()){
+                    dataManager.export(
+                        towers[0],
+                        File(requireActivity().getExternalFilesDir(filepath), "fullTower.xml")
+                    )
+                    Log.i("HANDLER_TEST", "Set Tower ${towers[0].coord_id} & ${towers[0].number} to handler")
+                } else {
+                    Log.w("HANDLER_TEST", "There are no Towers in database")
+                }
             }
-//            }
         }
 
         view.handler_test_button.setOnClickListener {
@@ -129,15 +130,29 @@ class MainFragment : Fragment() {
         return view
     }
 
-    private fun import(fileName: String, view: View) {
-        myExternalFile = File(requireActivity().getExternalFilesDir(filepath), fileName)
-
-        if (myExternalFile != null && myExternalFile!!.length() != 0L){
-            dataManager.import(myExternalFile!!).observeForever {
-                view.data_progress.text = "Progress: ${it.progress.toString()}"
+    private fun import(fileName: String) {
+        dataManager.getImportResult().observe(viewLifecycleOwner,{
+            when (it){
+                is WorkResult.Completed -> {
+                    Toast.makeText(activity, "Successfully imported data", Toast.LENGTH_SHORT).show()
+                }
+                is WorkResult.Loading -> {}
+                is WorkResult.Progress -> {}
+                is WorkResult.Canceled -> {}
+                is WorkResult.Error -> {
+                    Toast.makeText(activity, "Unexpected error"  , Toast.LENGTH_SHORT).show()
+                }
+                else -> throw Exception("Invalid work result")
             }
-        } else {
-            Log.w("FRAGMENT", "file $myExternalFile is empty")
+        })
+        CoroutineScope(Dispatchers.IO).launch {
+            myExternalFile = File(requireActivity().getExternalFilesDir(filepath), fileName)
+
+            if (myExternalFile != null && myExternalFile!!.length() != 0L){
+                dataManager.import(myExternalFile!!)
+            } else {
+                Log.w("FRAGMENT", "file $myExternalFile is empty")
+            }
         }
     }
 

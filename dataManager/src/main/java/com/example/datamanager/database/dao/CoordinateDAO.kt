@@ -10,10 +10,13 @@ import com.example.datamanager.database.entity.Coordinate
 interface CoordinateDAO : BaseDAO<Coordinate> {
 
     @Query("select * from ${DatabaseConst.COORDINATE_TABLE_NAME}")
-    fun  getAll(): LiveData<List<Coordinate>>
+    fun getAll(): LiveData<List<Coordinate>>
 
     @Query("delete from ${DatabaseConst.COORDINATE_TABLE_NAME}")
     fun deleteAll()
+
+    @Query("delete from ${DatabaseConst.COORDINATE_TABLE_NAME} where coord_id = :coord_id")
+    fun deleteById(coord_id: Long)
 
     @Query("select * from ${DatabaseConst.COORDINATE_TABLE_NAME} where coord_id = :coord_id")
     fun getById(coord_id: Long): Coordinate?

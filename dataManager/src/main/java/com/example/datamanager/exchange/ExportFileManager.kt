@@ -19,4 +19,6 @@ interface ExportFileManager{
      * @return [LiveData] with [WorkResult] value.
      */
     fun <B : Any> export(bindingEntity: B, destinationPath: File): LiveData<WorkResult>
+
+    fun getExportResult(): LiveData<WorkResult>
 }

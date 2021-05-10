@@ -12,7 +12,6 @@ import com.example.datamanager.database.repository.impl.PassportRepository
 import com.example.myapplication.App
 import com.example.myapplication.R
 import com.example.myapplication.fragments.utils.Utils.validate
-import kotlinx.android.synthetic.main.fragment_add_passport.view.*
 import kotlinx.android.synthetic.main.fragment_passport_update.*
 import kotlinx.android.synthetic.main.fragment_passport_update.view.*
 import kotlinx.coroutines.CoroutineScope

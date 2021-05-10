@@ -2,28 +2,30 @@ package com.example.myapplication.fragments.add
 
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.fragment.app.Fragment
+import com.example.datamanager.database.entity.Additional
 import com.example.datamanager.database.entity.Coordinate
-import com.example.datamanager.database.entity.Passport
 import com.example.datamanager.database.entity.Tower
+import com.example.datamanager.database.repository.impl.AdditionalRepository
 import com.example.datamanager.database.repository.impl.CoordinateRepository
-import com.example.datamanager.database.repository.impl.PassportRepository
 import com.example.datamanager.database.repository.impl.TowerRepository
 import com.example.myapplication.App
 import com.example.myapplication.R
 import com.example.myapplication.fragments.utils.Utils.validate
+import kotlinx.android.synthetic.main.fragment_add_additional.view.*
 import kotlinx.android.synthetic.main.fragment_add_tower.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
-class AddTowerFragment : Fragment() {
+
+class AddAdditionalFragment : Fragment() {
 
     private val towerRepository: TowerRepository by lazy {
         App.getDataManager().getRepository(Tower::class.java) as TowerRepository
@@ -31,8 +33,8 @@ class AddTowerFragment : Fragment() {
     private val coordinateRepository: CoordinateRepository by lazy {
         App.getDataManager().getRepository(Coordinate::class.java) as CoordinateRepository
     }
-    private val passportRepository: PassportRepository by lazy {
-        App.getDataManager().getRepository(Passport::class.java) as PassportRepository
+    private val additionalRepository: AdditionalRepository by lazy {
+        App.getDataManager().getRepository(Additional::class.java) as AdditionalRepository
     }
 
     private var _binding: View? = null
@@ -40,9 +42,10 @@ class AddTowerFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val list = passportRepository.findAll().map { it.passport_id.toString() }
-        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, list)
-        binding.addTowerAutoCompleteTextView.setAdapter(arrayAdapter)
+        binding.addTowerForAdditionalTextView
+            .setAdapter(ArrayAdapter(requireContext(), R.layout.dropdown_item,
+                towerRepository.findAll().map { it.tower_id.toString() }))
+
     }
 
     override fun onCreateView(
@@ -50,46 +53,38 @@ class AddTowerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_add_tower, container, false)
+        val view = inflater.inflate(R.layout.fragment_add_additional, container, false)
         _binding = view
 
-        view.addTowerButton.setOnClickListener {
-            insertTowerToDataBase()
+        view.addAdditionalButton.setOnClickListener {
+            insertAdditionalIntoDataBase()
         }
 
         return view
     }
 
-    private fun insertTowerToDataBase() {
+    private fun insertAdditionalIntoDataBase() {
+        val type = binding.editAdditionalType.text.toString()
+        val number = binding.editAdditionalNumber.text.toString()
+        val longitude = binding.editAdditionalLongitude.text.toString()
+        val latitude = binding.editAdditionalLatitude.text.toString()
+        val tower_id = binding.addTowerForAdditionalTextView.text.toString()
 
-        val editIDTF = binding.editIDTF.text.toString()
-        val assertNum = binding.editAssertNum.text.toString()
-        val number = binding.editNumber.text.toString()
-        val longitude = binding.editLongitude.text.toString()
-        val latitude = binding.editLatitude.text.toString()
-        val passport_id = binding.addTowerAutoCompleteTextView.text.toString()
-
-
-        if (validate(editIDTF, assertNum, number, passport_id)){
+        if (validate(number, tower_id)){
             CoroutineScope(Dispatchers.IO).launch {
-
-                val passport = passportRepository.getById(passport_id.toLong())
-                if (passport == null){
-                    Log.i("FRAGMENT_TEST", "There are no passport with id[$passport_id] in system")
+                val tower = towerRepository.getById(tower_id.toLong())
+                if (tower == null){
+                    Log.i("FRAGMENT_TEST", "There are no tower with id[$tower_id] in system")
                     return@launch
                 }
-
                 var coord_id: Long? = null
                 if (longitude.isNotEmpty() && latitude.isNotEmpty()){
                     coord_id = coordinateRepository.getOrCreateCoordinateId(latitude.toDouble(), longitude.toDouble())
                 }
-
-                val tower = Tower(0, passport_id.toLong(), coord_id,
-                    idtf = editIDTF, assetNum = assertNum, number = number)
-                towerRepository.add(tower)
-
+                val additional = Additional(0, tower_id.toLong(), coord_id, Date(), type, number)
+                additionalRepository.add(additional)
                 requireActivity().runOnUiThread {
-                    Log.i("FRAGMENT_TEST", "Next object add to DataBase: $tower")
+                    Log.i("FRAGMENT_TEST", "Next object add to DataBase: $additional")
                     Toast.makeText(requireContext(), "Successfully added!", Toast.LENGTH_LONG).show()
                 }
             }

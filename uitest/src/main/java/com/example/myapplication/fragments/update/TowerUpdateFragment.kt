@@ -63,10 +63,6 @@ class TowerUpdateFragment : Fragment() {
         view.editAssertNum.setText(tower.assetNum)
         view.editNumber.setText(tower.number)
 
-        val list = passportRepository.findAll().map { it.passport_id.toString() }
-        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, list)
-        view.updateTowerAutoCompleteTextView.setAdapter(arrayAdapter)
-
         view.updateTowerAutoCompleteTextView.setText(tower.passport_id.toString())
 
         tower.coord_id?.let {
@@ -99,18 +95,14 @@ class TowerUpdateFragment : Fragment() {
         if (validate(editIDTF, assertNum, number, passport_id)){
             var coord_id : Long? = null
             if (validate(longitude, latitude)){
-                coord_id = coordinateRepository.add(
-                    Coordinate(0, Date(), latitude.toDouble(), longitude.toDouble()))
-                if (coord_id == -1L){
-                    coord_id = coordinateRepository
-                        .getCoordinateByLongitudeAndLatitude(latitude.toDouble(), longitude.toDouble())!!.coord_id
-                }
-            } else{
+                coord_id = coordinateRepository.getOrCreateCoordinateId(latitude.toDouble(), longitude.toDouble())
+            } else {
                 Toast.makeText(requireContext(), "Must be fill latitude & longitude to update coordinate",
                     Toast.LENGTH_SHORT).show()
             }
             towerRepository.update(Tower(args.currentTower.tower_id, passport_id.toLong(),
                 coord_id, Date(), editIDTF, assertNum, number = number))
+
             Toast.makeText(requireContext(), "Tower update", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(requireContext(), "Fill out all fields", Toast.LENGTH_SHORT).show()
@@ -144,5 +136,4 @@ class TowerUpdateFragment : Fragment() {
         builder.setMessage("Are you sure you want to delete current Tower?")
         builder.create().show()
     }
-
 }
