@@ -5,7 +5,7 @@ import com.example.datamanager.database.dao.TowerDAO
 import com.example.datamanager.database.entity.Tower
 import com.example.datamanager.utli.QueryBuilder
 
-class TowerRepository(private val towerDao: TowerDAO) : BaseRepository<Tower>(towerDao) {
+class TowerRepository(private val towerDao: TowerDAO) : BaseRepository<Tower>(towerDao){
 
     fun findAllByPassportId(passport_id: Long) = towerDao.getByPassportId(passport_id)
 

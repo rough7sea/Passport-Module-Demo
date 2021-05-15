@@ -22,7 +22,7 @@ import com.example.datamanager.database.entity.Tower
     exportSchema = false,
 )
 @TypeConverters(Converter::class)
-abstract class AppDatabase : RoomDatabase() {
+abstract class AppDatabase : RoomDatabase(){
     abstract fun coordinateDao(): CoordinateDAO
     abstract fun towerDao(): TowerDAO
     abstract fun passportDao(): PassportDAO

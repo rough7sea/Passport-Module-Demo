@@ -21,8 +21,6 @@ class CoordinateRepository(private val coordinateDAO: CoordinateDAO) : BaseRepos
         return coord_id
     }
 
-    fun deleteById(id: Long) = coordinateDAO.deleteById(id)
-
     override fun getData(): LiveData<List<Coordinate>> = coordinateDAO.getAll()
 
     override fun getById(id: Long): Coordinate? = coordinateDAO.getById(id)

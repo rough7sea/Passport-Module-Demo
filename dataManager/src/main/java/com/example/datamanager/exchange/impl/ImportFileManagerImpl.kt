@@ -104,6 +104,7 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
             } catch (ex: ValueRequiredException){
 
             } catch (ex: Exception){
+                error.addError(ex)
                 Log.e("IMPORT", ex.localizedMessage, ex)
             }
 
@@ -114,11 +115,12 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
                     return@launch
                 }
             } catch (ex: Exception){
+                error.addError(ex)
                 Log.e("IMPORT", ex.localizedMessage, ex)
             }
 
-            Log.e("IMPORT","Wrong file type $file")
-            throw RuntimeException("Wrong file type $file")
+            Log.e("IMPORT","Wrong file schema $file")
+            liveData.postValue(error)
         }
         return error
     }

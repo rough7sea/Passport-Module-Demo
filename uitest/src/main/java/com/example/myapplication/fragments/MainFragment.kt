@@ -63,7 +63,13 @@ class MainFragment : Fragment() {
         }
 
         view.import_button.setOnClickListener {
-            import("0100101M.001.xml")
+            import(listOf(
+                "0100101M.001.xml",
+                "0100101M.E002.xml",
+                "0100101M.E003.xml",
+                "0100101M.E004.xml",
+                "0100101M.E006.xml",
+            ))
         }
 
         view.import_button2.setOnClickListener {
@@ -131,29 +137,58 @@ class MainFragment : Fragment() {
     }
 
     private fun import(fileName: String) {
+        setImportResultObserver()
+        CoroutineScope(Dispatchers.IO).launch {
+            myExternalFile = File(requireActivity().getExternalFilesDir(filepath), fileName)
+
+            if (myExternalFile != null && myExternalFile!!.length() != 0L){
+
+                dataManager.import(myExternalFile!!)
+
+            } else {
+                Log.w("FRAGMENT", "file $myExternalFile is empty")
+            }
+        }
+    }
+
+    private fun import(fileNames: List<String>) {
+        setImportResultObserver()
+        CoroutineScope(Dispatchers.IO).launch {
+            val files = fileNames.map {
+                File(requireActivity().getExternalFilesDir(filepath), it)
+            }.filter {
+                it.length() != 0L
+            }
+            if (files.isNotEmpty()){
+                dataManager.import(files)
+            } else {
+                Log.w("FRAGMENT", "all files is empty")
+            }
+
+        }
+    }
+
+    private fun setImportResultObserver() {
         dataManager.getImportResult().observe(viewLifecycleOwner,{
             when (it){
                 is WorkResult.Completed -> {
+                    it.errors.forEach { er ->
+                        Log.e("TEST", er.message, er)
+                    }
                     Toast.makeText(activity, "Successfully imported data", Toast.LENGTH_SHORT).show()
                 }
                 is WorkResult.Loading -> {}
                 is WorkResult.Progress -> {}
                 is WorkResult.Canceled -> {}
                 is WorkResult.Error -> {
+                    it.errors.forEach { er ->
+                        Log.e("TEST", er.message, er)
+                    }
                     Toast.makeText(activity, "Unexpected error"  , Toast.LENGTH_SHORT).show()
                 }
                 else -> throw Exception("Invalid work result")
             }
         })
-        CoroutineScope(Dispatchers.IO).launch {
-            myExternalFile = File(requireActivity().getExternalFilesDir(filepath), fileName)
-
-            if (myExternalFile != null && myExternalFile!!.length() != 0L){
-                dataManager.import(myExternalFile!!)
-            } else {
-                Log.w("FRAGMENT", "file $myExternalFile is empty")
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
