@@ -38,9 +38,10 @@ class ExportFileManagerImpl(appDatabase: AppDatabase)
     private val coordinateRepository = CoordinateRepository(appDatabase.coordinateDao())
     private val additionalRepository = AdditionalRepository(appDatabase.additionalDao())
 
+    private val result = MutableLiveData<WorkResult>()
+    override fun getExportResult() = result
 
     override fun <B : Any> export(@NotNull bindingEntity: B,@NotNull destinationPath: File) : LiveData<WorkResult> {
-        val result = MutableLiveData<WorkResult>()
         CoroutineScope(Dispatchers.IO).launch {
             val error = WorkResult.Error()
 
@@ -110,7 +111,9 @@ class ExportFileManagerImpl(appDatabase: AppDatabase)
 
             val additionalsXml = additionalRepository.findAllByTowerId(it.tower_id).map { add ->
                 Converter.fromAdditionalToXml(add,
-                    add.coord_id?.let { it1 -> coordinateRepository.getById(it1) })
+                    add.coord_id?.let {
+                            it1 -> coordinateRepository.getById(it1)
+                    })
             }
             FullTower(towerXml, additionalsXml)
         }

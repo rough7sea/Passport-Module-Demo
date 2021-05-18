@@ -12,7 +12,7 @@ sealed class WorkResult(
         fun addError(error: Exception){
             this.errors.add(error)
         }
-        fun addErrors(errors: MutableList<Exception>){
+        fun addErrors(errors: List<Exception>){
             this.errors.addAll(errors)
         }
     }

@@ -16,6 +16,7 @@ interface InternalObjectBindingHandler<E>{
     /**
      * Set start point object into handler.
      *
+     * @param internalObject object to insert into handler.
      * @return [LiveData] with selected object or [RuntimeException] if there are no selected object.
      */
     fun setInternalObject(internalObject: E) : LiveData<LoadResult<E>>

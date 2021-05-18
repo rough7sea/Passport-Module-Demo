@@ -3,6 +3,10 @@ package com.example.datamanager.database.repository
 import androidx.lifecycle.LiveData
 import androidx.sqlite.db.SupportSQLiteQuery
 
+/**
+ * Main repository API.
+ * Implemented class must provide standard functions.
+ */
 interface Repository<T> {
 
     fun getData(): LiveData<List<T>>

@@ -62,6 +62,12 @@
         <action
             android:id="@+id/action_passportListFragment_to_MainFragment"
             app:destination="@id/MainFragment" />
+        <action
+            android:id="@+id/action_passportListFragment_to_addPassportFragment"
+            app:destination="@id/addPassportFragment" />
+        <action
+            android:id="@+id/action_passportListFragment_to_passportUpdateFragment"
+            app:destination="@id/passportUpdateFragment" />
     </fragment>
     <fragment
         android:id="@+id/handlerTestFragment"
@@ -89,6 +95,12 @@
         <action
             android:id="@+id/action_additionalListFragment_to_MainFragment"
             app:destination="@id/MainFragment" />
+        <action
+            android:id="@+id/action_additionalListFragment_to_addAdditionalFragment"
+            app:destination="@id/addAdditionalFragment" />
+        <action
+            android:id="@+id/action_additionalListFragment_to_additionalUpdateFragment"
+            app:destination="@id/additionalUpdateFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchTestFragment"
@@ -110,6 +122,50 @@
         <argument
             android:name="currentTower"
             app:argType="com.example.datamanager.database.entity.Tower"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/addPassportFragment"
+        android:name="com.example.myapplication.fragments.add.AddPassportFragment"
+        android:label="fragment_add_passport"
+        tools:layout="@layout/fragment_add_passport" >
+        <action
+            android:id="@+id/action_addPassportFragment_to_passportListFragment"
+            app:destination="@id/passportListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/passportUpdateFragment"
+        android:name="com.example.myapplication.fragments.update.PassportUpdateFragment"
+        android:label="fragment_passport_update"
+        tools:layout="@layout/fragment_passport_update" >
+        <action
+            android:id="@+id/action_passportUpdateFragment_to_passportListFragment"
+            app:destination="@id/passportListFragment" />
+        <argument
+            android:name="currentPassport"
+            app:argType="com.example.datamanager.database.entity.Passport"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/addAdditionalFragment"
+        android:name="com.example.myapplication.fragments.add.AddAdditionalFragment"
+        android:label="fragment_add_additional"
+        tools:layout="@layout/fragment_add_additional" >
+        <action
+            android:id="@+id/action_addAdditionalFragment_to_additionalListFragment"
+            app:destination="@id/additionalListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/additionalUpdateFragment"
+        android:name="com.example.myapplication.fragments.update.AdditionalUpdateFragment"
+        android:label="fragment_additional_update"
+        tools:layout="@layout/fragment_additional_update" >
+        <action
+            android:id="@+id/action_additionalUpdateFragment_to_additionalListFragment"
+            app:destination="@id/additionalListFragment" />
+        <argument
+            android:name="currentAdditional"
+            app:argType="com.example.datamanager.database.entity.Additional"
             />
     </fragment>
 </navigation>

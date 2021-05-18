@@ -11,7 +11,7 @@ object Utils{
     private val nonLetterRegex = Regex("[A-Za-zА-Яа-я]")
 
     /**
-     * Method to process filed *number*.
+     * Method to process filed **number**.
      */
     fun clearNumber(number: String) = nonLetterRegex.replace(number, "")
 
@@ -37,7 +37,6 @@ object Utils{
     }
 
     fun distanceInKm(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-
         val theta = lon1 - lon2
         var dist = sin(Math.toRadians(lat1)) * sin(Math.toRadians(lat2)) +
                 cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) * cos(Math.toRadians(theta))

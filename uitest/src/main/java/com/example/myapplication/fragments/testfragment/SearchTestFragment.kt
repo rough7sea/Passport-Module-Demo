@@ -35,9 +35,6 @@ class SearchTestFragment : Fragment() {
                 Log.i("SEARCH_TEST_FRAGMENT", obj.toString())
             }
             view.textView_object_count.text = (it.data?.size ?: 0).toString()
-            requireActivity().runOnUiThread {
-                Toast.makeText(activity, "Receive [${it.data?.size ?: 0}] objects.", Toast.LENGTH_SHORT).show()
-            }
         })
 
         val listener = LocationListener {  }
@@ -49,16 +46,7 @@ class SearchTestFragment : Fragment() {
             view.edit_longitude_field.text = "Nan"
             view.edit_latitude_field.text = "Nan"
             if (radius.isNotEmpty()) {
-                searchLocationObjectManager.addListenerToNearestObjects(radius.toFloat()){
-                    view.textView_object_count.text = it.size.toString()
-                    it.forEach { obj ->
-                        Log.i("SEARCH_TEST_FRAGMENT", obj.toString())
-                    }
-                    requireActivity().runOnUiThread {
-                        Toast.makeText(activity, "Receive [${it.size}] objects.",
-                            Toast.LENGTH_SHORT).show()
-                    }
-                }
+                searchLocationObjectManager.addListenerToNearestObjects(radius.toFloat()){}
             } else {
                 requireActivity().runOnUiThread {
                     Toast.makeText(activity, "Radius is empty", Toast.LENGTH_SHORT).show()
@@ -85,9 +73,6 @@ class SearchTestFragment : Fragment() {
 
                     view.edit_longitude_field.text = location.longitude.toString()
                     view.edit_latitude_field.text = location.latitude.toString()
-
-                    Log.i("SEARCH_TEST_FRAGMENT",
-                        "Current location [long:${location.longitude} & lat:${location.latitude}]")
 
                     searchLocationObjectManager.findObjects(location, radius.toFloat())
                 } else {

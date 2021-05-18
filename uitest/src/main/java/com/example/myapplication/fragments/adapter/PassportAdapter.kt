@@ -2,10 +2,12 @@ package com.example.myapplication.fragments.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.datamanager.database.entity.Passport
 import com.example.myapplication.fragments.holder.MyViewHolder
+import com.example.myapplication.fragments.list.PassportListFragmentDirections
 import kotlinx.android.synthetic.main.passport_layout.view.*
 
 class PassportAdapter : RecyclerView.Adapter<MyViewHolder>() {
@@ -21,6 +23,11 @@ class PassportAdapter : RecyclerView.Adapter<MyViewHolder>() {
         holder.itemView.passport_id_textView.text = currentItem.passport_id.toString()
         holder.itemView.passport_sectionName_editText.text = currentItem.sectionName
         holder.itemView.passport_changeDate_editText.text = currentItem.changeDate.toString()
+
+        holder.itemView.passport_layout.setOnClickListener {
+            val action = PassportListFragmentDirections.actionPassportListFragmentToPassportUpdateFragment(currentItem)
+            holder.itemView.findNavController().navigate(action)
+        }
     }
 
     override fun getItemCount(): Int = passportList.size

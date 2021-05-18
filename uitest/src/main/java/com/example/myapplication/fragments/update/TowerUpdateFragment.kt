@@ -4,9 +4,9 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
-import androidx.fragment.app.Fragment
+import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.example.datamanager.database.entity.Coordinate
 import com.example.datamanager.database.entity.Passport
@@ -16,15 +16,9 @@ import com.example.datamanager.database.repository.impl.PassportRepository
 import com.example.datamanager.database.repository.impl.TowerRepository
 import com.example.myapplication.App
 import com.example.myapplication.R
-import kotlinx.android.synthetic.main.fragment_add_tower.view.*
-import kotlinx.android.synthetic.main.fragment_add_tower.view.editAssertNum
-import kotlinx.android.synthetic.main.fragment_add_tower.view.editIDTF
-import kotlinx.android.synthetic.main.fragment_add_tower.view.editLatitude
-import kotlinx.android.synthetic.main.fragment_add_tower.view.editLongitude
-import kotlinx.android.synthetic.main.fragment_add_tower.view.editNumber
+import com.example.myapplication.fragments.utils.Utils.validate
 import kotlinx.android.synthetic.main.fragment_tower_update.*
 import kotlinx.android.synthetic.main.fragment_tower_update.view.*
-import kotlinx.android.synthetic.main.tower_layout.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,6 +35,19 @@ class TowerUpdateFragment : Fragment() {
     private val coordinateRepository: CoordinateRepository by lazy {
         App.getDataManager().getRepository(Coordinate::class.java) as CoordinateRepository
     }
+    private val passportRepository: PassportRepository by lazy {
+        App.getDataManager().getRepository(Passport::class.java) as PassportRepository
+    }
+
+    private var _binding: View? = null
+    private val binding get() = _binding!!
+
+    override fun onResume() {
+        super.onResume()
+        val list = passportRepository.findAll().map { it.passport_id.toString() }
+        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, list)
+        binding.updateTowerAutoCompleteTextView.setAdapter(arrayAdapter)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,11 +55,15 @@ class TowerUpdateFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_tower_update, container, false)
+        _binding = view
+
         val tower = args.currentTower
 
         view.editIDTF.setText(tower.idtf)
         view.editAssertNum.setText(tower.assetNum)
         view.editNumber.setText(tower.number)
+
+        view.updateTowerAutoCompleteTextView.setText(tower.passport_id.toString())
 
         tower.coord_id?.let {
             CoroutineScope(Dispatchers.IO).launch {
@@ -79,35 +90,23 @@ class TowerUpdateFragment : Fragment() {
         val number = editNumber.text.toString()
         val longitude = editLongitude.text.toString()
         val latitude = editLatitude.text.toString()
+        val passport_id = updateTowerAutoCompleteTextView.text.toString()
 
-        if (validate(editIDTF, assertNum, number)){
+        if (validate(editIDTF, assertNum, number, passport_id)){
             var coord_id : Long? = null
             if (validate(longitude, latitude)){
-                coord_id = coordinateRepository.add(
-                    Coordinate(0, Date(), latitude.toDouble(), longitude.toDouble()))
-                if (coord_id == -1L){
-                    coord_id = coordinateRepository
-                        .getCoordinateByLongitudeAndLatitude(latitude.toDouble(), longitude.toDouble())!!.coord_id
-                }
-            } else{
+                coord_id = coordinateRepository.getOrCreateCoordinateId(latitude.toDouble(), longitude.toDouble())
+            } else {
                 Toast.makeText(requireContext(), "Must be fill latitude & longitude to update coordinate",
                     Toast.LENGTH_SHORT).show()
             }
-            towerRepository.update(Tower(args.currentTower.tower_id, args.currentTower.passport_id,
+            towerRepository.update(Tower(args.currentTower.tower_id, passport_id.toLong(),
                 coord_id, Date(), editIDTF, assertNum, number = number))
+
             Toast.makeText(requireContext(), "Tower update", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(requireContext(), "Fill out all fields", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun validate(vararg args: String): Boolean {
-        for (a in args){
-            if (TextUtils.isEmpty(a)){
-                return false
-            }
-        }
-        return true
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -137,5 +136,4 @@ class TowerUpdateFragment : Fragment() {
         builder.setMessage("Are you sure you want to delete current Tower?")
         builder.create().show()
     }
-
 }

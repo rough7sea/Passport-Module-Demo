@@ -11,7 +11,7 @@
         android:layout_width="300dp"
         android:layout_height="80dp"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="100dp"
         android:text="@string/passports"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -123,16 +123,5 @@
         android:text="@string/search_test"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/additional_handler_test_button" />
-
-    <TextView
-        android:id="@+id/data_progress"
-        android:layout_width="93dp"
-        android:layout_height="36dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/progress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.175"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wipe_data_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

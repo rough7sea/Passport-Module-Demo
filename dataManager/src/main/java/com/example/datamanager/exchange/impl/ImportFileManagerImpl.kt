@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.datamanager.database.AppDatabase
 import com.example.datamanager.database.converter.Converter
-import com.example.datamanager.database.entity.Coordinate
 import com.example.datamanager.database.repository.impl.AdditionalRepository
 import com.example.datamanager.database.repository.impl.CoordinateRepository
 import com.example.datamanager.database.repository.impl.PassportRepository
@@ -50,15 +49,14 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
      */
     private val additionalRepository = AdditionalRepository(appDatabase.additionalDao())
 
+    private val result = MutableLiveData<WorkResult>()
+    override fun getImportResult() = result
+
     override fun import(file: File) : LiveData<WorkResult>{
-        val mutableLiveData = MutableLiveData<WorkResult>()
-        importXmlFromFile(file, mutableLiveData)
-        return mutableLiveData
+        importDataFromXmlFile(file, result)
+        return result
     }
-
     override fun import(files: List<File>) : LiveData<WorkResult> {
-
-        val result = MutableLiveData<WorkResult>()
 
         CoroutineScope(Dispatchers.IO).launch {
             val exportErrors: MutableList<Exception> = mutableListOf()
@@ -73,7 +71,7 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
 
             files.forEach {
 
-                val error = importXmlFromFile(it, MutableLiveData<WorkResult>())
+                val error = importDataFromXmlFile(it, MutableLiveData<WorkResult>())
                 if (error.errors.isNotEmpty()){
                     exportErrors.addAll(error.errors)
                 }
@@ -89,7 +87,7 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
         return result
     }
 
-    private fun importXmlFromFile(file : File, liveData: MutableLiveData<WorkResult>) : WorkResult{
+    private fun importDataFromXmlFile(file : File, liveData: MutableLiveData<WorkResult>) : WorkResult{
 
         val error = WorkResult.Error()
 
@@ -105,6 +103,7 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
             } catch (ex: ValueRequiredException){
 
             } catch (ex: Exception){
+                error.addError(ex)
                 Log.e("IMPORT", ex.localizedMessage, ex)
             }
 
@@ -115,11 +114,12 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
                     return@launch
                 }
             } catch (ex: Exception){
+                error.addError(ex)
                 Log.e("IMPORT", ex.localizedMessage, ex)
             }
 
-            Log.e("IMPORT","Wrong file type $file")
-            throw RuntimeException("Wrong file type $file")
+            Log.e("IMPORT","Wrong file schema $file")
+            liveData.postValue(error)
         }
         return error
     }
@@ -147,23 +147,19 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
                 .filter {
                     it.assetNum != null && it.idtf != null && it.number != null
                 }.map {
-                    val tower = if (it.longitude != null && it.latitude != null){
-                        var coord_id = coordinateRepository.add(
-                            Coordinate(0, Date(), it.latitude!!, it.longitude!!))
-                        if (coord_id == -1L){
-                            coord_id = coordinateRepository
-                                .getCoordinateByLongitudeAndLatitude(it.latitude!!, it.longitude!!)!!.coord_id
-                        }
-                        Converter.fromXmlToTower(it, coord_id)
-                    } else {
-                        Converter.fromXmlToTower(it, null)
+                    var coord_id: Long? = null
+                    if (it.longitude != null && it.latitude != null){
+                        coord_id = coordinateRepository.getOrCreateCoordinateId(it.latitude!!, it.longitude!!)
                     }
+                    val tower = Converter.fromXmlToTower(it, coord_id)
 
                     tower.passport_id = passport_id
                     liveData.postValue(WorkResult.Progress(progress + step))
                     progress += step
+
                     tower
                 }
+
             Log.i("IMPORT", "Import ${towers.size} towers")
             towerRepository.addAll(towers)
             liveData.postValue(WorkResult.Completed())
@@ -211,44 +207,29 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
 
                     val towerDto = fullTower.tower!!
 
-                    val tower = if (towerDto.longitude != null && towerDto.latitude != null) {
-                        var coord_id = coordinateRepository.add(
-                            Coordinate(longitude = towerDto.longitude!!, latitude = towerDto.latitude!!)
-                        )
-                        if (coord_id == -1L) {
-                            coord_id = coordinateRepository
-                                .getCoordinateByLongitudeAndLatitude(towerDto.latitude!!, towerDto.longitude!!)!!.coord_id
-                        }
-                        Converter.fromXmlToTower(towerDto, coord_id)
-                    } else {
-                        Converter.fromXmlToTower(towerDto, null)
+                    var coord_id: Long? = null
+                    if (towerDto.longitude != null && towerDto.latitude != null){
+                        coord_id = coordinateRepository.getOrCreateCoordinateId(towerDto.latitude!!, towerDto.longitude!!)
                     }
+                    val tower = Converter.fromXmlToTower(towerDto, coord_id)
 
                     tower.passport_id = passport_id
                     val tower_id = towerRepository.add(tower)
 
                     val additionals = fullTower.additionals.map {
-                        val additional = if (it.longitude != null && it.latitude != null) {
-                            var coord_id = coordinateRepository.add(
-                                Coordinate(longitude = it.longitude!!, latitude = it.latitude!!)
-                            )
-                            if (coord_id == -1L) {
-                                coord_id = coordinateRepository
-                                    .getCoordinateByLongitudeAndLatitude(it.latitude!!, it.longitude!!)!!.coord_id
-                            }
-                            Converter.fromXmlToAdditional(it, tower_id, coord_id)
-                        } else {
-                            Converter.fromXmlToAdditional(it, tower_id, null)
+                        var coord_id: Long? = null
+                        if (it.longitude != null && it.latitude != null) {
+                            coord_id = coordinateRepository.getOrCreateCoordinateId(it.latitude!!, it.longitude!!)
                         }
-
-                        additional
+                        Converter.fromXmlToAdditional(it, tower_id, coord_id)
                     }
+
                     Log.i("IMPORT", "Import ${additionals.size} additionals")
                     additionalRepository.addAll(additionals)
 
-                    tower.passport_id = passport_id
                     liveData.postValue(WorkResult.Progress(progress + step))
                     progress += step
+
                     tower
                 }
             Log.i("IMPORT", "Import ${towers.size} towers")

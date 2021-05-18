@@ -20,7 +20,7 @@ import java.util.*
         tableName = DatabaseConst.PASSPORT_TABLE_NAME
 )
 @Parcelize
-data class Passport (
+data class Passport(
         @PrimaryKey(autoGenerate = true)
         val passport_id: Long = 0,
         var changeDate: Date = Date(),

@@ -6,6 +6,7 @@ import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.R
 import com.example.myapplication.fragments.adapter.AdditionalAdapter
@@ -31,6 +32,10 @@ class AdditionalListFragment : Fragment() {
         mAdditionalViewModel.readAllData.observe(viewLifecycleOwner, { towers ->
             adapter.setData(towers)
         })
+
+        view.addAdditionalFloatingActionButton.setOnClickListener {
+            findNavController().navigate(R.id.action_additionalListFragment_to_addAdditionalFragment)
+        }
 
         setHasOptionsMenu(true)
 

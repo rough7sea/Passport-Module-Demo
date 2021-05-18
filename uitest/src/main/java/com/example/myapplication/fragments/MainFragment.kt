@@ -1,7 +1,6 @@
 package com.example.myapplication.fragments
 
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.*
 import android.widget.Toast
@@ -16,7 +15,7 @@ import com.example.datamanager.database.repository.impl.AdditionalRepository
 import com.example.datamanager.database.repository.impl.CoordinateRepository
 import com.example.datamanager.database.repository.impl.PassportRepository
 import com.example.datamanager.database.repository.impl.TowerRepository
-import com.example.datamanager.utli.QueryBuilder
+import com.example.datamanager.external.entities.WorkResult
 import com.example.myapplication.App
 import com.example.myapplication.R
 import kotlinx.android.synthetic.main.fragment_main.view.*
@@ -30,16 +29,16 @@ class MainFragment : Fragment() {
 
     private val dataManager: DataManager by lazy { App.getDataManager() }
     private val additionalRepository: AdditionalRepository by lazy {
-        App.getDataManager().getRepository(Additional::class.java) as AdditionalRepository
+        dataManager.getRepository(Additional::class.java) as AdditionalRepository
     }
     private val towerRepository: TowerRepository by lazy {
-        App.getDataManager().getRepository(Tower::class.java) as TowerRepository
+        dataManager.getRepository(Tower::class.java) as TowerRepository
     }
     private val coordinateRepository: CoordinateRepository by lazy {
-        App.getDataManager().getRepository(Coordinate::class.java) as CoordinateRepository
+        dataManager.getRepository(Coordinate::class.java) as CoordinateRepository
     }
     private val passportRepository: PassportRepository by lazy {
-        App.getDataManager().getRepository(Passport::class.java) as PassportRepository
+        dataManager.getRepository(Passport::class.java) as PassportRepository
     }
 
     private val filepath = "MyFileStorage"
@@ -63,28 +62,44 @@ class MainFragment : Fragment() {
             findNavController().navigate(R.id.action_MainFragment_to_additionalListFragment)
         }
 
-        if (!isExternalStorageAvailable || isExternalStorageReadOnly) {
-            view.import_button.isEnabled = false
-            view.import_button2.isEnabled = false
-        }
-
         view.import_button.setOnClickListener {
-            import("0100101M.001.xml", view)
+            import(listOf(
+                "0100101M.001.xml",
+                "0100101M.E002.xml",
+                "0100101M.E003.xml",
+                "0100101M.E004.xml",
+                "0100101M.E006.xml",
+            ))
         }
 
         view.import_button2.setOnClickListener {
-            import("fullTower.xml", view)
+            import("fullTower.xml")
         }
 
         view.export_button.setOnClickListener {
+            dataManager.getExportResult().observe(viewLifecycleOwner,{
+                when (it){
+                    is WorkResult.Completed -> {
+                        Toast.makeText(activity, "Successfully exported data", Toast.LENGTH_SHORT).show()
+                    }
+                    is WorkResult.Loading -> {}
+                    is WorkResult.Progress -> {}
+                    is WorkResult.Canceled -> {}
+                    is WorkResult.Error -> {
+                        Toast.makeText(activity, "Unexpected error"  , Toast.LENGTH_SHORT).show()
+                    }
+                    else -> throw Exception("Invalid work result")
+                }
+            })
             CoroutineScope(Dispatchers.IO).launch {
                 val towers = towerRepository.findAll()
                 if (towers.isNotEmpty()){
                     dataManager.export(
                         towers[0],
-                        File(requireActivity().getExternalFilesDir(filepath), "fullTower.xml"))
-                    Log.i("HANDLER_TEST", "Set Tower ${towers[0].idtf} & ${towers[0].number} to handler")
-                }else {
+                        File(requireActivity().getExternalFilesDir(filepath), "fullTower.xml")
+                    )
+                    Log.i("HANDLER_TEST", "Set Tower ${towers[0].coord_id} & ${towers[0].number} to handler")
+                } else {
                     Log.w("HANDLER_TEST", "There are no Towers in database")
                 }
             }
@@ -121,26 +136,59 @@ class MainFragment : Fragment() {
         return view
     }
 
-    private fun import(fileName: String, view: View) {
-        myExternalFile = File(requireActivity().getExternalFilesDir(filepath), fileName)
+    private fun import(fileName: String) {
+        setImportResultObserver()
+        CoroutineScope(Dispatchers.IO).launch {
+            myExternalFile = File(requireActivity().getExternalFilesDir(filepath), fileName)
 
-        if (myExternalFile != null && myExternalFile!!.length() != 0L){
-            dataManager.import(myExternalFile!!).observeForever {
-                view.data_progress.text = "Progress: ${it.progress.toString()}"
+            if (myExternalFile != null && myExternalFile!!.length() != 0L){
+
+                dataManager.import(myExternalFile!!)
+
+            } else {
+                Log.w("FRAGMENT", "file $myExternalFile is empty")
             }
-        } else {
-            Log.w("FRAGMENT", "file $myExternalFile is empty")
         }
     }
 
-    private val isExternalStorageReadOnly: Boolean get() {
-        val extStorageState = Environment.getExternalStorageState()
-        return Environment.MEDIA_MOUNTED_READ_ONLY == extStorageState
+    private fun import(fileNames: List<String>) {
+        setImportResultObserver()
+        CoroutineScope(Dispatchers.IO).launch {
+            val files = fileNames.map {
+                File(requireActivity().getExternalFilesDir(filepath), it)
+            }.filter {
+                it.length() != 0L
+            }
+            if (files.isNotEmpty()){
+                dataManager.import(files)
+            } else {
+                Log.w("FRAGMENT", "all files is empty")
+            }
+
+        }
     }
 
-    private val isExternalStorageAvailable: Boolean get() {
-        val extStorageState = Environment.getExternalStorageState()
-        return Environment.MEDIA_MOUNTED == extStorageState
+    private fun setImportResultObserver() {
+        dataManager.getImportResult().observe(viewLifecycleOwner,{
+            when (it){
+                is WorkResult.Completed -> {
+                    it.errors.forEach { er ->
+                        Log.e("TEST", er.message, er)
+                    }
+                    Toast.makeText(activity, "Successfully imported data", Toast.LENGTH_SHORT).show()
+                }
+                is WorkResult.Loading -> {}
+                is WorkResult.Progress -> {}
+                is WorkResult.Canceled -> {}
+                is WorkResult.Error -> {
+                    it.errors.forEach { er ->
+                        Log.e("TEST", er.message, er)
+                    }
+                    Toast.makeText(activity, "Unexpected error"  , Toast.LENGTH_SHORT).show()
+                }
+                else -> throw Exception("Invalid work result")
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -165,7 +213,7 @@ class MainFragment : Fragment() {
                 Tower(0, 1, 2, Date(), "dist 270", "270", number = "3f"),
                 Tower(0, 1, 3, Date(), "dist 386", "386", number = "5f"),
                 Tower(0, 1, 5, Date(), "dist 850", "850", number = "7f"),
-                )
+            )
             val additionals = listOf(
                 Additional(0, 1, 4, Date(), "obj 89", "2test"),
                 Additional(0, 1, 6, Date(), "obj 226", "4test"),
