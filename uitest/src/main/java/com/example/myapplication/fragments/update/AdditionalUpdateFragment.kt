@@ -61,16 +61,16 @@ class AdditionalUpdateFragment : Fragment() {
 
         val additional = args.currentAdditional
 
-        view.editAdditionalType.setText(additional.type)
-        view.editAdditionalNumber.setText(additional.number)
-        view.addTowerForAdditionalTextView.setText(additional.tower_id.toString())
+        view.updateAdditionalType.setText(additional.type)
+        view.updateAdditionalNumber.setText(additional.number)
+        view.updateTowerForAdditionalTextView.setText(additional.tower_id.toString())
 
         additional.coord_id?.let {
             CoroutineScope(Dispatchers.IO).launch {
                 val coord = coordinateRepository.getById(it)
                 if (coord != null){
-                    binding.editAdditionalLongitude.setText(coord.longitude.toString())
-                    binding.editAdditionalLatitude.setText(coord.latitude.toString())
+                    binding.updateAdditionalLongitude.setText(coord.longitude.toString())
+                    binding.updateAdditionalLatitude.setText(coord.latitude.toString())
                 }
             }
         }
@@ -85,11 +85,11 @@ class AdditionalUpdateFragment : Fragment() {
     }
 
     private fun updateAdditional() {
-        val type = binding.editAdditionalType.text.toString()
-        val number = binding.editAdditionalNumber.text.toString()
-        val longitude = binding.editAdditionalLongitude.text.toString()
-        val latitude = binding.editAdditionalLatitude.text.toString()
-        val tower_id = binding.addTowerForAdditionalTextView.text.toString()
+        val type = binding.updateAdditionalType.text.toString()
+        val number = binding.updateAdditionalNumber.text.toString()
+        val longitude = binding.updateAdditionalLongitude.text.toString()
+        val latitude = binding.updateAdditionalLatitude.text.toString()
+        val tower_id = binding.updateTowerForAdditionalTextView.text.toString()
 
         if (Utils.validate(number, tower_id)){
             CoroutineScope(Dispatchers.IO).launch {
@@ -105,7 +105,7 @@ class AdditionalUpdateFragment : Fragment() {
                     Toast.makeText(requireContext(), "Must be fill latitude & longitude to update coordinate",
                         Toast.LENGTH_SHORT).show()
                 }
-                val additional = Additional(0, tower_id.toLong(), coord_id, Date(), type, number)
+                val additional = Additional(args.currentAdditional.add_id, tower_id.toLong(), coord_id, Date(), type, number)
                 additionalRepository.update(additional)
                 requireActivity().runOnUiThread {
                     Log.i("FRAGMENT_TEST", "Additional update: $additional")
