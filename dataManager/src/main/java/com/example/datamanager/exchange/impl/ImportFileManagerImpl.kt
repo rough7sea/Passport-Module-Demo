@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.datamanager.database.AppDatabase
 import com.example.datamanager.database.converter.Converter
-import com.example.datamanager.database.entity.Coordinate
 import com.example.datamanager.database.repository.impl.AdditionalRepository
 import com.example.datamanager.database.repository.impl.CoordinateRepository
 import com.example.datamanager.database.repository.impl.PassportRepository
@@ -54,7 +53,7 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
     override fun getImportResult() = result
 
     override fun import(file: File) : LiveData<WorkResult>{
-        importXmlFromFile(file, result)
+        importDataFromXmlFile(file, result)
         return result
     }
     override fun import(files: List<File>) : LiveData<WorkResult> {
@@ -72,7 +71,7 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
 
             files.forEach {
 
-                val error = importXmlFromFile(it, MutableLiveData<WorkResult>())
+                val error = importDataFromXmlFile(it, MutableLiveData<WorkResult>())
                 if (error.errors.isNotEmpty()){
                     exportErrors.addAll(error.errors)
                 }
@@ -88,7 +87,7 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
         return result
     }
 
-    private fun importXmlFromFile(file : File, liveData: MutableLiveData<WorkResult>) : WorkResult{
+    private fun importDataFromXmlFile(file : File, liveData: MutableLiveData<WorkResult>) : WorkResult{
 
         val error = WorkResult.Error()
 

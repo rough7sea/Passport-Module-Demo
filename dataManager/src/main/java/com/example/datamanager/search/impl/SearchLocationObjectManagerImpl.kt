@@ -53,6 +53,7 @@ class SearchLocationObjectManagerImpl(
             Log.i("SEARCH_LOCATION_MANAGER",
                 "Find [${objects.size}] in location " +
                         "[long:${gpsLocation.longitude} & lat:${gpsLocation.latitude}] with radius [$radius]")
+
             result.postValue(RequestResult.Completed(objects))
         }
 
@@ -73,13 +74,14 @@ class SearchLocationObjectManagerImpl(
         }
         locationManager.requestLocationUpdates(
             LocationManager.GPS_PROVIDER,
-            100 * 10L, radius){ location ->
+            5000L, 10f){ location ->
 
             val findObjects = findObjects(location, radius)
             findObjects.observeForever {
-                it.data?.let { it1 -> listener.invoke(it1) }
+                it.data?.let { objects ->
+                    listener.invoke(objects)
+                }
             }
-            Log.i("SEARCH_LOCATION_MANAGER", "Current location [long:${location.longitude} & lat:${location.latitude}]")
         }
     }
 }
