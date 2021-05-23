@@ -140,7 +140,7 @@
         android:layout_height="20dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="40dp"
-        android:text="@string/number"
+        android:text="@string/passport"
         android:textAlignment="textStart"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView13" />

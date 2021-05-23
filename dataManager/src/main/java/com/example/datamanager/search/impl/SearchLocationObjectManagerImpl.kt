@@ -7,6 +7,7 @@ import android.location.Location
 import android.location.LocationManager
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.MutableLiveData
 import com.example.datamanager.database.AppDatabase
 import com.example.datamanager.database.repository.impl.AdditionalRepository
@@ -70,7 +71,6 @@ class SearchLocationObjectManagerImpl(
                 context, Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED) {
             Log.e("SEARCH_LOCATION_MANAGER", "Location permission denied")
-            throw RuntimeException("Location permission denied")
         }
         locationManager.requestLocationUpdates(
             LocationManager.GPS_PROVIDER,

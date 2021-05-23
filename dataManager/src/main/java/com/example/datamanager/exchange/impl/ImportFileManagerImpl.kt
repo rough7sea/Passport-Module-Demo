@@ -164,7 +164,6 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
             towerRepository.addAll(towers)
             liveData.postValue(WorkResult.Completed())
         } catch (ex: Exception){
-            Log.e("IMPORT", ex.localizedMessage, ex)
             error.addError(ex)
             liveData.postValue(error)
         }
@@ -235,7 +234,6 @@ class ImportFileManagerImpl(appDatabase: AppDatabase)
             Log.i("IMPORT", "Import ${towers.size} towers")
             liveData.postValue(WorkResult.Completed())
         } catch (ex: Exception){
-            Log.e("IMPORT", ex.localizedMessage, ex)
             error.addError(ex)
             liveData.postValue(error)
         }

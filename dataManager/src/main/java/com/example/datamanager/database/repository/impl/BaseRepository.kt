@@ -23,4 +23,5 @@ abstract class BaseRepository<T>(private val dao : BaseDAO<T>) : Repository<T> {
     override fun findCurrentWithParameter(query: SupportSQLiteQuery): T? =
         dao.getCurrentObjectWithParameters(query)
 
+    fun clearAutoincrement() = dao.clearAutoincrement()
 }

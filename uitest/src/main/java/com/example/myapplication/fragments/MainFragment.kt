@@ -119,6 +119,7 @@ class MainFragment : Fragment() {
                 additionalRepository.deleteAll()
                 towerRepository.deleteAll()
                 passportRepository.deleteAll()
+                passportRepository.clearAutoincrement()
                 requireActivity().runOnUiThread {
                     Toast.makeText(activity, "Successfully wiped all data", Toast.LENGTH_SHORT).show()
                 }
@@ -173,7 +174,6 @@ class MainFragment : Fragment() {
             when (it){
                 is WorkResult.Completed -> {
                     it.errors.forEach { er ->
-                        Log.e("TEST", er.message, er)
                     }
                     Toast.makeText(activity, "Successfully imported data", Toast.LENGTH_SHORT).show()
                 }

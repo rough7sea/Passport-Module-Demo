@@ -27,6 +27,9 @@ class AdditionalBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBin
     private var currentAdditionals: Map<Int, Long> = mutableMapOf()
     private var currentNumber: Int = -1
 
+    private val NO_ADDITIONAL_IN_DIRECTION_MESSAGE = "There are no more additionals in this direction"
+    private val SET_ADDITIONAL_BEFORE_MESSAGE = "Before work, you need to set the additional binding"
+
     private val result = MutableLiveData<LoadResult<Additional>>()
 
     override fun getActualInternalObject(): LiveData<LoadResult<Additional>> {
@@ -68,11 +71,11 @@ class AdditionalBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBin
         CoroutineScope(Dispatchers.IO).launch {
             result.postValue(LoadResult.Loading())
             if (currentNumber == -1 || currentAdditionals.isEmpty()){
-                result.postValue(LoadResult.Error(RuntimeException("Must set object binding before!")))
+                result.postValue(LoadResult.Error(RuntimeException(SET_ADDITIONAL_BEFORE_MESSAGE)))
                 return@launch
             }
             if (currentNumber + 1 >= currentAdditionals.size){
-                result.postValue(LoadResult.Error(RuntimeException("There are no more objects in this directions")))
+                result.postValue(LoadResult.Error(RuntimeException(NO_ADDITIONAL_IN_DIRECTION_MESSAGE)))
                 return@launch
             }
             getObjectByNumber(result, ++currentNumber)
@@ -84,11 +87,11 @@ class AdditionalBindingHandlerImpl(appDatabase: AppDatabase) : InternalObjectBin
         CoroutineScope(Dispatchers.IO).launch {
             result.postValue(LoadResult.Loading())
             if (currentNumber == -1 || currentAdditionals.isEmpty()){
-                result.postValue(LoadResult.Error(RuntimeException("Must set object binding before!")))
+                result.postValue(LoadResult.Error(RuntimeException(SET_ADDITIONAL_BEFORE_MESSAGE)))
                 return@launch
             }
             if (currentNumber - 1 < 0){
-                result.postValue(LoadResult.Error(RuntimeException("There are no more objects in this directions")))
+                result.postValue(LoadResult.Error(RuntimeException(NO_ADDITIONAL_IN_DIRECTION_MESSAGE)))
                 return@launch
             }
             getObjectByNumber(result, --currentNumber)
