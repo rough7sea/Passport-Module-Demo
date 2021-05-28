@@ -1,5 +1,6 @@
 package com.example.datamanager
 
+import android.Manifest
 import android.content.Context
 import android.location.Location
 import android.location.LocationManager
@@ -16,6 +17,9 @@ import com.example.datamanager.external.entities.WorkResult
 import com.example.datamanager.external.handler.impl.ObjectBindingHandlerImpl
 import com.example.datamanager.search.SearchLocationObjectManager
 import com.example.datamanager.search.impl.SearchLocationObjectManagerImpl
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.listener.multi.DialogOnAnyDeniedMultiplePermissionsListener
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import java.io.File
 
 /**
@@ -66,6 +70,24 @@ class DataManager(
          * @param context require Application Context to get GPS/location permission.
          */
         fun initialize(context: Context, locationManager: LocationManager) = apply {
+
+            val dialogMultiplePermissionsListener: MultiplePermissionsListener =
+                DialogOnAnyDeniedMultiplePermissionsListener.Builder
+                    .withContext(context)
+                    .withTitle("Location & file access permission")
+                    .withMessage("Application need both Location & file access permission")
+                    .withButtonText("Ok")
+                    .build()
+
+            Dexter.withContext(context)
+                .withPermissions(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+                .withListener(dialogMultiplePermissionsListener)
+                .check()
+
             this.appDatabase = AppDatabase.initialize(context).build()
             this.searchLocationObjectManager = SearchLocationObjectManagerImpl(locationManager, context, appDatabase)
         }
